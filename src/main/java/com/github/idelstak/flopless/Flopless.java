@@ -1,13 +1,10 @@
-
 package com.github.idelstak.flopless;
 
-/**
- *
- * @author kamau
- */
+import com.github.idelstak.flopless.fx.*;
+
 public class Flopless {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        FloplessApp.main(args);
     }
 }
