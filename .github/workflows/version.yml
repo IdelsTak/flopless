@@ -1,0 +1,114 @@
+name: Semantic Versioning
+
+on:
+  pull_request:
+    types: [closed]
+    branches: ["master"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: versioning-master
+  cancel-in-progress: false
+
+jobs:
+  version:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install tools
+        run: sudo apt-get update && sudo apt-get install -y xmlstarlet jq
+
+      - name: Read current version
+        id: current
+        run: |
+          VERSION=$(xmlstarlet sel -t -v "/*[local-name()='project']/*[local-name()='version']" pom.xml)
+          if [ -z "$VERSION" ]; then
+            echo "pom.xml version not found"
+            exit 1
+          fi
+          echo "value=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Read version label
+        id: label
+        run: |
+          LABEL=$(jq -r '.pull_request.labels[].name' "$GITHUB_EVENT_PATH" \
+            | tr '[:upper:]' '[:lower:]' \
+            | grep '^version:' || true)
+
+          COUNT=$(echo "$LABEL" | wc -l)
+          if [ "$COUNT" -ne 1 ]; then
+            echo "Exactly one version:* label is required"
+            exit 1
+          fi
+
+          echo "value=$LABEL" >> $GITHUB_OUTPUT
+
+      - name: Calculate next version
+        id: next
+        run: |
+          CUR=${{ steps.current.outputs.value }}
+          LABEL=${{ steps.label.outputs.value }}
+
+          BASE="${CUR%%-*}"
+          PRE="${CUR#*-}"
+          [ "$BASE" = "$CUR" ] && PRE=""
+
+          IFS='.' read MA MI PA <<< "$BASE"
+
+          case "$LABEL" in
+            version:major)
+              [ -n "$PRE" ] && exit 1
+              NEXT="$((MA+1)).0.0"
+              ;;
+            version:minor)
+              [ -n "$PRE" ] && exit 1
+              NEXT="$MA.$((MI+1)).0"
+              ;;
+            version:patch)
+              [ -n "$PRE" ] && exit 1
+              NEXT="$MA.$MI.$((PA+1))"
+              ;;
+            version:alpha)
+              NEXT="$MA.$MI.$PA-alpha"
+              ;;
+            version:beta)
+              [ "$PRE" != "alpha" ] && exit 1
+              NEXT="$MA.$MI.$PA-beta"
+              ;;
+            version:rc)
+              [ "$PRE" != "beta" ] && exit 1
+              NEXT="$MA.$MI.$PA-rc"
+              ;;
+            *)
+              exit 1
+              ;;
+          esac
+
+          echo "value=$NEXT" >> $GITHUB_OUTPUT
+
+      - name: Update pom.xml
+        run: |
+          NEXT=${{ steps.next.outputs.value }}
+          xmlstarlet ed -L \
+            -u "/*[local-name()='project']/*[local-name()='version']" \
+            -v "$NEXT" pom.xml
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pom.xml
+          git commit -m "ci: bump version to $NEXT"
+          git push
+
+      - name: Tag release
+        run: |
+          NEXT=${{ steps.next.outputs.value }}
+          TAG="v$NEXT"
+
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "$TAG"
