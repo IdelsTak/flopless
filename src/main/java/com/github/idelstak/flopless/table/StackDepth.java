@@ -1,0 +1,10 @@
+package com.github.idelstak.flopless.table;
+
+public sealed interface StackDepth {
+
+    record Bb100() implements StackDepth {
+    }
+
+    record Bb200() implements StackDepth {
+    }
+}
