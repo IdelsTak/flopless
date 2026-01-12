@@ -7,13 +7,6 @@ import com.github.idelstak.flopless.table.*;
 
 public sealed interface Intend {
 
-    record CellPick(Cell cell) implements Intend {
-
-    }
-
-    record RangeClear() implements Intend {
-    }
-
     record PositionPick(Position position) implements Intend {
 
     }
@@ -30,7 +23,38 @@ public sealed interface Intend {
 
     }
 
-    record HoverCell(Cell cell) implements Intend {
+    record SelectCell(Coordinate coordinate) implements Intend {
+
+    }
+
+    record DeselectCell(Coordinate coordinate) implements Intend {
+
+    }
+
+    record SelectRange(Coordinate start, Coordinate end) implements Intend {
+
+    }
+
+    record DeselectRange(Coordinate start, Coordinate end) implements Intend {
+
+    }
+
+    record SelectAll() implements Intend {
+    }
+
+    record RangeClear() implements Intend {
+    }
+
+    record FlipSuited() implements Intend {
+    }
+
+    record FlipOffsuited() implements Intend {
+    }
+
+    record FlipPaired() implements Intend {
+    }
+
+    record HoverCell(Coordinate coordinate) implements Intend {
 
     }
 }
