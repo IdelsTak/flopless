@@ -1,27 +1,30 @@
 package com.github.idelstak.flopless.fx;
 
+import com.github.idelstak.flopless.view.*;
+import java.io.*;
 import javafx.application.*;
+import javafx.fxml.*;
 import javafx.scene.*;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
 import javafx.stage.*;
 
 public final class FloplessApp extends Application {
 
     @Override
-    public void start(Stage primaryStage) {
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(_ -> {
-            System.out.println("Hello World!");
+    public void start(Stage primaryStage) throws IOException {
+        var loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
+        loader.setControllerFactory(type -> {
+            if (type.equals(GridView.class)) {
+                return new GridView();
+            }
+            if (type.equals(SidebarView.class)) {
+                return new SidebarView();
+            }
+            return new MainView();
         });
+        var root = loader.<Parent>load();
+        var scene = new Scene(root);
 
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
-
-        Scene scene = new Scene(root, 300, 250);
-
-        primaryStage.setTitle("Hello World!");
+        primaryStage.setTitle("Flopless");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

@@ -9,13 +9,13 @@ final class GridTest {
     @Test
     void gridContains13Columns() {
         var grid = new Grid();
-        assertThat("grid does not have 13 rows", grid.columns().size(), is(13));
+        assertThat("grid does not have 13 rows", grid.cells().size(), is(13));
     }
 
     @Test
     void eachRowContains13Cells() {
         var grid = new Grid();
-        for (var row : grid.columns()) {
+        for (var row : grid.cells()) {
             assertThat("row does not have 13 cells", row.size(), is(13));
         }
     }

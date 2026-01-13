@@ -1,0 +1,38 @@
+.root {
+    -fx-bg-dark: #0c0d0e;
+    -fx-sidebar-bg: #111315;
+    -fx-grid-border: #232629;
+    -fx-cell-bg: #151719;
+    -fx-text-muted: #52525b;
+    -fx-text-active: #ffffff;
+    -fx-active-blue: #2563eb;
+    -fx-preview-add-blue: rgba(37, 99, 235, 0.45);
+    -fx-preview-remove-red: rgba(220, 38, 38, 0.4);
+    -fx-panel-bg: #151719;
+    -fx-background-color: -fx-bg-dark;
+    -fx-font-family: 'Geist';
+    -fx-font-smoothing-type: lcd;
+    -fx-accent-primary: #10b981;
+    -fx-accent-glow: rgba(16, 185, 129, 0.2);
+    -fx-preview-color: rgba(16, 185, 129, 0.45);
+    -fx-remove-preview: rgba(244, 63, 94, 0.4);
+    -fx-text-fill: white
+}
+.radio-button {
+    -fx-label-padding: 0;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER_RIGHT;
+}
+.radio {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0
+}
+.dot {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0
+}

@@ -48,7 +48,7 @@ public final class Grid {
         return builder.toString();
     }
 
-    List<List<Cell>> columns() {
+    public List<List<Cell>> cells() {
         return List.copyOf(cells);
     }
 

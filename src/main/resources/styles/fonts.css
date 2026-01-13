@@ -1,0 +1,24 @@
+@font-face {
+  font-family: "Geist";
+  font-weight: 400;
+  font-style: normal;
+  src: url('../fonts/geist/Geist-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: "Geist Bold";
+  font-weight: 700;
+  font-style: normal;
+  src: url('../fonts/geist/Geist-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  font-weight: 400;
+  font-style: normal;
+  src: url('../fonts/jetbrainsmono/JetBrainsMono-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: "JetBrains Mono Bold";
+  font-weight: 700;
+  font-style: normal;
+  src: url('../fonts/jetbrainsmono/JetBrainsMono-Bold.ttf') format('truetype');
+}
