@@ -1,0 +1,59 @@
+.root-pane {
+    -fx-background-color: -fx-grid-border;
+    -fx-background-radius: 0.5em;
+    -fx-border-color: -fx-grid-border;
+    -fx-border-width: 0.0625em;
+    -fx-border-radius: 0.5em;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 4);
+    -fx-pref-width: 720px;
+    -fx-pref-height: 720px
+}
+.poker-grid {
+    -fx-alignment: center;
+    -fx-background-color: -fx-grid-border;
+    -fx-hgap: 1px;
+    -fx-vgap: 1px;
+    -fx-background-radius: 0.5em;
+    -fx-padding: 0
+}
+.cell {
+    -fx-max-width: 'infinity';
+    -fx-max-height: 'infinity';
+    -fx-background-color: -fx-cell-bg;
+    -fx-background-radius: 0;
+    -fx-alignment: top-left;
+    -fx-padding: 0.25em 0.375em 0.25em 0.375em;
+    -fx-cursor: hand
+}
+.cell:hover {
+    -fx-effect: innershadow(gaussian, rgba(255, 255, 255, 0.15), 10, 0, 0, 0)
+}
+.cell.active {
+    -fx-background-color: -fx-active-blue
+}
+.cell.preview-add {
+    -fx-background-color: -fx-preview-add-blue
+}
+.cell.preview-remove {
+    -fx-background-color: -fx-preview-remove-red
+}
+.hand-label {
+    -fx-font-family: 'JetBrains Mono';
+    -fx-font-size: 0.8em;
+    -fx-text-fill: -fx-text-muted
+}
+.cell.active .hand-label, .cell.preview-add .hand-label {
+    -fx-text-fill: -fx-text-active
+}
+.selection-overlay {
+    -fx-cursor: hand
+}
+.selection-overlay.dragging {
+    -fx-cursor: crosshair
+}
+.selection-box {
+    -fx-stroke: #3b82f6;
+    -fx-stroke-width: 2px;
+    -fx-fill: rgba(59, 130, 246, 0.1);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0, 0, 4)
+}
