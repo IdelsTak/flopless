@@ -57,6 +57,18 @@ public record SelectedRange(Set<Coordinate> coordinates) {
         return new SelectedRange(allCoordinates);
     }
 
+    public SelectedRange union(SelectedRange previewRange) {
+        var modifiable = new HashSet<>(this.coordinates);
+        modifiable.addAll(previewRange.coordinates);
+        return new SelectedRange(modifiable);
+    }
+
+    public SelectedRange difference(SelectedRange previewRange) {
+        var modifiable = new HashSet<>(this.coordinates);
+        modifiable.removeAll(previewRange.coordinates);
+        return new SelectedRange(modifiable);
+    }
+
     public static SelectedRange none() {
         return new SelectedRange(Set.of());
     }

@@ -4,7 +4,7 @@ import com.github.idelstak.flopless.fx.*;
 
 public class Flopless {
 
-    public static void main(String[] args) {
-        FloplessApp.main(args);
+    void main() {
+        FloplessApp.main(new String[]{});
     }
 }
