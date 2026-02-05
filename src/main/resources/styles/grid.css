@@ -28,9 +28,19 @@
 .cell:hover {
     -fx-effect: innershadow(gaussian, rgba(255, 255, 255, 0.15), 10, 0, 0, 0)
 }
-.cell.active {
+.cell:active {
     -fx-background-color: -fx-active-blue
 }
+/* Style for cells being previewed for selection */
+.cell:preview-add {
+    -fx-background-color: rgba(76, 175, 80, 0.5); /* Semi-transparent Green */
+}
+
+/* Style for cells being previewed for removal */
+.cell:preview-remove {
+    -fx-background-color: rgba(244, 67, 54, 0.5); /* Semi-transparent Red */
+}
+
 .cell.preview-add {
     -fx-background-color: -fx-preview-add-blue
 }
@@ -42,7 +52,7 @@
     -fx-font-size: 0.8em;
     -fx-text-fill: -fx-text-muted
 }
-.cell.active .hand-label, .cell.preview-add .hand-label {
+.cell:active .hand-label, .cell.preview-add .hand-label {
     -fx-text-fill: -fx-text-active
 }
 .selection-overlay {

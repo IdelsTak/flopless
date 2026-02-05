@@ -1,0 +1,60 @@
+package com.github.idelstak.flopless.state.api;
+
+import com.github.idelstak.flopless.grid.*;
+import com.github.idelstak.flopless.player.*;
+import com.github.idelstak.flopless.table.*;
+
+public sealed interface Action {
+
+    non-sealed interface Effect extends Action {
+    }
+
+    sealed interface User extends Action {
+
+        record TableTypePick(TableType tableType) implements User {
+
+        }
+
+        record PositionPick(Position position) implements User {
+
+        }
+
+        record FacingPick(Facing facing) implements User {
+
+        }
+
+        record SelectCell(Coordinate coordinate) implements User {
+
+        }
+
+        record DeselectCell(Coordinate coordinate) implements User {
+
+        }
+
+        record SelectRange(Coordinate start, Coordinate end) implements User {
+
+        }
+
+        record DeselectRange(Coordinate start, Coordinate end) implements User {
+
+        }
+
+        record SelectAll() implements User {
+        }
+
+        record RangeClear() implements User {
+        }
+
+        record StartDrag(Coordinate coordinate) implements User {
+
+        }
+
+        record UpdatePreview(Coordinate coordinate) implements User {
+
+        }
+
+        record CommitRange() implements User {
+
+        }
+    }
+}

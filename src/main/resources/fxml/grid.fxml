@@ -42,9 +42,9 @@
             <ColumnConstraints hgrow="ALWAYS" />
             <ColumnConstraints hgrow="ALWAYS" />
          </columnConstraints></GridPane>
-      <Pane fx:id="interactionLayer" mouseTransparent="true" styleClass="selection-overlay">
+      <Pane fx:id="interactionLayer" styleClass="selection-overlay">
          <children>
-            <Rectangle fx:id="selectionBox" managed="false" styleClass="selection-box" visible="false" />
+            <Rectangle fx:id="selectionBox" managed="false" styleClass="selection-box" />
          </children>
       </Pane>
    </children>

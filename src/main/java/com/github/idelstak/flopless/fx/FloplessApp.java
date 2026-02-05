@@ -1,5 +1,6 @@
 package com.github.idelstak.flopless.fx;
 
+import com.github.idelstak.flopless.state.*;
 import com.github.idelstak.flopless.view.*;
 import java.io.*;
 import javafx.application.*;
@@ -14,7 +15,7 @@ public final class FloplessApp extends Application {
         var loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
         loader.setControllerFactory(type -> {
             if (type.equals(GridView.class)) {
-                return new GridView();
+                return new GridView(primaryStage, new FloplessLoop(new ReducedState()));
             }
             if (type.equals(SidebarView.class)) {
                 return new SidebarView();
