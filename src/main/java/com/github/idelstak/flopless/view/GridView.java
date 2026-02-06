@@ -3,25 +3,30 @@ package com.github.idelstak.flopless.view;
 import com.github.idelstak.flopless.grid.*;
 import com.github.idelstak.flopless.state.*;
 import com.github.idelstak.flopless.state.api.*;
-import io.reactivex.rxjava3.observers.*;
-import java.net.*;
-import java.util.*;
-import javafx.fxml.*;
-import javafx.scene.input.*;
-import javafx.scene.layout.*;
-import javafx.scene.shape.*;
-import javafx.stage.*;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import java.net.URL;
+import java.util.ResourceBundle;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 
 public final class GridView implements Initializable {
 
     private final Stage stage;
     private final FloplessLoop loop;
     private final Grid grid;
+    private DisposableObserver<FloplessState> observe;
+    private boolean marqueeActive;
+    private double dragStartX;
+    private double dragStartY;
     @FXML
     private GridPane handGrid;
     @FXML
     private Pane interactionLayer;
-    private DisposableObserver<FloplessState> observe;
     @FXML
     private Rectangle selectionBox;
 
@@ -50,29 +55,59 @@ public final class GridView implements Initializable {
     }
 
     private void initInteractionLayer() {
+        selectionBox.setVisible(false);
+
         interactionLayer.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
-            loop.accept(new Action.User.StartDrag(coordinateFrom(event.getX(), event.getY())));
+            dragStartX = event.getX();
+            dragStartY = event.getY();
+            marqueeActive = true;
+            interactionLayer.getStyleClass().addAll("dragging", "long-press");
+            selectionBox.setVisible(true);
+            selectionBox.setX(dragStartX);
+            selectionBox.setY(dragStartY);
+            selectionBox.setWidth(0);
+            selectionBox.setHeight(0);
+            loop.accept(new Action.User.StartDrag(coordinateFrom(dragStartX, dragStartY)));
         });
 
         interactionLayer.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
-            loop.accept(new Action.User.UpdatePreview(coordinateFrom(event.getX(), event.getY())));
+            if (!marqueeActive) {
+                return;
+            }
+
+            event.consume();
+
+            double x = event.getX();
+            double y = event.getY();
+
+            selectionBox.setX(Math.min(dragStartX, x));
+            selectionBox.setY(Math.min(dragStartY, y));
+            selectionBox.setWidth(Math.abs(dragStartX - x));
+            selectionBox.setHeight(Math.abs(dragStartY - y));
+
+            loop.accept(new Action.User.UpdatePreview(coordinateFrom(x, y)));
         });
 
         interactionLayer.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
-            loop.accept(new Action.User.CommitRange());
+            if (marqueeActive) {
+                event.consume();
+                interactionLayer.getStyleClass().removeAll("dragging", "long-press");
+                loop.accept(new Action.User.UpdatePreview(coordinateFrom(event.getX(), event.getY())));
+                loop.accept(new Action.User.CommitRange());
+                selectionBox.setVisible(false);
+            }
+
+            marqueeActive = false;
         });
+
     }
 
     private Coordinate coordinateFrom(double x, double y) {
         double cellWidth = handGrid.getWidth() / 13;
         double cellHeight = handGrid.getHeight() / 13;
 
-        int column = (int) (x / cellWidth);
-        int row = (int) (y / cellHeight);
-
-        // Clamp values between 0 and 12
-        column = Math.max(0, Math.min(12, column));
-        row = Math.max(0, Math.min(12, row));
+        int column = Math.max(0, Math.min(12, (int) (x / cellWidth)));
+        int row = Math.max(0, Math.min(12, (int) (y / cellHeight)));
 
         return new Coordinate(column, row);
     }
@@ -81,7 +116,6 @@ public final class GridView implements Initializable {
         observe = new DisposableObserver<>() {
             @Override
             public void onNext(FloplessState state) {
-                // The GridView itself doesn't need to render, the cells do.
             }
 
             @Override
@@ -91,7 +125,6 @@ public final class GridView implements Initializable {
 
             @Override
             public void onComplete() {
-                // Not supported
             }
         };
         loop.subscribe(observe);

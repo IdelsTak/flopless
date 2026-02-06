@@ -23,47 +23,43 @@
     -fx-background-radius: 0;
     -fx-alignment: top-left;
     -fx-padding: 0.25em 0.375em 0.25em 0.375em;
-    -fx-cursor: hand
+    -fx-cursor: hand;
+    -fx-transition: background-color 0.15s ease
 }
 .cell:hover {
     -fx-effect: innershadow(gaussian, rgba(255, 255, 255, 0.15), 10, 0, 0, 0)
 }
-.cell:active {
+.cell.active {
     -fx-background-color: -fx-active-blue
 }
-/* Style for cells being previewed for selection */
-.cell:preview-add {
-    -fx-background-color: rgba(76, 175, 80, 0.5); /* Semi-transparent Green */
-}
-
-/* Style for cells being previewed for removal */
-.cell:preview-remove {
-    -fx-background-color: rgba(244, 67, 54, 0.5); /* Semi-transparent Red */
-}
-
 .cell.preview-add {
-    -fx-background-color: -fx-preview-add-blue
+    -fx-background-color: rgba(76, 175, 80, 0.5)
 }
 .cell.preview-remove {
-    -fx-background-color: -fx-preview-remove-red
+    -fx-background-color: rgba(244, 67, 54, 0.5)
 }
 .hand-label {
     -fx-font-family: 'JetBrains Mono';
     -fx-font-size: 0.8em;
     -fx-text-fill: -fx-text-muted
 }
-.cell:active .hand-label, .cell.preview-add .hand-label {
+.cell.active .hand-label, .cell.preview-add .hand-label, .cell.preview-remove .hand-label {
     -fx-text-fill: -fx-text-active
 }
 .selection-overlay {
-    -fx-cursor: hand
+    -fx-cursor: hand;
+    -fx-background-color: transparent
 }
 .selection-overlay.dragging {
     -fx-cursor: crosshair
 }
+.selection-overlay.long-press {
+    -fx-background-color: rgba(0, 0, 0, 0.05)
+}
 .selection-box {
     -fx-stroke: #3b82f6;
     -fx-stroke-width: 2px;
-    -fx-fill: rgba(59, 130, 246, 0.1);
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0, 0, 4)
+    -fx-fill: rgba(59, 130, 246, 0.15);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0, 0, 4);
+    -fx-transition: all 0.1s ease
 }

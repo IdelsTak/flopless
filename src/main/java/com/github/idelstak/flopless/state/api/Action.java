@@ -23,25 +23,6 @@ public sealed interface Action {
 
         }
 
-        record SelectCell(Coordinate coordinate) implements User {
-
-        }
-
-        record DeselectCell(Coordinate coordinate) implements User {
-
-        }
-
-        record SelectRange(Coordinate start, Coordinate end) implements User {
-
-        }
-
-        record DeselectRange(Coordinate start, Coordinate end) implements User {
-
-        }
-
-        record SelectAll() implements User {
-        }
-
         record RangeClear() implements User {
         }
 
@@ -54,7 +35,6 @@ public sealed interface Action {
         }
 
         record CommitRange() implements User {
-
         }
     }
 }

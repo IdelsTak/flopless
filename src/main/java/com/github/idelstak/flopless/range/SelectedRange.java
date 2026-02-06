@@ -57,15 +57,21 @@ public record SelectedRange(Set<Coordinate> coordinates) {
         return new SelectedRange(allCoordinates);
     }
 
-    public SelectedRange union(SelectedRange previewRange) {
-        var modifiable = new HashSet<>(this.coordinates);
-        modifiable.addAll(previewRange.coordinates);
+    public SelectedRange intersect(SelectedRange other) {
+        var modifiable = new HashSet<>(coordinates);
+        modifiable.retainAll(other.coordinates);
         return new SelectedRange(modifiable);
     }
 
-    public SelectedRange difference(SelectedRange previewRange) {
-        var modifiable = new HashSet<>(this.coordinates);
-        modifiable.removeAll(previewRange.coordinates);
+    public SelectedRange union(SelectedRange other) {
+        var modifiable = new HashSet<>(coordinates);
+        modifiable.addAll(other.coordinates);
+        return new SelectedRange(modifiable);
+    }
+
+    public SelectedRange difference(SelectedRange other) {
+        var modifiable = new HashSet<>(coordinates);
+        modifiable.removeAll(other.coordinates);
         return new SelectedRange(modifiable);
     }
 

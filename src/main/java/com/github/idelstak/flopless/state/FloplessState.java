@@ -5,6 +5,7 @@ import com.github.idelstak.flopless.player.*;
 import com.github.idelstak.flopless.range.*;
 import com.github.idelstak.flopless.state.api.*;
 import com.github.idelstak.flopless.table.*;
+import java.util.*;
 
 public record FloplessState(
         TableType tableType,
@@ -12,7 +13,7 @@ public record FloplessState(
         Facing facing,
         SelectedRange selectedRange,
         SelectMode selectMode,
-        Coordinate startCoordinate,
+        Optional<Coordinate> startCoordinate,
         SelectedRange previewRange) implements State {
 
     public FloplessState forTable(TableType tableType) {
@@ -35,11 +36,11 @@ public record FloplessState(
         return new FloplessState(tableType, position, facing, selectedRange, mode, startCoordinate, previewRange);
     }
 
-    public FloplessState withStartCoordinate(Coordinate coordinate) {
-        return new FloplessState(tableType, position, facing, selectedRange, selectMode, coordinate, previewRange);
+    public FloplessState beginDrag(Optional<Coordinate> maybeCoordinate) {
+        return new FloplessState(tableType, position, facing, selectedRange, selectMode, maybeCoordinate, previewRange);
     }
 
-    public FloplessState withPreviewRange(SelectedRange range) {
+    public FloplessState showPreview(SelectedRange range) {
         return new FloplessState(tableType, position, facing, selectedRange, selectMode, startCoordinate, range);
     }
 
@@ -50,7 +51,7 @@ public record FloplessState(
                 new Facing.Open(),
                 SelectedRange.none(),
                 new SelectMode.Idle(),
-                new Coordinate(0, 0),
+                Optional.empty(),
                 SelectedRange.none()
         );
     }
