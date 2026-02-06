@@ -69,7 +69,6 @@ public final class GridView implements Initializable {
             selectionBox.setHeight(0);
             loop.accept(new Action.User.StartDrag(coordinateFrom(dragStartX, dragStartY)));
         });
-
         interactionLayer.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
             if (!marqueeActive) {
                 return;
@@ -77,29 +76,53 @@ public final class GridView implements Initializable {
 
             event.consume();
 
-            double x = event.getX();
-            double y = event.getY();
+            Coordinate startCell = coordinateFrom(dragStartX, dragStartY);
+            Coordinate currentCell = coordinateFrom(event.getX(), event.getY());
 
-            selectionBox.setX(Math.min(dragStartX, x));
-            selectionBox.setY(Math.min(dragStartY, y));
-            selectionBox.setWidth(Math.abs(dragStartX - x));
-            selectionBox.setHeight(Math.abs(dragStartY - y));
+            int minCol = Math.min(startCell.column(), currentCell.column());
+            int maxCol = Math.max(startCell.column(), currentCell.column());
+            int minRow = Math.min(startCell.row(), currentCell.row());
+            int maxRow = Math.max(startCell.row(), currentCell.row());
 
-            loop.accept(new Action.User.UpdatePreview(coordinateFrom(x, y)));
+            double cellWidth = handGrid.getWidth() / 13;
+            double cellHeight = handGrid.getHeight() / 13;
+
+            selectionBox.setX(minCol * cellWidth);
+            selectionBox.setY(minRow * cellHeight);
+            selectionBox.setWidth((maxCol - minCol + 1) * cellWidth);
+            selectionBox.setHeight((maxRow - minRow + 1) * cellHeight);
+
+            loop.accept(new Action.User.UpdatePreview(currentCell));
         });
-
         interactionLayer.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
             if (marqueeActive) {
                 event.consume();
                 interactionLayer.getStyleClass().remove("dragging");
-                loop.accept(new Action.User.UpdatePreview(coordinateFrom(event.getX(), event.getY())));
+
+                Coordinate startCell = coordinateFrom(dragStartX, dragStartY);
+                Coordinate endCell = coordinateFrom(event.getX(), event.getY());
+
+                int minCol = Math.min(startCell.column(), endCell.column());
+                int maxCol = Math.max(startCell.column(), endCell.column());
+                int minRow = Math.min(startCell.row(), endCell.row());
+                int maxRow = Math.max(startCell.row(), endCell.row());
+
+                double cellWidth = handGrid.getWidth() / 13;
+                double cellHeight = handGrid.getHeight() / 13;
+
+                selectionBox.setX(minCol * cellWidth);
+                selectionBox.setY(minRow * cellHeight);
+                selectionBox.setWidth((maxCol - minCol + 1) * cellWidth);
+                selectionBox.setHeight((maxRow - minRow + 1) * cellHeight);
+
+                loop.accept(new Action.User.UpdatePreview(endCell));
                 loop.accept(new Action.User.CommitRange());
+
                 selectionBox.setVisible(false);
             }
 
             marqueeActive = false;
         });
-
     }
 
     private Coordinate coordinateFrom(double x, double y) {

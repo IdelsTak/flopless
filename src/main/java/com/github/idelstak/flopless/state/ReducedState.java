@@ -25,6 +25,8 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
                 updatePreview(state, a);
             case Action.User.CommitRange _ ->
                 commitRange(state);
+            case Action.User.SelectGridAction a ->
+                selectAction(state, a);
             case Action.User.Effect _ ->
                 state;
         };
@@ -65,7 +67,8 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
         int maxX = Math.min(12, Math.max(start.column(), end.column()));
         int minY = Math.max(0, Math.min(start.row(), end.row()));
         int maxY = Math.min(12, Math.max(start.row(), end.row()));
-        var preview = SelectedRange.none().addRange(new Coordinate(minX, minY), new Coordinate(maxX, maxY));
+        var selectedAction = state.selectedAction();
+        var preview = SelectedRange.none().addRange(new Coordinate(minX, minY), new Coordinate(maxX, maxY), selectedAction);
         return state.showPreview(preview);
     }
 
@@ -75,16 +78,22 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
         }
         var committed = SelectedRange.none();
         for (var c : state.selectedRange().coordinates()) {
-            committed = committed.add(c);
+            var actionAtCell = state.selectedRange().actionAt(c);
+            committed = committed.add(c, actionAtCell);
         }
         for (var c : state.previewRange().coordinates()) {
-            boolean selected = state.selectedRange().coordinates().contains(c);
-            committed = selected ? committed.remove(c) : committed.add(c);
+            var selected = state.selectedRange().coordinates().contains(c);
+            var actionToApply = selected ? state.selectedRange().actionAt(c) : state.selectedAction();
+            committed = selected ? committed.remove(c) : committed.add(c, actionToApply);
         }
         return state
           .selectRange(committed)
           .showPreview(SelectedRange.none())
           .beginDrag(Optional.empty())
           .selectMode(new SelectMode.Idle());
+    }
+
+    private FloplessState selectAction(FloplessState state, Action.User.SelectGridAction select) {
+        return state.selectAction(select.action());
     }
 }

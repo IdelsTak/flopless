@@ -94,19 +94,15 @@
 }
 .btn-fold {
     -fx-background-color: -fx-action-fold;
-    -fx-text-fill: #0f172a
 }
 .btn-check {
     -fx-background-color: -fx-action-check;
-    -fx-text-fill: #0f172a
 }
 .btn-call {
     -fx-background-color: -fx-action-call;
-    -fx-text-fill: #0f172a
 }
 .btn-raise {
     -fx-background-color: -fx-action-raise;
-    -fx-text-fill: #0f172a
 }
 .btn-allin {
     -fx-background-color: -fx-action-allin;

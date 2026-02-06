@@ -28,8 +28,13 @@ public final class FloplessLoop implements Source<FloplessState>, Sink<Action> {
         switch (action) {
             case Action.User userAction ->
                 actions.onNext(userAction);
-            default ->
-                throw new IllegalStateException("Unexpected value: " + action);
+            case Action.Effect sideEffect -> {
+                switch (sideEffect) {
+                    case Action.Effect.GridActionSelected selected -> {
+                        actions.onNext(new Action.User.SelectGridAction(selected.action()));
+                    }
+                }
+            }
         }
     }
 }

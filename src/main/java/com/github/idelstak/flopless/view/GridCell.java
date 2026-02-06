@@ -17,6 +17,7 @@ public final class GridCell extends StackPane {
     private final Coordinate coordinate;
     private DisposableObserver<FloplessState> observe;
     private boolean isSelected;
+    private Label handLabel;
 
     GridCell(Stage stage, FloplessLoop loop, String notation, Coordinate coordinate) {
         this.stage = stage;
@@ -49,7 +50,6 @@ public final class GridCell extends StackPane {
         handLabel.getStyleClass().add("hand-label");
         getChildren().add(handLabel);
     }
-    private Label handLabel;
 
     private void setupSubscription() {
         observe = new DisposableObserver<>() {
@@ -77,7 +77,8 @@ public final class GridCell extends StackPane {
         setBackground(Background.fill(Color.web("#151719")));
         handLabel.setTextFill(Color.web("#52525b"));
         if (isSelected) {
-            setBackground(Background.fill(state.selectedAction().color()));
+            var gridAction = state.selectedRange().actionAt(coordinate);
+            setBackground(Background.fill(gridAction.color()));
             handLabel.setTextFill(Color.WHITE);
         }
         var isPreviewed = state.previewRange().coordinates().contains(coordinate);

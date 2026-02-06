@@ -25,7 +25,7 @@ public final class Grid {
         for (var row : ranks) {
             var rowCells = new ArrayList<Cell>();
             for (var col : ranks) {
-                rowCells.add(new Cell(build(row, col, suits), new GridAction.Fold()));
+                rowCells.add(new Cell(build(row, col, suits)));
             }
             grid.add(List.copyOf(rowCells));
         }

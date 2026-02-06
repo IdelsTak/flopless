@@ -13,7 +13,7 @@ public sealed interface GridAction {
 
         @Override
         public Color color() {
-            return Color.web("#ff8c00");
+            return Color.web("#CC6600");
         }
     }
 
@@ -26,7 +26,7 @@ public sealed interface GridAction {
 
         @Override
         public Color color() {
-            return Color.web("#ffd700");
+            return Color.web("#B8860B");
         }
     }
 
@@ -39,7 +39,7 @@ public sealed interface GridAction {
 
         @Override
         public Color color() {
-            return Color.web("#00bfff");
+            return Color.web("#0073B3");
         }
     }
 
@@ -52,7 +52,7 @@ public sealed interface GridAction {
 
         @Override
         public Color color() {
-            return Color.web("#9400d3");
+            return Color.web("#6A0DAD");
         }
     }
 
@@ -65,7 +65,7 @@ public sealed interface GridAction {
 
         @Override
         public Color color() {
-            return Color.web("#9e9e9e");
+            return Color.web("#616161");
         }
     }
 }

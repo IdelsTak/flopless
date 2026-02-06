@@ -19,32 +19,36 @@ public record FloplessState(
   SelectedRange previewRange,
   GridAction selectedAction) implements State {
 
-    public FloplessState forTable(TableType tableType) {
+    FloplessState forTable(TableType tableType) {
         return new FloplessState(tableType, position, facing, selectedRange, selectMode, startCoordinate, previewRange, selectedAction);
     }
 
-    public FloplessState forPosition(Position position) {
+    FloplessState forPosition(Position position) {
         return new FloplessState(tableType, position, facing, selectedRange, selectMode, startCoordinate, previewRange, selectedAction);
     }
 
-    public FloplessState face(Facing facing) {
+    FloplessState face(Facing facing) {
         return new FloplessState(tableType, position, facing, selectedRange, selectMode, startCoordinate, previewRange, selectedAction);
     }
 
-    public FloplessState selectRange(SelectedRange range) {
+    FloplessState selectRange(SelectedRange range) {
         return new FloplessState(tableType, position, facing, range, selectMode, startCoordinate, previewRange, selectedAction);
     }
 
-    public FloplessState selectMode(SelectMode mode) {
+    FloplessState selectMode(SelectMode mode) {
         return new FloplessState(tableType, position, facing, selectedRange, mode, startCoordinate, previewRange, selectedAction);
     }
 
-    public FloplessState beginDrag(Optional<Coordinate> maybeCoordinate) {
+    FloplessState beginDrag(Optional<Coordinate> maybeCoordinate) {
         return new FloplessState(tableType, position, facing, selectedRange, selectMode, maybeCoordinate, previewRange, selectedAction);
     }
 
-    public FloplessState showPreview(SelectedRange range) {
+    FloplessState showPreview(SelectedRange range) {
         return new FloplessState(tableType, position, facing, selectedRange, selectMode, startCoordinate, range, selectedAction);
+    }
+
+    FloplessState selectAction(GridAction action) {
+        return new FloplessState(tableType, position, facing, selectedRange, selectMode, startCoordinate, previewRange, action);
     }
 
     public static FloplessState initial() {

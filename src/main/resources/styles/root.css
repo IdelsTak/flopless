@@ -17,11 +17,11 @@
     -fx-preview-color: rgba(16, 185, 129, 0.45);
     -fx-remove-preview: rgba(244, 63, 94, 0.4);
     -fx-text-fill: white;
-    -fx-action-fold: #9E9E9E;
-    -fx-action-check: #FFD700;
-    -fx-action-call: #00BFFF;
-    -fx-action-raise: #FF8C00;
-    -fx-action-allin: #9400D3;
+    -fx-action-fold: #616161;
+    -fx-action-check: #B8860B;
+    -fx-action-call: #0073B3;
+    -fx-action-raise: #CC6600;
+    -fx-action-allin: #6A0DAD;
     -fx-card-bg: #1e2227;
 }
 .radio-button {

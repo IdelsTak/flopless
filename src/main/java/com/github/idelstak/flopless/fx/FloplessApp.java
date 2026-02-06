@@ -13,18 +13,22 @@ public final class FloplessApp extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         var loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
+        var loop = new FloplessLoop(new ReducedState());
         loader.setControllerFactory(type -> {
+            System.out.println("[FLOPLESS APP] type = " + type.getSimpleName());
             if (type.equals(GridView.class)) {
-                return new GridView(primaryStage, new FloplessLoop(new ReducedState()));
+                return new GridView(primaryStage, loop);
             }
             if (type.equals(SidebarView.class)) {
                 return new SidebarView();
+            }
+            if (type.equals(ActionSidebarView.class)) {
+                return new ActionSidebarView(primaryStage, loop);
             }
             return new MainView();
         });
         var root = loader.<Parent>load();
         var scene = new Scene(root);
-
         primaryStage.setTitle("Flopless");
         primaryStage.setScene(scene);
         primaryStage.show();

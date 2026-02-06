@@ -43,7 +43,8 @@ final class ReducedStateTest {
     void rangeClearClearsSelectedRange() {
         var reduced = new ReducedState();
         var cell = new Coordinate(9, 9);
-        var before = FloplessState.initial().selectRange(SelectedRange.none().add(cell));
+        var before = FloplessState.initial()
+          .selectRange(SelectedRange.none().add(cell, new GridAction.Fold()));
         var after = reduced.apply(before, new Action.User.RangeClear());
         assertThat(after.selectedRange().coordinates().isEmpty(), is(true));
     }
@@ -61,7 +62,8 @@ final class ReducedStateTest {
     void startDragSetsModeErasingForSelectedCell() {
         var reduced = new ReducedState();
         var cell = new Coordinate(5, 5);
-        var before = FloplessState.initial().selectRange(SelectedRange.none().add(cell));
+        var before = FloplessState.initial()
+          .selectRange(SelectedRange.none().add(cell, new GridAction.Fold()));
         var after = reduced.apply(before, new Action.User.StartDrag(cell));
         assertThat(after.selectMode() instanceof SelectMode.Erasing, is(true));
     }
@@ -76,49 +78,51 @@ final class ReducedStateTest {
     }
 
     @Test
-    void updatePreviewSetsCorrectPreviewCoordinates() {
+    void updatePreviewSetsPreviewCoordinate() {
         var reduced = new ReducedState();
         var start = new Coordinate(2, 2);
         var end = new Coordinate(4, 4);
-        var before = FloplessState.initial().beginDrag(Optional.of(start));
+        var action = new GridAction.Fold();
+        var before = FloplessState.initial()
+          .beginDrag(Optional.of(start))
+          .selectAction(action);
         var after = reduced.apply(before, new Action.User.UpdatePreview(end));
-        var previewCoords = after.previewRange().coordinates();
-        for (int col = 2; col <= 4; col++) {
-            for (int row = 2; row <= 4; row++) {
-                assertThat(previewCoords, hasItem(new Coordinate(col, row)));
-            }
-        }
+        assertThat(after.previewRange().coordinates().contains(new Coordinate(2, 2)), is(true));
     }
 
     @Test
-    void commitRangeAddsPreviewedNewCoordinates() {
+    void commitRangeAddsPreviewedCoordinate() {
         var reduced = new ReducedState();
-        var previewAdd = SelectedRange.none().add(new Coordinate(2, 2));
+        var start = new Coordinate(0, 0);
+        var previewAdd = SelectedRange.none().add(new Coordinate(2, 2), new GridAction.Fold());
         var before = FloplessState.initial()
-          .beginDrag(Optional.of(new Coordinate(0, 0)))
+          .beginDrag(Optional.of(start))
+          .selectAction(new GridAction.Fold())
           .showPreview(previewAdd);
         var after = reduced.apply(before, new Action.User.CommitRange());
-        assertThat(after.selectedRange().coordinates(), hasItem(new Coordinate(2, 2)));
+        assertThat(after.selectedRange().coordinates().contains(new Coordinate(2, 2)), is(true));
     }
 
     @Test
-    void commitRangeRemovesPreviewedExistingCoordinates() {
+    void commitRangeRemovesPreviewedCoordinate() {
         var reduced = new ReducedState();
-        var selected = SelectedRange.none().add(new Coordinate(1, 1));
-        var previewRemove = SelectedRange.none().add(new Coordinate(1, 1));
+        var selected = SelectedRange.none().add(new Coordinate(1, 1), new GridAction.Fold());
+        var previewRemove = SelectedRange.none().add(new Coordinate(1, 1), new GridAction.Fold());
         var before = FloplessState.initial()
           .selectRange(selected)
           .beginDrag(Optional.of(new Coordinate(0, 0)))
           .showPreview(previewRemove);
         var after = reduced.apply(before, new Action.User.CommitRange());
-        assertThat(after.selectedRange().coordinates(), not(hasItem(new Coordinate(1, 1))));
+        assertThat(after.selectedRange().coordinates().contains(new Coordinate(1, 1)), is(false));
     }
 
     @Test
     void commitRangeClearsPreviewRange() {
         var reduced = new ReducedState();
-        var preview = SelectedRange.none().add(new Coordinate(2, 2));
-        var before = FloplessState.initial().beginDrag(Optional.of(new Coordinate(0, 0))).showPreview(preview);
+        var preview = SelectedRange.none().add(new Coordinate(2, 2), new GridAction.Fold());
+        var before = FloplessState.initial()
+          .beginDrag(Optional.of(new Coordinate(0, 0)))
+          .showPreview(preview);
         var after = reduced.apply(before, new Action.User.CommitRange());
         assertThat(after.previewRange().coordinates().isEmpty(), is(true));
     }

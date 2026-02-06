@@ -1,13 +1,16 @@
 package com.github.idelstak.flopless.state.api;
 
-import com.github.idelstak.flopless.poker.player.Position;
-import com.github.idelstak.flopless.poker.player.Facing;
-import com.github.idelstak.flopless.poker.table.TableType;
 import com.github.idelstak.flopless.grid.*;
+import com.github.idelstak.flopless.poker.player.*;
+import com.github.idelstak.flopless.poker.table.*;
 
 public sealed interface Action {
 
-    non-sealed interface Effect extends Action {
+    sealed interface Effect extends Action {
+
+        record GridActionSelected(GridAction action) implements Effect {
+
+        }
     }
 
     sealed interface User extends Action {
@@ -36,6 +39,10 @@ public sealed interface Action {
         }
 
         record CommitRange() implements User {
+        }
+
+        record SelectGridAction(GridAction action) implements User {
+
         }
     }
 }
