@@ -1,10 +1,10 @@
 package com.github.idelstak.flopless.state;
 
-import com.github.idelstak.flopless.grid.Coordinate;
-import com.github.idelstak.flopless.range.SelectMode;
-import com.github.idelstak.flopless.range.SelectedRange;
-import com.github.idelstak.flopless.state.api.Action;
-import com.github.idelstak.flopless.state.spi.Reduced;
+import com.github.idelstak.flopless.grid.*;
+import com.github.idelstak.flopless.range.*;
+import com.github.idelstak.flopless.state.api.*;
+import com.github.idelstak.flopless.state.spi.*;
+import java.util.*;
 
 public final class ReducedState implements Reduced<FloplessState, Action, FloplessState> {
 
@@ -17,16 +17,6 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
                 pickPosition(state, a);
             case Action.User.FacingPick a ->
                 pickFacing(state, a);
-            case Action.User.SelectCell a ->
-                selectCell(state, a);
-            case Action.User.DeselectCell a ->
-                deselectCell(state, a);
-            case Action.User.SelectRange a ->
-                selectRange(state, a);
-            case Action.User.DeselectRange a ->
-                deselectRange(state, a);
-            case Action.User.SelectAll _ ->
-                selectAll(state);
             case Action.User.RangeClear _ ->
                 clearRange(state);
             case Action.User.StartDrag a ->
@@ -52,37 +42,6 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
         return state.face(action.facing());
     }
 
-    private FloplessState selectCell(FloplessState state, Action.User.SelectCell action) {
-        state.selectMode();
-        return state
-          .selectMode(new SelectMode.Selecting())
-          .selectRange(state.selectedRange().add(action.coordinate()));
-    }
-
-    private FloplessState deselectCell(FloplessState state, Action.User.DeselectCell action) {
-        return state
-          .selectMode(new SelectMode.Erasing())
-          .selectRange(state.selectedRange().remove(action.coordinate()));
-    }
-
-    private FloplessState selectRange(FloplessState state, Action.User.SelectRange action) {
-        return state
-          .selectMode(new SelectMode.Selecting())
-          .selectRange(state.selectedRange().addRange(action.start(), action.end()));
-    }
-
-    private FloplessState deselectRange(FloplessState state, Action.User.DeselectRange action) {
-        return state
-          .selectMode(new SelectMode.Erasing())
-          .selectRange(state.selectedRange().removeRange(action.start(), action.end()));
-    }
-
-    private FloplessState selectAll(FloplessState state) {
-        return state
-          .selectMode(new SelectMode.Selecting())
-          .selectRange(state.selectedRange().all());
-    }
-
     private FloplessState clearRange(FloplessState state) {
         return state
           .selectMode(new SelectMode.Erasing())
@@ -90,83 +49,42 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
     }
 
     private FloplessState startDrag(FloplessState state, Action.User.StartDrag action) {
-        boolean isSelected = state.selectedRange().coordinates().contains(action.coordinate());
-        SelectMode mode = isSelected ? new SelectMode.Erasing() : new SelectMode.Selecting();
-        return state.selectMode(mode).withStartCoordinate(action.coordinate());
+        var isSelected = state.selectedRange().coordinates().contains(action.coordinate());
+        var mode = isSelected ? new SelectMode.Erasing() : new SelectMode.Selecting();
+        return state
+          .selectMode(mode)
+          .beginDrag(Optional.of(action.coordinate()))
+          .showPreview(SelectedRange.none());
     }
 
     private FloplessState updatePreview(FloplessState state, Action.User.UpdatePreview action) {
-        Coordinate start = state.startCoordinate();
-        Coordinate end = action.coordinate();
-
-        int startX = start.column();
-        int startY = start.row();
-        int endX = end.column();
-        int endY = end.row();
-
-        int minX = Math.max(0, Math.min(startX, endX));
-        int maxX = Math.min(12, Math.max(startX, endX));
-        int minY = Math.max(0, Math.min(startY, endY));
-        int maxY = Math.min(12, Math.max(startY, endY));
-
-        SelectedRange previewRange = SelectedRange.none().addRange(new Coordinate(minX, minY), new Coordinate(maxX, maxY));
-        return state.withPreviewRange(previewRange);
+        var start = state.startCoordinate()
+          .orElseThrow(() -> new IllegalStateException("Preview update without drag start"));
+        var end = action.coordinate();
+        int minX = Math.max(0, Math.min(start.column(), end.column()));
+        int maxX = Math.min(12, Math.max(start.column(), end.column()));
+        int minY = Math.max(0, Math.min(start.row(), end.row()));
+        int maxY = Math.min(12, Math.max(start.row(), end.row()));
+        var preview = SelectedRange.none().addRange(new Coordinate(minX, minY), new Coordinate(maxX, maxY));
+        return state.showPreview(preview);
     }
 
     private FloplessState commitRange(FloplessState state) {
-        SelectedRange newRange = switch (state.selectMode()) {
-            case SelectMode.Selecting _ ->
-                state.selectedRange().union(state.previewRange());
-            case SelectMode.Erasing _ ->
-                state.selectedRange().difference(state.previewRange());
-            default ->
-                state.selectedRange();
-        };
-
+        if (state.startCoordinate().isEmpty()) {
+            return state.selectMode(new SelectMode.Idle());
+        }
+        var committed = SelectedRange.none();
+        for (var c : state.selectedRange().coordinates()) {
+            committed = committed.add(c);
+        }
+        for (var c : state.previewRange().coordinates()) {
+            boolean selected = state.selectedRange().coordinates().contains(c);
+            committed = selected ? committed.remove(c) : committed.add(c);
+        }
         return state
-          .selectRange(newRange)
-          .withPreviewRange(SelectedRange.none())
+          .selectRange(committed)
+          .showPreview(SelectedRange.none())
+          .beginDrag(Optional.empty())
           .selectMode(new SelectMode.Idle());
     }
-//    private FloplessState startDrag(FloplessState state, Action.User.StartDrag action) {
-//        boolean isSelected = state.selectedRange().coordinates().contains(action.coordinate());
-//        SelectMode mode = isSelected ? new SelectMode.Erasing() : new SelectMode.Selecting();
-//        return state.selectMode(mode).withStartCoordinate(action.coordinate());
-//    }
-//
-//    private FloplessState updatePreview(FloplessState state, Action.User.UpdatePreview action) {
-//        Coordinate start = state.startCoordinate();
-//        Coordinate end = action.coordinate();
-//
-//        int startX = Math.max(0, Math.min(12, start.column()));
-//        int startY = Math.max(0, Math.min(12, start.row()));
-//        int endX = Math.max(0, Math.min(12, end.column()));
-//        int endY = Math.max(0, Math.min(12, end.row()));
-//
-//        SelectedRange previewRange = SelectedRange.none().addRange(new Coordinate(startX, startY), new Coordinate(endX, endY));
-//        return state.withPreviewRange(previewRange);
-//    }
-//
-//    private FloplessState commitRange(FloplessState state) {
-//        SelectedRange newRange = switch (state.selectMode()) {
-//            case SelectMode.Selecting _ ->
-//                state.selectedRange().addRange(
-//                        state.startCoordinate(),
-//                        state.previewRange().coordinates().stream().reduce((first, last) -> last).orElse(state.startCoordinate())
-//                );
-//            case SelectMode.Erasing _ ->
-//                state.selectedRange().removeRange(
-//                        state.startCoordinate(),
-//                        state.previewRange().coordinates().stream().reduce((first, last) -> last).orElse(state.startCoordinate())
-//                );
-//            default ->
-//                state.selectedRange();
-//        };
-//
-//        return state
-//                .selectRange(newRange)
-//                .withPreviewRange(SelectedRange.none())
-//                .withStartCoordinate(null)
-//                .selectMode(new SelectMode.Idle());
-//    }
 }
