@@ -1,4 +1,4 @@
-package com.github.idelstak.flopless.player;
+package com.github.idelstak.flopless.poker.player;
 
 public sealed interface Facing {
 

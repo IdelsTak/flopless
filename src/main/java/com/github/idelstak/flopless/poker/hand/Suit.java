@@ -1,4 +1,4 @@
-package com.github.idelstak.flopless.hand;
+package com.github.idelstak.flopless.poker.hand;
 
 public sealed interface Suit {
 

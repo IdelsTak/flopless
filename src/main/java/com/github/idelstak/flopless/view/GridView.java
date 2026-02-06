@@ -61,7 +61,7 @@ public final class GridView implements Initializable {
             dragStartX = event.getX();
             dragStartY = event.getY();
             marqueeActive = true;
-            interactionLayer.getStyleClass().addAll("dragging", "long-press");
+            interactionLayer.getStyleClass().add("dragging");
             selectionBox.setVisible(true);
             selectionBox.setX(dragStartX);
             selectionBox.setY(dragStartY);
@@ -91,7 +91,7 @@ public final class GridView implements Initializable {
         interactionLayer.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
             if (marqueeActive) {
                 event.consume();
-                interactionLayer.getStyleClass().removeAll("dragging", "long-press");
+                interactionLayer.getStyleClass().remove("dragging");
                 loop.accept(new Action.User.UpdatePreview(coordinateFrom(event.getX(), event.getY())));
                 loop.accept(new Action.User.CommitRange());
                 selectionBox.setVisible(false);

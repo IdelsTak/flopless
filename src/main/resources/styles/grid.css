@@ -1,12 +1,11 @@
 .root-pane {
     -fx-background-color: -fx-grid-border;
-    -fx-background-radius: 0.5em;
     -fx-border-color: -fx-grid-border;
     -fx-border-width: 0.0625em;
-    -fx-border-radius: 0.5em;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 4);
     -fx-pref-width: 720px;
-    -fx-pref-height: 720px
+    -fx-pref-height: 720px;
+    -fx-padding: 0 2 0 1
 }
 .poker-grid {
     -fx-alignment: center;
@@ -40,7 +39,7 @@
 }
 .hand-label {
     -fx-font-family: 'JetBrains Mono';
-    -fx-font-size: 0.8em;
+    -fx-font-size: 0.9em;
     -fx-text-fill: -fx-text-muted
 }
 .cell.active .hand-label, .cell.preview-add .hand-label, .cell.preview-remove .hand-label {
@@ -52,9 +51,6 @@
 }
 .selection-overlay.dragging {
     -fx-cursor: crosshair
-}
-.selection-overlay.long-press {
-    -fx-background-color: rgba(0, 0, 0, 0.05)
 }
 .selection-box {
     -fx-stroke: #3b82f6;

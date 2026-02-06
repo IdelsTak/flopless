@@ -5,6 +5,12 @@
   src: url('../fonts/geist/Geist-Regular.ttf') format('truetype');
 }
 @font-face {
+  font-family: "Geist SemiBold";
+  font-weight: 600;
+  font-style: normal;
+  src: url('../fonts/geist/Geist-SemiBold.ttf') format('truetype');
+}
+@font-face {
   font-family: "Geist Bold";
   font-weight: 700;
   font-style: normal;

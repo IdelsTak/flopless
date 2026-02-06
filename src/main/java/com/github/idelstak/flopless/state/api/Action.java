@@ -1,8 +1,9 @@
 package com.github.idelstak.flopless.state.api;
 
+import com.github.idelstak.flopless.poker.player.Position;
+import com.github.idelstak.flopless.poker.player.Facing;
+import com.github.idelstak.flopless.poker.table.TableType;
 import com.github.idelstak.flopless.grid.*;
-import com.github.idelstak.flopless.player.*;
-import com.github.idelstak.flopless.table.*;
 
 public sealed interface Action {
 

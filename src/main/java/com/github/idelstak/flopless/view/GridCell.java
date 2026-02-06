@@ -6,6 +6,7 @@ import io.reactivex.rxjava3.observers.*;
 import javafx.application.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.*;
 import javafx.stage.*;
 
 public final class GridCell extends StackPane {
@@ -44,10 +45,11 @@ public final class GridCell extends StackPane {
     }
 
     private void setupLabel() {
-        var handLabel = new Label(notation);
+        handLabel = new Label(notation);
         handLabel.getStyleClass().add("hand-label");
         getChildren().add(handLabel);
     }
+    private Label handLabel;
 
     private void setupSubscription() {
         observe = new DisposableObserver<>() {
@@ -72,15 +74,19 @@ public final class GridCell extends StackPane {
 
     private void render(FloplessState state) {
         isSelected = state.selectedRange().coordinates().contains(coordinate);
-        getStyleClass().removeAll("active", "preview-add", "preview-remove");
+        setBackground(Background.fill(Color.web("#151719")));
+        handLabel.setTextFill(Color.web("#52525b"));
         if (isSelected) {
-            getStyleClass().add("active");
+            setBackground(Background.fill(state.selectedAction().color()));
+            handLabel.setTextFill(Color.WHITE);
         }
         var isPreviewed = state.previewRange().coordinates().contains(coordinate);
         if (isSelected && isPreviewed) {
-            getStyleClass().add("preview-remove");
+            setBackground(Background.fill(Color.rgb(244, 67, 54, 0.5)));
+            handLabel.setTextFill(Color.WHITE);
         } else if (!isSelected && isPreviewed) {
-            getStyleClass().add("preview-add");
+            setBackground(Background.fill(Color.rgb(76, 175, 80, 0.5)));
+            handLabel.setTextFill(Color.WHITE);
         }
     }
 

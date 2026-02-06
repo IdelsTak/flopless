@@ -1,4 +1,4 @@
-package com.github.idelstak.flopless.table;
+package com.github.idelstak.flopless.poker.table;
 
 public sealed interface StackDepth {
 

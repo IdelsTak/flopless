@@ -1,6 +1,6 @@
 package com.github.idelstak.flopless.grid;
 
-import com.github.idelstak.flopless.hand.*;
+import com.github.idelstak.flopless.poker.hand.*;
 import java.util.*;
 
 public final class Grid {
@@ -25,7 +25,7 @@ public final class Grid {
         for (var row : ranks) {
             var rowCells = new ArrayList<Cell>();
             for (var col : ranks) {
-                rowCells.add(new Cell(build(row, col, suits)));
+                rowCells.add(new Cell(build(row, col, suits), new GridAction.Fold()));
             }
             grid.add(List.copyOf(rowCells));
         }

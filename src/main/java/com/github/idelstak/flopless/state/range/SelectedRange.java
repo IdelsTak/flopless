@@ -1,4 +1,4 @@
-package com.github.idelstak.flopless.range;
+package com.github.idelstak.flopless.state.range;
 
 import com.github.idelstak.flopless.grid.*;
 import java.util.*;

@@ -3,7 +3,7 @@
 <?import java.net.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane prefHeight="800.0" prefWidth="1280.0" styleClass="main-pane" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.flopless.view.MainView">
+<StackPane styleClass="main-pane" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.flopless.view.MainView">
  <stylesheets>
   <URL value="@../styles/fonts.css" />
   <URL value="@../styles/root.css" />
@@ -17,6 +17,9 @@
          <left>
             <fx:include source="sidebar.fxml" />
          </left>
+         <right>
+            <fx:include source="actionsidebar.fxml" />
+         </right>
       </BorderPane>
    </children>
 </StackPane>

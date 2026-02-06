@@ -1,10 +1,10 @@
 package com.github.idelstak.flopless.state;
 
 import com.github.idelstak.flopless.grid.*;
-import com.github.idelstak.flopless.player.*;
-import com.github.idelstak.flopless.range.*;
+import com.github.idelstak.flopless.poker.player.*;
+import com.github.idelstak.flopless.poker.table.*;
 import com.github.idelstak.flopless.state.api.*;
-import com.github.idelstak.flopless.table.*;
+import com.github.idelstak.flopless.state.range.*;
 import java.util.*;
 import org.junit.jupiter.api.*;
 import static org.hamcrest.MatcherAssert.*;

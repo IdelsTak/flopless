@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.flopless.view.ActionSidebarView">
+   <stylesheets>
+      <URL value="@../styles/fonts.css" />
+      <URL value="@../styles/root.css" />
+      <URL value="@../styles/sidebar.css" />
+   </stylesheets>
+   <children>
+      <Label styleClass="group-label" text="ACTION" />
+      <GridPane hgap="8.0" vgap="8.0" VBox.vgrow="NEVER">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
+            <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <RadioButton fx:id="foldRadio" mnemonicParsing="false" selected="true" text="FOLD">
+               <styleClass>
+                  <String fx:value="action-btn" />
+                  <String fx:value="btn-fold" />
+               </styleClass>
+               <toggleGroup>
+                  <ToggleGroup fx:id="actionGroup" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="checkRadio" layoutX="10.0" layoutY="7.0" mnemonicParsing="false" text="CHECK" toggleGroup="$actionGroup" GridPane.columnIndex="1">
+               <styleClass>
+                  <String fx:value="action-btn" />
+                  <String fx:value="btn-check" />
+               </styleClass>
+            </RadioButton>
+            <RadioButton fx:id="callRadio" layoutX="113.0" layoutY="7.0" mnemonicParsing="false" text="CALL" toggleGroup="$actionGroup" GridPane.rowIndex="1">
+               <styleClass>
+                  <String fx:value="action-btn" />
+                  <String fx:value="btn-call" />
+               </styleClass>
+            </RadioButton>
+            <RadioButton fx:id="raiseRadio" layoutX="10.0" layoutY="45.0" mnemonicParsing="false" text="RAISE" toggleGroup="$actionGroup" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <styleClass>
+                  <String fx:value="action-btn" />
+                  <String fx:value="btn-raise" />
+               </styleClass>
+            </RadioButton>
+            <RadioButton fx:id="allinRadio" layoutX="113.0" layoutY="45.0" mnemonicParsing="false" text="ALL IN" toggleGroup="$actionGroup" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+               <styleClass>
+                  <String fx:value="action-btn" />
+                  <String fx:value="btn-allin" />
+               </styleClass>
+            </RadioButton>
+         </children>
+      </GridPane>
+      <VBox styleClass="input-group">
+         <children>
+            <Label styleClass="input-label" text="ACTION AMOUNT" />
+            <HBox styleClass="custom-spinner">
+               <children>
+                  <Button fx:id="decrementActionAmountButton" mnemonicParsing="false" text="-">
+                     <styleClass>
+                        <String fx:value="spinner-btn" />
+                        <String fx:value="left" />
+                     </styleClass>
+                  </Button>
+                  <StackPane HBox.hgrow="ALWAYS">
+                     <children>
+                        <TextField fx:id="actionAmountField" styleClass="spinner-input" text="3" />
+                        <Label styleClass="spinner-suffix" text="BB" StackPane.alignment="CENTER_RIGHT">
+                           <StackPane.margin>
+                              <Insets right="10.0" />
+                           </StackPane.margin>
+                        </Label>
+                     </children>
+                  </StackPane>
+                  <Button fx:id="incrementActionAmountButton" layoutX="86.0" layoutY="11.0" mnemonicParsing="false" text="+">
+                     <styleClass>
+                        <String fx:value="spinner-btn" />
+                        <String fx:value="right" />
+                     </styleClass>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox styleClass="input-group">
+         <children>
+            <Label styleClass="input-label" text="PER LIMPER" />
+            <HBox styleClass="custom-spinner">
+               <children>
+                  <Button fx:id="decrementLimperAmountButton" mnemonicParsing="false" text="-">
+                     <styleClass>
+                        <String fx:value="spinner-btn" />
+                        <String fx:value="left" />
+                     </styleClass>
+                  </Button>
+                  <StackPane HBox.hgrow="ALWAYS">
+                     <children>
+                        <TextField fx:id="limperAmountField" styleClass="spinner-input" text="2" />
+                        <Label styleClass="spinner-suffix" text="BB" StackPane.alignment="CENTER_RIGHT">
+                           <StackPane.margin>
+                              <Insets right="10.0" />
+                           </StackPane.margin>
+                        </Label>
+                     </children>
+                  </StackPane>
+                  <Button fx:id="incrementLimperAmountButton" layoutX="86.0" layoutY="11.0" mnemonicParsing="false" text="+">
+                     <styleClass>
+                        <String fx:value="spinner-btn" />
+                        <String fx:value="right" />
+                     </styleClass>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+   <styleClass>
+      <String fx:value="sidebar" />
+      <String fx:value="actions" />
+   </styleClass>
+</VBox>

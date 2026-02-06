@@ -13,6 +13,8 @@ public final class SidebarView implements Initializable {
     private ToggleGroup heroPositionGroup;
     @FXML
     private ToggleGroup scenarioGroup;
+    @FXML
+    private ToggleGroup blindsGroup;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
