@@ -44,5 +44,29 @@ public sealed interface Action {
         record SelectGridAction(GridAction action) implements User {
 
         }
+
+        record RaiseAmount(double amount) implements Action {
+
+        }
+
+        record IncreaseRaiseAmount(double step) implements Action {
+
+        }
+
+        record DecreaseRaiseAmount(double step) implements Action {
+
+        }
+
+        record LimperAmount(double amount) implements Action {
+
+        }
+
+        record IncreaseLimperAmount(double step) implements Action {
+
+        }
+
+        record DecreaseLimperAmount(double step) implements Action {
+
+        }
     }
 }

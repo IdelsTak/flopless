@@ -5,6 +5,7 @@ import com.github.idelstak.flopless.poker.player.*;
 import com.github.idelstak.flopless.poker.table.*;
 import com.github.idelstak.flopless.state.api.*;
 import com.github.idelstak.flopless.state.range.*;
+import java.math.*;
 import java.util.*;
 import org.junit.jupiter.api.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -141,5 +142,53 @@ final class ReducedStateTest {
         var before = FloplessState.initial().beginDrag(Optional.of(new Coordinate(0, 0)));
         var after = reduced.apply(before, new Action.User.CommitRange());
         assertThat(after.selectMode() instanceof SelectMode.Idle, is(true));
+    }
+
+    @Test
+    void raiseAmountSetsRaiseToMaxOfMinAndValue() {
+        var reduced = new ReducedState();
+        var before = FloplessState.initial().minRaiseAmount(BigDecimal.valueOf(5));
+        var after = reduced.apply(before, new Action.User.RaiseAmount(3));
+        assertThat(after.raiseAmount().doubleValue(), is(5.0));
+    }
+
+    @Test
+    void increaseRaiseIncrementsRaiseByStep() {
+        var reduced = new ReducedState();
+        var before = FloplessState.initial().minRaiseAmount(BigDecimal.valueOf(1)).raise(BigDecimal.valueOf(2));
+        var after = reduced.apply(before, new Action.User.IncreaseRaiseAmount(0.5));
+        assertThat(after.raiseAmount().doubleValue(), is(2.5));
+    }
+
+    @Test
+    void decreaseRaiseDecrementsRaiseButNotBelowMin() {
+        var reduced = new ReducedState();
+        var before = FloplessState.initial().minRaiseAmount(BigDecimal.valueOf(2)).raise(BigDecimal.valueOf(3));
+        var after = reduced.apply(before, new Action.User.DecreaseRaiseAmount(-2));
+        assertThat(after.raiseAmount().doubleValue(), is(2.0));
+    }
+
+    @Test
+    void limperAmountSetsPerLimperToMaxOfMinAndValue() {
+        var reduced = new ReducedState();
+        var before = FloplessState.initial().minPerLimperAmount(BigDecimal.valueOf(1));
+        var after = reduced.apply(before, new Action.User.LimperAmount(0.5));
+        assertThat(after.perLimperAmount().doubleValue(), is(1.0));
+    }
+
+    @Test
+    void increaseLimperIncrementsPerLimperByStep() {
+        var reduced = new ReducedState();
+        var before = FloplessState.initial().minPerLimperAmount(BigDecimal.valueOf(1)).perLimper(BigDecimal.valueOf(2));
+        var after = reduced.apply(before, new Action.User.IncreaseLimperAmount(0.25));
+        assertThat(after.perLimperAmount().doubleValue(), is(2.25));
+    }
+
+    @Test
+    void decreaseLimperDecrementsPerLimperButNotBelowMin() {
+        var reduced = new ReducedState();
+        var before = FloplessState.initial().minPerLimperAmount(BigDecimal.valueOf(1.5)).perLimper(BigDecimal.valueOf(2));
+        var after = reduced.apply(before, new Action.User.DecreaseLimperAmount(-1));
+        assertThat(after.perLimperAmount().doubleValue(), is(1.5));
     }
 }

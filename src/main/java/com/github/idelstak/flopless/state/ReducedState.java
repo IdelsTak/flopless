@@ -4,6 +4,7 @@ import com.github.idelstak.flopless.grid.*;
 import com.github.idelstak.flopless.state.api.*;
 import com.github.idelstak.flopless.state.range.*;
 import com.github.idelstak.flopless.state.spi.*;
+import java.math.*;
 import java.util.*;
 
 public final class ReducedState implements Reduced<FloplessState, Action, FloplessState> {
@@ -27,6 +28,18 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
                 commitRange(state);
             case Action.User.SelectGridAction a ->
                 selectAction(state, a);
+            case Action.User.RaiseAmount a ->
+                raiseAmount(state, a);
+            case Action.User.IncreaseRaiseAmount a ->
+                increaseRaise(state, a);
+            case Action.User.DecreaseRaiseAmount a ->
+                decreaseRaise(state, a);
+            case Action.User.LimperAmount a ->
+                limperAmount(state, a);
+            case Action.User.IncreaseLimperAmount a ->
+                increaseLimper(state, a);
+            case Action.User.DecreaseLimperAmount a ->
+                decreaseLimper(state, a);
             case Action.User.Effect _ ->
                 state;
         };
@@ -95,5 +108,41 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
 
     private FloplessState selectAction(FloplessState state, Action.User.SelectGridAction select) {
         return state.selectAction(select.action());
+    }
+
+    private FloplessState raiseAmount(FloplessState state, Action.User.RaiseAmount raise) {
+        var min = state.minRaiseAmount().doubleValue();
+        return state.raise(BigDecimal.valueOf(Math.max(min, raise.amount())));
+    }
+
+    private FloplessState increaseRaise(FloplessState state, Action.User.IncreaseRaiseAmount increase) {
+        var newRaise = updateAmount(state.minRaiseAmount().doubleValue(), state.raiseAmount().doubleValue(), increase.step());
+        return state.raise(BigDecimal.valueOf(newRaise));
+    }
+
+    private FloplessState decreaseRaise(FloplessState state, Action.User.DecreaseRaiseAmount decrease) {
+        var newRaise = updateAmount(state.minRaiseAmount().doubleValue(), state.raiseAmount().doubleValue(), decrease.step());
+        return state.raise(BigDecimal.valueOf(newRaise));
+    }
+
+    private FloplessState limperAmount(FloplessState state, Action.User.LimperAmount amount) {
+        var min = state.minPerLimperAmount().doubleValue();
+        return state.raise(BigDecimal.valueOf(Math.max(min, amount.amount())));
+    }
+
+    private FloplessState increaseLimper(FloplessState state, Action.User.IncreaseLimperAmount increase) {
+        var min = state.minPerLimperAmount().doubleValue();
+        var newAmount = updateAmount(min, state.perLimperAmount().doubleValue(), increase.step());
+        return state.perLimper(BigDecimal.valueOf(newAmount));
+    }
+
+    private FloplessState decreaseLimper(FloplessState state, Action.User.DecreaseLimperAmount decrease) {
+        var min = state.minPerLimperAmount().doubleValue();
+        var newAmount = updateAmount(min, state.perLimperAmount().doubleValue(), decrease.step());
+        return state.perLimper(BigDecimal.valueOf(newAmount));
+    }
+
+    private double updateAmount(double min, double current, double step) {
+        return Math.max(min, current + step);
     }
 }

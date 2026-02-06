@@ -1,6 +1,7 @@
 package com.github.idelstak.flopless.grid;
 
 import com.github.idelstak.flopless.poker.action.*;
+import java.math.*;
 import javafx.scene.paint.*;
 
 public sealed interface GridAction {
@@ -9,7 +10,12 @@ public sealed interface GridAction {
 
     Color color();
 
-    record Raise(GameAction action) implements GridAction {
+    record Raise(BigDecimal amount) implements GridAction {
+
+        @Override
+        public GameAction action() {
+            return new GameAction.Money.Raise(amount);
+        }
 
         @Override
         public Color color() {

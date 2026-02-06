@@ -6,7 +6,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
 <VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.flopless.view.ActionSidebarView">
    <stylesheets>
       <URL value="@../styles/fonts.css" />
@@ -61,9 +60,9 @@
             </RadioButton>
          </children>
       </GridPane>
-      <VBox styleClass="input-group">
+      <VBox fx:id="raiseAmountEdit" styleClass="input-group">
          <children>
-            <Label styleClass="input-label" text="ACTION AMOUNT" />
+            <Label styleClass="input-label" text="RAISE AMOUNT" />
             <HBox styleClass="custom-spinner">
                <children>
                   <Button fx:id="decrementActionAmountButton" mnemonicParsing="false" text="-">
@@ -92,7 +91,7 @@
             </HBox>
          </children>
       </VBox>
-      <VBox styleClass="input-group">
+      <VBox fx:id="limpersEdit" styleClass="input-group">
          <children>
             <Label styleClass="input-label" text="PER LIMPER" />
             <HBox styleClass="custom-spinner">

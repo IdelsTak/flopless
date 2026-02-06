@@ -26,8 +26,8 @@ public final class FloplessLoop implements Source<FloplessState>, Sink<Action> {
     @Override
     public void accept(Action action) {
         switch (action) {
-            case Action.User userAction ->
-                actions.onNext(userAction);
+//            case Action.User userAction ->
+//                actions.onNext(userAction);
             case Action.Effect sideEffect -> {
                 switch (sideEffect) {
                     case Action.Effect.GridActionSelected selected -> {
@@ -35,6 +35,8 @@ public final class FloplessLoop implements Source<FloplessState>, Sink<Action> {
                     }
                 }
             }
+            default ->
+                actions.onNext(action);
         }
     }
 }
