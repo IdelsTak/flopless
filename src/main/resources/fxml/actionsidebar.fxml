@@ -14,18 +14,9 @@
    </stylesheets>
    <children>
       <Label styleClass="group-label" text="ACTION" />
-      <GridPane hgap="8.0" vgap="8.0" VBox.vgrow="NEVER">
-         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
-            <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0" />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints vgrow="SOMETIMES" />
-            <RowConstraints vgrow="SOMETIMES" />
-         </rowConstraints>
+      <VBox styleClass="action-group" VBox.vgrow="NEVER">
          <children>
-            <RadioButton fx:id="foldRadio" mnemonicParsing="false" selected="true" text="FOLD">
+            <RadioButton fx:id="foldRadio" selected="true" text="FOLD">
                <styleClass>
                   <String fx:value="action-btn" />
                   <String fx:value="btn-fold" />
@@ -34,32 +25,32 @@
                   <ToggleGroup fx:id="actionGroup" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="checkRadio" layoutX="10.0" layoutY="7.0" mnemonicParsing="false" text="CHECK" toggleGroup="$actionGroup" GridPane.columnIndex="1">
+            <RadioButton fx:id="checkRadio" text="CHECK" toggleGroup="$actionGroup">
                <styleClass>
                   <String fx:value="action-btn" />
                   <String fx:value="btn-check" />
                </styleClass>
             </RadioButton>
-            <RadioButton fx:id="callRadio" layoutX="113.0" layoutY="7.0" mnemonicParsing="false" text="CALL" toggleGroup="$actionGroup" GridPane.rowIndex="1">
+            <RadioButton fx:id="callRadio" text="CALL" toggleGroup="$actionGroup">
                <styleClass>
                   <String fx:value="action-btn" />
                   <String fx:value="btn-call" />
                </styleClass>
             </RadioButton>
-            <RadioButton fx:id="raiseRadio" layoutX="10.0" layoutY="45.0" mnemonicParsing="false" text="RAISE" toggleGroup="$actionGroup" GridPane.columnIndex="1" GridPane.rowIndex="1">
-               <styleClass>
-                  <String fx:value="action-btn" />
-                  <String fx:value="btn-raise" />
-               </styleClass>
-            </RadioButton>
-            <RadioButton fx:id="allinRadio" layoutX="113.0" layoutY="45.0" mnemonicParsing="false" text="ALL IN" toggleGroup="$actionGroup" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+            <RadioButton fx:id="allinRadio" text="ALL IN" toggleGroup="$actionGroup">
                <styleClass>
                   <String fx:value="action-btn" />
                   <String fx:value="btn-allin" />
                </styleClass>
             </RadioButton>
+            <RadioButton fx:id="raiseRadio" text="RAISE" toggleGroup="$actionGroup">
+               <styleClass>
+                  <String fx:value="action-btn" />
+                  <String fx:value="btn-raise" />
+               </styleClass>
+            </RadioButton>
          </children>
-      </GridPane>
+      </VBox>
       <VBox fx:id="raiseAmountEdit" styleClass="input-group">
          <children>
             <Label styleClass="input-label" text="RAISE AMOUNT" />
@@ -93,7 +84,7 @@
       </VBox>
       <VBox fx:id="limpersEdit" styleClass="input-group">
          <children>
-            <Label styleClass="input-label" text="PER LIMPER" />
+            <Label styleClass="input-label" text="PLUS PER LIMPER" />
             <HBox styleClass="custom-spinner">
                <children>
                   <Button fx:id="decrementLimperAmountButton" mnemonicParsing="false" text="-">

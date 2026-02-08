@@ -15,6 +15,12 @@ public sealed interface Action {
 
     sealed interface User extends Action {
 
+        record Undo() implements User {
+        }
+
+        record Redo() implements User {
+        }
+
         record TableTypePick(TableType tableType) implements User {
 
         }

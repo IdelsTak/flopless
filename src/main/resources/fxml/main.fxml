@@ -20,6 +20,9 @@
          <right>
             <fx:include source="actionsidebar.fxml" />
          </right>
+         <top>
+            <fx:include source="toolbar.fxml" />
+         </top>
       </BorderPane>
    </children>
 </StackPane>

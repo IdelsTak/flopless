@@ -111,7 +111,7 @@
                         <RadioButton styleClass="option-btn" text="VS ALLIN" toggleGroup="$scenarioGroup" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                      </children>
                   </GridPane>
-                  <RadioButton styleClass="option-btn" text="PLUS LIMPER(S)" />
+                  <RadioButton styleClass="option-btn" text="WITH LIMPER(S)" />
                </children>
             </VBox>
          </children>

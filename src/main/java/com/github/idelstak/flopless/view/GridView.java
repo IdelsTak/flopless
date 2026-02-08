@@ -3,23 +3,21 @@ package com.github.idelstak.flopless.view;
 import com.github.idelstak.flopless.grid.*;
 import com.github.idelstak.flopless.state.*;
 import com.github.idelstak.flopless.state.api.*;
-import io.reactivex.rxjava3.observers.DisposableObserver;
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
+import io.reactivex.rxjava3.observers.*;
+import java.net.*;
+import java.util.*;
+import javafx.fxml.*;
+import javafx.scene.input.*;
+import javafx.scene.layout.*;
+import javafx.scene.shape.*;
+import javafx.stage.*;
 
 public final class GridView implements Initializable {
 
     private final Stage stage;
     private final FloplessLoop loop;
     private final Grid grid;
-    private DisposableObserver<FloplessState> observe;
+    private DisposableObserver<History<FloplessState>> observe;
     private boolean marqueeActive;
     private double dragStartX;
     private double dragStartY;
@@ -138,7 +136,7 @@ public final class GridView implements Initializable {
     private void initSubscription() {
         observe = new DisposableObserver<>() {
             @Override
-            public void onNext(FloplessState state) {
+            public void onNext(History<FloplessState> history) {
             }
 
             @Override

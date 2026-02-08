@@ -18,7 +18,7 @@ public final class ActionSidebarView implements Initializable {
 
     private final Stage stage;
     private final FloplessLoop loop;
-    private DisposableObserver<FloplessState> observe;
+    private DisposableObserver<History<FloplessState>> observe;
     private BigDecimal raiseAmount;
     private BigDecimal perLimperAmount;
     @FXML
@@ -127,8 +127,8 @@ public final class ActionSidebarView implements Initializable {
     private void setupSubscription() {
         observe = new DisposableObserver<>() {
             @Override
-            public void onNext(FloplessState state) {
-                Platform.runLater(() -> render(state));
+            public void onNext(History<FloplessState> history) {
+                Platform.runLater(() -> render(history.present()));
             }
 
             @Override
@@ -160,6 +160,13 @@ public final class ActionSidebarView implements Initializable {
         limperAmountField.setText(perLimperAmount.doubleValue() % 1 == 0
                                     ? String.format("%.0f", perLimperAmount.doubleValue())
                                     : String.format("%.1f", perLimperAmount.doubleValue()));
+
+        var toSelect = actionGroup.getToggles()
+          .stream().filter(t -> ((Labeled) t).getText().equalsIgnoreCase(action.label()))
+          .findFirst()
+          .orElseThrow();
+        
+        actionGroup.selectToggle(toSelect);
     }
 
     private void dispose() {

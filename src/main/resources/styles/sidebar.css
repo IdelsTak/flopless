@@ -2,16 +2,16 @@
     -fx-background-color: -fx-sidebar-bg;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 30, 0, 0, 10);
     -fx-pref-width: 280px;
-    -fx-spacing: 24px;
+    -fx-spacing: 24px
 }
 .sidebar.scenario {
-    -fx-background-radius: 12px 0 0 12px;
-    -fx-border-radius: 12px 0 0 12px;
+    -fx-background-radius: 0 0 0 12px;
+    -fx-border-radius: 0 0 0 12px;
     -fx-padding: 18px 42px 24px 36px
 }
 .sidebar.actions {
-    -fx-background-radius: 0 12 12 0;
-    -fx-border-radius: 0 12 12 0;
+    -fx-background-radius: 0 0 12 0;
+    -fx-border-radius: 0 0 12 0;
     -fx-padding: 18px 36px 24px 42px
 }
 .config-group {
@@ -74,6 +74,9 @@
     -fx-font-size: 11px;
     -fx-font-weight: bold
 }
+.action-group {
+    -fx-spacing: 8
+}
 .action-btn {
     -fx-padding: 10;
     -fx-border-color: -fx-grid-border;
@@ -93,19 +96,19 @@
     -fx-border-color: white
 }
 .btn-fold {
-    -fx-background-color: -fx-action-fold;
+    -fx-background-color: -fx-action-fold
 }
 .btn-check {
-    -fx-background-color: -fx-action-check;
+    -fx-background-color: -fx-action-check
 }
 .btn-call {
-    -fx-background-color: -fx-action-call;
+    -fx-background-color: -fx-action-call
 }
 .btn-raise {
-    -fx-background-color: -fx-action-raise;
+    -fx-background-color: -fx-action-raise
 }
 .btn-allin {
-    -fx-background-color: -fx-action-allin;
+    -fx-background-color: -fx-action-allin
 }
 .input-group {
     -fx-border-color: -fx-grid-border transparent transparent transparent;
@@ -118,7 +121,7 @@
     -fx-font-size: 10px;
     -fx-font-weight: bold;
     -fx-alignment: center;
-    -fx-max-width: "Infinity"
+    -fx-max-width: 'Infinity'
 }
 .custom-spinner {
     -fx-alignment: center;
@@ -126,7 +129,7 @@
     -fx-border-color: derive(-fx-grid-border, 20%);
     -fx-border-radius: 6;
     -fx-background-radius: 6;
-    -fx-background-insets: 2;
+    -fx-background-insets: 2
 }
 .spinner-btn {
     -fx-background-color: #1e2227;
@@ -141,11 +144,11 @@
 }
 .spinner-btn.right {
     -fx-border-radius: 0 6 6 0;
-    -fx-background-radius: 0 6 6 0;
+    -fx-background-radius: 0 6 6 0
 }
 .spinner-btn.left {
     -fx-border-radius: 6 0 0 6;
-    -fx-background-radius: 6 0 0 6;
+    -fx-background-radius: 6 0 0 6
 }
 .spinner-btn:hover {
     -fx-background-color: #2a2e35

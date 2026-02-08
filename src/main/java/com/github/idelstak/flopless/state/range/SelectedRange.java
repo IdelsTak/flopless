@@ -1,5 +1,6 @@
 package com.github.idelstak.flopless.state.range;
 
+import com.fasterxml.jackson.annotation.*;
 import com.github.idelstak.flopless.grid.*;
 import java.util.*;
 
@@ -7,7 +8,8 @@ public final class SelectedRange {
 
     private final Map<Coordinate, GridAction> map;
 
-    private SelectedRange(Map<Coordinate, GridAction> map) {
+    @JsonCreator
+    public SelectedRange(@JsonProperty("map") Map<Coordinate, GridAction> map) {
         this.map = Map.copyOf(map);
     }
 
@@ -89,6 +91,7 @@ public final class SelectedRange {
         return map.keySet();
     }
 
+    @JsonProperty("map")
     public Map<Coordinate, GridAction> map() {
         return Map.copyOf(map);
     }

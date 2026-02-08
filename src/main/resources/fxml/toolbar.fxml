@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+
+<HBox styleClass="floating-toolbar" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.flopless.view.ToolbarView">
+   <stylesheets>
+      <URL value="@../styles/fonts.css" />
+      <URL value="@../styles/root.css" />
+      <URL value="@../styles/toolbar.css" />
+   </stylesheets>
+   <children>
+      <Button fx:id="undoButton" mnemonicParsing="false" styleClass="tool-btn" text="Undo">
+         <graphic>
+            <FontIcon>
+               <styleClass>
+                  <String fx:value="icon" />
+                  <String fx:value="icon-undo" />
+               </styleClass>
+            </FontIcon>
+         </graphic>
+      </Button>
+      <Button fx:id="redoButton" layoutX="17.0" layoutY="17.0" mnemonicParsing="false" styleClass="tool-btn" text="Redo">
+         <graphic>
+            <FontIcon>
+               <styleClass>
+                  <String fx:value="icon" />
+                  <String fx:value="icon-redo" />
+               </styleClass>
+            </FontIcon>
+         </graphic>
+      </Button>
+      <Separator orientation="VERTICAL" styleClass="divider" />
+      <Button fx:id="clearGridButton" layoutX="83.0" layoutY="105.0" mnemonicParsing="false" text="Clear Grid">
+         <graphic>
+            <FontIcon>
+               <styleClass>
+                  <String fx:value="icon" />
+                  <String fx:value="icon-trash" />
+               </styleClass>
+            </FontIcon>
+         </graphic>
+         <styleClass>
+            <String fx:value="tool-btn" />
+            <String fx:value="danger" />
+         </styleClass>
+      </Button>
+   </children>
+</HBox>

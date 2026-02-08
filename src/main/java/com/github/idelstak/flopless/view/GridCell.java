@@ -15,7 +15,7 @@ public final class GridCell extends StackPane {
     private final FloplessLoop loop;
     private final String notation;
     private final Coordinate coordinate;
-    private DisposableObserver<FloplessState> observe;
+    private DisposableObserver<History<FloplessState>> observe;
     private boolean isSelected;
     private Label handLabel;
 
@@ -54,8 +54,8 @@ public final class GridCell extends StackPane {
     private void setupSubscription() {
         observe = new DisposableObserver<>() {
             @Override
-            public void onNext(FloplessState state) {
-                Platform.runLater(() -> render(state));
+            public void onNext(History<FloplessState> history) {
+                Platform.runLater(() -> render(history.present()));
             }
 
             @Override
@@ -81,7 +81,8 @@ public final class GridCell extends StackPane {
             setBackground(Background.fill(gridAction.color()));
             handLabel.setTextFill(Color.WHITE);
         }
-        var isPreviewed = state.previewRange().coordinates().contains(coordinate);
+        var isPreviewed = state.startCoordinate().isPresent()
+          && state.previewRange().coordinates().contains(coordinate);
         if (isSelected && isPreviewed) {
             setBackground(Background.fill(Color.rgb(244, 67, 54, 0.5)));
             handLabel.setTextFill(Color.WHITE);

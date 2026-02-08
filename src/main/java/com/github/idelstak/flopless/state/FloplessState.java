@@ -1,10 +1,9 @@
 package com.github.idelstak.flopless.state;
 
-import com.github.idelstak.flopless.poker.player.Position;
-import com.github.idelstak.flopless.poker.player.Facing;
-import com.github.idelstak.flopless.poker.table.StackDepth;
-import com.github.idelstak.flopless.poker.table.TableType;
+import com.fasterxml.jackson.annotation.*;
 import com.github.idelstak.flopless.grid.*;
+import com.github.idelstak.flopless.poker.player.*;
+import com.github.idelstak.flopless.poker.table.*;
 import com.github.idelstak.flopless.state.api.*;
 import com.github.idelstak.flopless.state.range.*;
 import java.math.*;
@@ -15,9 +14,9 @@ public record FloplessState(
   Position position,
   Facing facing,
   SelectedRange selectedRange,
-  SelectMode selectMode,
-  Optional<Coordinate> startCoordinate,
-  SelectedRange previewRange,
+  @JsonIgnore SelectMode selectMode,
+  @JsonIgnore Optional<Coordinate> startCoordinate,
+  @JsonIgnore SelectedRange previewRange,
   GridAction selectedAction,
   BigDecimal raiseAmount,
   BigDecimal minRaiseAmount,

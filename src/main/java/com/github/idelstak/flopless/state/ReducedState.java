@@ -40,7 +40,7 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
                 increaseLimper(state, a);
             case Action.User.DecreaseLimperAmount a ->
                 decreaseLimper(state, a);
-            case Action.User.Effect _ ->
+            default ->
                 state;
         };
     }

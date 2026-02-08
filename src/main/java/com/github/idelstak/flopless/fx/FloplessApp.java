@@ -1,5 +1,6 @@
 package com.github.idelstak.flopless.fx;
 
+import com.github.idelstak.flopless.io.*;
 import com.github.idelstak.flopless.state.*;
 import com.github.idelstak.flopless.view.*;
 import java.io.*;
@@ -13,7 +14,16 @@ public final class FloplessApp extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         var loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
-        var loop = new FloplessLoop(new ReducedState());
+        var persistence = new JsonPersistence("flopless.json");
+        FloplessState initialState = FloplessState.initial();
+        try {
+            var savedState = persistence.load();
+            System.out.println("[FLOPLESS APP] savedState = " + savedState);
+            initialState = savedState;
+        } catch (Exception e) {
+            System.out.println("[FLOPLESS APP] " + e);
+        }
+        var loop = new FloplessLoop(initialState, new ReducedState());
         loader.setControllerFactory(type -> {
             System.out.println("[FLOPLESS APP] type = " + type.getSimpleName());
             if (type.equals(GridView.class)) {
@@ -25,7 +35,10 @@ public final class FloplessApp extends Application {
             if (type.equals(ActionSidebarView.class)) {
                 return new ActionSidebarView(primaryStage, loop);
             }
-            return new MainView();
+            if (type.equals(ToolbarView.class)) {
+                return new ToolbarView(primaryStage, loop);
+            }
+            return new MainView(primaryStage, loop, persistence);
         });
         var root = loader.<Parent>load();
         var scene = new Scene(root);
