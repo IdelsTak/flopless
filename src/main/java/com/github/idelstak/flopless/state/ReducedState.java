@@ -2,6 +2,7 @@ package com.github.idelstak.flopless.state;
 
 import com.github.idelstak.flopless.grid.*;
 import com.github.idelstak.flopless.io.*;
+import com.github.idelstak.flopless.poker.player.*;
 import com.github.idelstak.flopless.state.api.*;
 import com.github.idelstak.flopless.state.range.*;
 import com.github.idelstak.flopless.state.spi.*;
@@ -64,7 +65,17 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
     }
 
     private FloplessState pickPosition(FloplessState state, Action.User.PositionPick action) {
-        return state.forPosition(action.position());
+        FloplessState modified = state;
+        var position = action.position();
+        if (position instanceof Position.Utg) {
+            modified = modified.toggleLimpersSqueeze(false);
+        }
+        if (position instanceof Position.Bb) {
+            modified = modified.face(new Facing.Raised.VsUtg());
+        } else {
+            modified = modified.face(new Facing.Open());
+        }
+        return modified.forPosition(position);
     }
 
     private FloplessState pickFacing(FloplessState state, Action.User.FacingPick action) {
@@ -135,22 +146,25 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
 
     private FloplessState raiseAmount(FloplessState state, Action.User.RaiseAmount raise) {
         var min = state.minRaiseAmount().doubleValue();
-        return state.raise(BigDecimal.valueOf(Math.max(min, raise.amount())));
+        var amount = BigDecimal.valueOf(Math.max(min, raise.amount()));
+        return state.raise(amount).selectAction(new GridAction.Raise(amount));
     }
 
     private FloplessState increaseRaise(FloplessState state, Action.User.IncreaseRaiseAmount increase) {
         var newRaise = updateAmount(state.minRaiseAmount().doubleValue(), state.raiseAmount().doubleValue(), increase.step());
-        return state.raise(BigDecimal.valueOf(newRaise));
+        var amount = BigDecimal.valueOf(newRaise);
+        return state.raise(amount).selectAction(new GridAction.Raise(amount));
     }
 
     private FloplessState decreaseRaise(FloplessState state, Action.User.DecreaseRaiseAmount decrease) {
         var newRaise = updateAmount(state.minRaiseAmount().doubleValue(), state.raiseAmount().doubleValue(), decrease.step());
-        return state.raise(BigDecimal.valueOf(newRaise));
+        var amount = BigDecimal.valueOf(newRaise);
+        return state.raise(amount).selectAction(new GridAction.Raise(amount));
     }
 
     private FloplessState limperAmount(FloplessState state, Action.User.LimperAmount amount) {
         var min = state.minPerLimperAmount().doubleValue();
-        return state.raise(BigDecimal.valueOf(Math.max(min, amount.amount())));
+        return state.perLimper(BigDecimal.valueOf(Math.max(min, amount.amount())));
     }
 
     private FloplessState increaseLimper(FloplessState state, Action.User.IncreaseLimperAmount increase) {

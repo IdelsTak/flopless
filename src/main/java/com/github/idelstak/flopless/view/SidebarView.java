@@ -127,6 +127,12 @@ public final class SidebarView implements Initializable {
             ((ButtonBase) toggle).setOnAction(pickPosition);
         }
 
+        EventHandler<ActionEvent> pickFacing = (ActionEvent _) ->
+          loop.accept(new Action.User.FacingPick(facing()));
+        for (var toggle : scenarioGroup.getToggles()) {
+            ((ButtonBase) toggle).setOnAction(pickFacing);
+        }
+
         withLimpersRadio.setOnAction(_ -> {
             loop.accept(new Action.User.ToggleLimpersSqueeze());
         });
@@ -172,6 +178,38 @@ public final class SidebarView implements Initializable {
         };
     }
 
+    private Facing facing() {
+        var radio = (Labeled) scenarioGroup.getSelectedToggle();
+        return switch (radio.getText().toLowerCase(Locale.ROOT).replaceAll("vs", "").replaceAll("\\s+", "")) {
+            case "utg" ->
+                new Facing.Raised.VsUtg();
+            case "utg1" ->
+                new Facing.Raised.VsUtg1();
+            case "utg2" ->
+                new Facing.Raised.VsUtg2();
+            case "lj" ->
+                new Facing.Raised.VsLj();
+            case "hj" ->
+                new Facing.Raised.VsHj();
+            case "co" ->
+                new Facing.Raised.VsCo();
+            case "btn" ->
+                new Facing.Raised.VsBtn();
+            case "sb" ->
+                new Facing.Raised.VsSb();
+            case "3b" ->
+                new Facing.ReRaised.Vs3Bet();
+            case "4b" ->
+                new Facing.ReRaised.Vs4Bet();
+            case "5b" ->
+                new Facing.ReRaised.Vs5Bet();
+            case "allin" ->
+                new Facing.ReRaised.VsAllIn();
+            default ->
+                new Facing.Open();
+        };
+    }
+
     private void setupSubscription() {
         observe = new DisposableObserver<>() {
             @Override
@@ -212,10 +250,44 @@ public final class SidebarView implements Initializable {
             var isSelectedPosition = ((Labeled) toggle).getText().equalsIgnoreCase(position.getClass().getSimpleName());
             toggle.setSelected(isSelectedPosition);
         }
+        var facing = state.facing();
+        for (var toggle : scenarioGroup.getToggles()) {
+            var text = ((Labeled) toggle).getText().toLowerCase(Locale.ROOT).replaceAll("vs", "").replaceAll("\\s+", "");
+            var matches = switch (facing) {
+                case Facing.Open _ ->
+                    text.equals("open/rfi");
+                case Facing.Raised.VsUtg _ ->
+                    text.equals("utg");
+                case Facing.Raised.VsUtg1 _ ->
+                    text.equals("utg1");
+                case Facing.Raised.VsUtg2 _ ->
+                    text.equals("utg2");
+                case Facing.Raised.VsLj _ ->
+                    text.equals("lj");
+                case Facing.Raised.VsHj _ ->
+                    text.equals("hj");
+                case Facing.Raised.VsCo _ ->
+                    text.equals("co");
+                case Facing.Raised.VsBtn _ ->
+                    text.equals("btn");
+                case Facing.Raised.VsSb _ ->
+                    text.equals("sb");
+                case Facing.ReRaised.Vs3Bet _ ->
+                    text.equals("3b");
+                case Facing.ReRaised.Vs4Bet _ ->
+                    text.equals("4b");
+                case Facing.ReRaised.Vs5Bet _ ->
+                    text.equals("5b");
+                case Facing.ReRaised.VsAllIn _ ->
+                    text.equals("allin");
+            };
+            Platform.runLater(() -> toggle.setSelected(matches));
+        }
 
         var hero = position;
-        openRadio.setDisable(hero instanceof Position.Bb);
-
+        var isBbPos = hero instanceof Position.Bb;
+        openRadio.setDisable(isBbPos);
+        openRadio.setSelected(!isBbPos);
         raised.forEach((villain, radio) ->
           radio.setDisable(villain.index() >= hero.index())
         );

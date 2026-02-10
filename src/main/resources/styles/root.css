@@ -18,16 +18,16 @@
     -fx-remove-preview: rgba(244, 63, 94, 0.4);
     -fx-text-fill: white;
     -fx-action-fold: #616161;
-    -fx-action-check: #B8860B;
-    -fx-action-call: #0073B3;
-    -fx-action-raise: #CC6600;
-    -fx-action-allin: #6A0DAD;
-    -fx-card-bg: #1e2227;
+    -fx-action-check: #b8860b;
+    -fx-action-call: #0073b3;
+    -fx-action-raise: #cc6600;
+    -fx-action-allin: #6a0dad;
+    -fx-card-bg: #1e2227
 }
 .radio-button {
     -fx-label-padding: 0;
     -fx-cursor: hand;
-    -fx-alignment: CENTER_RIGHT
+    -fx-alignment: center-left
 }
 .radio {
     -fx-background-color: transparent;
@@ -41,4 +41,35 @@
     -fx-background-color: transparent;
     -fx-background-insets: 0;
     -fx-background-radius: 0
+}
+.scroll-bar {
+    -fx-background-color: transparent
+}
+.scroll-bar:vertical, .scroll-bar:horizontal {
+    -fx-pref-width: 8;
+    -fx-pref-height: 8
+}
+.scroll-bar .track {
+    -fx-background-color: -fx-bg-dark;
+    -fx-background-insets: 0;
+    -fx-background-radius: 4
+}
+.scroll-bar .thumb {
+    -fx-background-color: #2a2e33;
+    -fx-background-insets: 0;
+    -fx-background-radius: 4
+}
+.scroll-bar:hover .thumb {
+    -fx-background-color: #3a3f45
+}
+.scroll-bar:pressed .thumb {
+    -fx-background-color: -fx-active-blue
+}
+.scroll-bar .increment-button, .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0
+}
+.scroll-bar .increment-arrow, .scroll-bar .decrement-arrow {
+    -fx-shape: '';
+    -fx-padding: 0
 }

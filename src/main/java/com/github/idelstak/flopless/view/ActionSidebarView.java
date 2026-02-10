@@ -149,7 +149,7 @@ public final class ActionSidebarView implements Initializable {
         var action = state.selectedAction().gameAction();
         var isRaise = action instanceof GameAction.Money.Raise;
         raiseAmountEdit.setDisable(!isRaise);
-        limpersEdit.setDisable(!isRaise);
+        limpersEdit.setDisable(!(isRaise && state.squeezeLimpers()));
 
         raiseAmount = state.raiseAmount();
         actionAmountField.setText(raiseAmount.doubleValue() % 1 == 0
@@ -165,7 +165,7 @@ public final class ActionSidebarView implements Initializable {
           .stream().filter(t -> ((Labeled) t).getText().equalsIgnoreCase(action.displayLabel()))
           .findFirst()
           .orElseThrow();
-        
+
         actionGroup.selectToggle(toSelect);
     }
 
