@@ -32,9 +32,9 @@ public final class Grid {
         }
         cells = List.copyOf(grid);
         var notationLookupMap = new HashMap<String, Coordinate>();
-        for (var row = 0; row < cells.size(); row++) {
-            for (var col = 0; col < cells.get(row).size(); col++) {
-                var hand = cells.get(row).get(col).cards().notation();
+        for (var col = 0; col < cells.size(); col++) {
+            for (var row = 0; row < cells.get(col).size(); row++) {
+                var hand = cells.get(col).get(row).cards().notation();
                 notationLookupMap.put(hand, new Coordinate(hand, col, row));
             }
         }
@@ -43,12 +43,12 @@ public final class Grid {
 
     public String render() {
         var builder = new StringBuilder();
-        for (int rowIndex = 0; rowIndex < ranks.size(); rowIndex++) {
-            if (ranks.get(rowIndex).text().length() == 1) {
+        for (int colIndex = 0; colIndex < ranks.size(); colIndex++) {
+            if (ranks.get(colIndex).text().length() == 1) {
                 builder.append(" ");
             }
-            for (int colIndex = 0; colIndex < ranks.size(); colIndex++) {
-                var cell = cells.get(rowIndex).get(colIndex);
+            for (int rowIndex = 0; rowIndex < ranks.size(); rowIndex++) {
+                var cell = cells.get(colIndex).get(rowIndex);
                 String notation = cell.cards().notation();
                 builder.append(String.format("%-4s", notation));
             }

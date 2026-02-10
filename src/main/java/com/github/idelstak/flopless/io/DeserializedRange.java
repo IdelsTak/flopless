@@ -23,7 +23,7 @@ public final class DeserializedRange extends JsonDeserializer<SelectedRange> {
             }
             var hand = entry.getKey().toString();
             var actionLabel = entry.getValue().toString();
-            var coord = grid.coordinate(hand).orElseThrow();
+            var coord = grid.coordinate(hand).orElse(null);
             if (coord == null) {
                 throw new IllegalStateException("Unknown hand '" + hand + "' in JSON");
             }

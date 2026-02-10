@@ -40,6 +40,12 @@ public final class LibraryView implements Initializable {
         renderLibrary(savedStates);
         setupActions();
         setupSubscription();
+        
+        if (!savedStates.isEmpty()) {
+            Platform.runLater(() -> {
+                loop.accept(new Action.User.LoadState(savedStates.getFirst()));
+            });
+        }
     }
 
     private void renderLibrary(List<FloplessState> states) {
@@ -62,7 +68,8 @@ public final class LibraryView implements Initializable {
     }
 
     private void setupActions() {
-        newRangeButton.setOnAction(_ -> loop.accept(new Action.User.LoadState(FloplessState.initial())));
+        newRangeButton.setOnAction(_ ->
+          loop.accept(new Action.User.LoadState(FloplessState.initial())));
     }
 
     private void setupSubscription() {
@@ -87,6 +94,7 @@ public final class LibraryView implements Initializable {
     }
 
     private void render(FloplessState state) {
+        System.out.println("[LIBRARY VIEW] range size = " + state.selectedRange().map().entrySet().size());
         var name = strategy.name(state);
         activeStateName = name;
         var savedStates = persistence.loadAll();
