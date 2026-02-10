@@ -1,0 +1,54 @@
+.floating-toolbar {
+    -fx-background-color: -fx-sidebar-bg;
+    -fx-border-radius: 10 10 0 0;
+    -fx-background-radius: 10 10 0 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 20, 0, 0, 4);
+    -fx-alignment: center;
+    -fx-spacing: 6;
+    -fx-padding: 6
+}
+.tool-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-text-muted;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 12 8 12;
+    -fx-background-radius: 6;
+    -fx-cursor: hand
+}
+.tool-btn:hover {
+    -fx-background-color: -fx-card-bg;
+    -fx-text-fill: white
+}
+.tool-btn.danger:hover {
+    -fx-background-color: #450a0a;
+    -fx-text-fill: #fecaca
+}
+.tool-btn.save:hover {
+    -fx-background-color: rgba(16, 185, 129, 0.1);
+    -fx-text-fill: -fx-accent-primary
+}
+.divider {
+    -fx-padding: 0 4 0 4;
+    -fx-opacity: 0.5
+}
+.divider .line {
+    -fx-border-color: -fx-grid-border;
+    -fx-border-width: 0 1 0 0
+}
+.icon {
+    -fx-icon-size: 16;
+    -fx-icon-color: -fx-text-fill
+}
+.icon-undo {
+    -fx-icon-code: 'jam-undo'
+}
+.icon-redo {
+    -fx-icon-code: 'jam-redo'
+}
+.icon-save {
+    -fx-icon-code: 'jam-save'
+}
+.icon-trash {
+    -fx-icon-code: 'jam-trash'
+}

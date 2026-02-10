@@ -1,5 +1,5 @@
 package com.github.idelstak.flopless.grid;
 
-public record Coordinate(int column, int row) {
+public record Coordinate(String hand, int column, int row) {
 
 }

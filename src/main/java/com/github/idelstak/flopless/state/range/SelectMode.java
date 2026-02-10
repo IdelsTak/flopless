@@ -1,4 +1,4 @@
-package com.github.idelstak.flopless.range;
+package com.github.idelstak.flopless.state.range;
 
 public sealed interface SelectMode {
 

@@ -1,12 +1,13 @@
 package com.github.idelstak.flopless.grid;
 
-import com.github.idelstak.flopless.hand.*;
+import com.github.idelstak.flopless.poker.hand.*;
 import java.util.*;
 
 public final class Grid {
 
     private final List<List<Cell>> cells;
     private final List<Rank> ranks;
+    private final Map<String, Coordinate> coordinates;
 
     public Grid() {
         ranks = List.of(
@@ -30,16 +31,24 @@ public final class Grid {
             grid.add(List.copyOf(rowCells));
         }
         cells = List.copyOf(grid);
+        var notationLookupMap = new HashMap<String, Coordinate>();
+        for (var col = 0; col < cells.size(); col++) {
+            for (var row = 0; row < cells.get(col).size(); row++) {
+                var hand = cells.get(col).get(row).cards().notation();
+                notationLookupMap.put(hand, new Coordinate(hand, col, row));
+            }
+        }
+        coordinates = Map.copyOf(notationLookupMap);
     }
 
     public String render() {
         var builder = new StringBuilder();
-        for (int rowIndex = 0; rowIndex < ranks.size(); rowIndex++) {
-            if (ranks.get(rowIndex).text().length() == 1) {
+        for (int colIndex = 0; colIndex < ranks.size(); colIndex++) {
+            if (ranks.get(colIndex).text().length() == 1) {
                 builder.append(" ");
             }
-            for (int colIndex = 0; colIndex < ranks.size(); colIndex++) {
-                var cell = cells.get(rowIndex).get(colIndex);
+            for (int rowIndex = 0; rowIndex < ranks.size(); rowIndex++) {
+                var cell = cells.get(colIndex).get(rowIndex);
                 String notation = cell.cards().notation();
                 builder.append(String.format("%-4s", notation));
             }
@@ -52,8 +61,12 @@ public final class Grid {
         return List.copyOf(cells);
     }
 
-    Cell cell(int column, int row) {
+    public Cell cell(int column, int row) {
         return cells.get(column).get(row);
+    }
+
+    public Optional<Coordinate> coordinate(String hand) {
+        return Optional.ofNullable(coordinates.get(hand));
     }
 
     private HoleCards build(Rank row, Rank col, List<Suit> suits) {

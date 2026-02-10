@@ -3,23 +3,21 @@ package com.github.idelstak.flopless.view;
 import com.github.idelstak.flopless.grid.*;
 import com.github.idelstak.flopless.state.*;
 import com.github.idelstak.flopless.state.api.*;
-import io.reactivex.rxjava3.observers.DisposableObserver;
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
+import io.reactivex.rxjava3.observers.*;
+import java.net.*;
+import java.util.*;
+import javafx.fxml.*;
+import javafx.scene.input.*;
+import javafx.scene.layout.*;
+import javafx.scene.shape.*;
+import javafx.stage.*;
 
 public final class GridView implements Initializable {
 
     private final Stage stage;
     private final FloplessLoop loop;
     private final Grid grid;
-    private DisposableObserver<FloplessState> observe;
+    private DisposableObserver<History<FloplessState>> observe;
     private boolean marqueeActive;
     private double dragStartX;
     private double dragStartY;
@@ -48,7 +46,8 @@ public final class GridView implements Initializable {
             var rows = grid.cells().get(column);
             for (int row = 0; row < rows.size(); row++) {
                 var cell = rows.get(row);
-                var gridCell = new GridCell(stage, loop, cell.cards().notation(), new Coordinate(column, row));
+                var hand = cell.cards().notation();
+                var gridCell = new GridCell(stage, loop, new Coordinate(hand, column, row));
                 handGrid.add(gridCell, column, row);
             }
         }
@@ -61,7 +60,7 @@ public final class GridView implements Initializable {
             dragStartX = event.getX();
             dragStartY = event.getY();
             marqueeActive = true;
-            interactionLayer.getStyleClass().addAll("dragging", "long-press");
+            interactionLayer.getStyleClass().add("dragging");
             selectionBox.setVisible(true);
             selectionBox.setX(dragStartX);
             selectionBox.setY(dragStartY);
@@ -69,7 +68,6 @@ public final class GridView implements Initializable {
             selectionBox.setHeight(0);
             loop.accept(new Action.User.StartDrag(coordinateFrom(dragStartX, dragStartY)));
         });
-
         interactionLayer.addEventHandler(MouseEvent.MOUSE_DRAGGED, event -> {
             if (!marqueeActive) {
                 return;
@@ -77,45 +75,68 @@ public final class GridView implements Initializable {
 
             event.consume();
 
-            double x = event.getX();
-            double y = event.getY();
+            Coordinate startCell = coordinateFrom(dragStartX, dragStartY);
+            Coordinate currentCell = coordinateFrom(event.getX(), event.getY());
 
-            selectionBox.setX(Math.min(dragStartX, x));
-            selectionBox.setY(Math.min(dragStartY, y));
-            selectionBox.setWidth(Math.abs(dragStartX - x));
-            selectionBox.setHeight(Math.abs(dragStartY - y));
+            int minCol = Math.min(startCell.column(), currentCell.column());
+            int maxCol = Math.max(startCell.column(), currentCell.column());
+            int minRow = Math.min(startCell.row(), currentCell.row());
+            int maxRow = Math.max(startCell.row(), currentCell.row());
 
-            loop.accept(new Action.User.UpdatePreview(coordinateFrom(x, y)));
+            double cellWidth = handGrid.getWidth() / 13;
+            double cellHeight = handGrid.getHeight() / 13;
+
+            selectionBox.setX(minCol * cellWidth);
+            selectionBox.setY(minRow * cellHeight);
+            selectionBox.setWidth((maxCol - minCol + 1) * cellWidth);
+            selectionBox.setHeight((maxRow - minRow + 1) * cellHeight);
+
+            loop.accept(new Action.User.UpdatePreview(currentCell));
         });
-
         interactionLayer.addEventHandler(MouseEvent.MOUSE_RELEASED, event -> {
             if (marqueeActive) {
                 event.consume();
-                interactionLayer.getStyleClass().removeAll("dragging", "long-press");
-                loop.accept(new Action.User.UpdatePreview(coordinateFrom(event.getX(), event.getY())));
+                interactionLayer.getStyleClass().remove("dragging");
+
+                Coordinate startCell = coordinateFrom(dragStartX, dragStartY);
+                Coordinate endCell = coordinateFrom(event.getX(), event.getY());
+
+                int minCol = Math.min(startCell.column(), endCell.column());
+                int maxCol = Math.max(startCell.column(), endCell.column());
+                int minRow = Math.min(startCell.row(), endCell.row());
+                int maxRow = Math.max(startCell.row(), endCell.row());
+
+                double cellWidth = handGrid.getWidth() / 13;
+                double cellHeight = handGrid.getHeight() / 13;
+
+                selectionBox.setX(minCol * cellWidth);
+                selectionBox.setY(minRow * cellHeight);
+                selectionBox.setWidth((maxCol - minCol + 1) * cellWidth);
+                selectionBox.setHeight((maxRow - minRow + 1) * cellHeight);
+
+                loop.accept(new Action.User.UpdatePreview(endCell));
                 loop.accept(new Action.User.CommitRange());
+
                 selectionBox.setVisible(false);
             }
 
             marqueeActive = false;
         });
-
     }
 
     private Coordinate coordinateFrom(double x, double y) {
         double cellWidth = handGrid.getWidth() / 13;
         double cellHeight = handGrid.getHeight() / 13;
-
         int column = Math.max(0, Math.min(12, (int) (x / cellWidth)));
         int row = Math.max(0, Math.min(12, (int) (y / cellHeight)));
-
-        return new Coordinate(column, row);
+        var hand = grid.cell(column, row).cards().notation();
+        return new Coordinate(hand, column, row);
     }
 
     private void initSubscription() {
         observe = new DisposableObserver<>() {
             @Override
-            public void onNext(FloplessState state) {
+            public void onNext(History<FloplessState> history) {
             }
 
             @Override
