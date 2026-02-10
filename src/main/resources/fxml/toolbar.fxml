@@ -6,7 +6,6 @@
 <?import javafx.scene.layout.*?>
 <?import org.kordamp.ikonli.javafx.*?>
 
-
 <HBox styleClass="floating-toolbar" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.flopless.view.ToolbarView">
    <stylesheets>
       <URL value="@../styles/fonts.css" />
@@ -23,6 +22,9 @@
                </styleClass>
             </FontIcon>
          </graphic>
+         <tooltip>
+            <Tooltip text="Empty Tooltip" />
+         </tooltip>
       </Button>
       <Button fx:id="redoButton" layoutX="17.0" layoutY="17.0" mnemonicParsing="false" styleClass="tool-btn" text="Redo">
          <graphic>
@@ -35,6 +37,20 @@
          </graphic>
       </Button>
       <Separator orientation="VERTICAL" styleClass="divider" />
+      <Button fx:id="saveButton" layoutX="95.0" layoutY="16.0" mnemonicParsing="false" text="Save">
+         <graphic>
+            <FontIcon>
+               <styleClass>
+                  <String fx:value="icon" />
+                  <String fx:value="icon-save" />
+               </styleClass>
+            </FontIcon>
+         </graphic>
+         <styleClass>
+            <String fx:value="tool-btn" />
+            <String fx:value="save" />
+         </styleClass>
+      </Button>
       <Button fx:id="clearGridButton" layoutX="83.0" layoutY="105.0" mnemonicParsing="false" text="Clear Grid">
          <graphic>
             <FontIcon>

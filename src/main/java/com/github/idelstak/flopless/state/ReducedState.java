@@ -1,6 +1,7 @@
 package com.github.idelstak.flopless.state;
 
 import com.github.idelstak.flopless.grid.*;
+import com.github.idelstak.flopless.io.*;
 import com.github.idelstak.flopless.state.api.*;
 import com.github.idelstak.flopless.state.range.*;
 import com.github.idelstak.flopless.state.spi.*;
@@ -8,6 +9,12 @@ import java.math.*;
 import java.util.*;
 
 public final class ReducedState implements Reduced<FloplessState, Action, FloplessState> {
+
+    private final Persistence persistence;
+
+    public ReducedState(Persistence persistence) {
+        this.persistence = persistence;
+    }
 
     @Override
     public FloplessState apply(FloplessState state, Action action) {
@@ -18,6 +25,8 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
                 pickPosition(state, a);
             case Action.User.FacingPick a ->
                 pickFacing(state, a);
+            case Action.User.ToggleLimpersSqueeze _ ->
+                toggleLimpersSqueeze(state);
             case Action.User.RangeClear _ ->
                 clearRange(state);
             case Action.User.StartDrag a ->
@@ -40,6 +49,11 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
                 increaseLimper(state, a);
             case Action.User.DecreaseLimperAmount a ->
                 decreaseLimper(state, a);
+            case Action.User.Save _ ->
+                save(state);
+            case Action.User.LoadState a ->
+                load(a);
+
             default ->
                 state;
         };
@@ -55,6 +69,10 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
 
     private FloplessState pickFacing(FloplessState state, Action.User.FacingPick action) {
         return state.face(action.facing());
+    }
+
+    private FloplessState toggleLimpersSqueeze(FloplessState state) {
+        return state.toggleLimpersSqueeze(!state.squeezeLimpers());
     }
 
     private FloplessState clearRange(FloplessState state) {
@@ -80,8 +98,13 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
         int maxX = Math.min(12, Math.max(start.column(), end.column()));
         int minY = Math.max(0, Math.min(start.row(), end.row()));
         int maxY = Math.min(12, Math.max(start.row(), end.row()));
-        var selectedAction = state.selectedAction();
-        var preview = SelectedRange.none().addRange(new Coordinate(minX, minY), new Coordinate(maxX, maxY), selectedAction);
+        var grid = new Grid();
+        var preview = SelectedRange.none()
+          .addRange(
+            new Coordinate(grid.cell(minX, minY).cards().notation(), minX, minY),
+            new Coordinate(grid.cell(maxX, maxY).cards().notation(), maxX, maxY),
+            state.selectedAction()
+          );
         return state.showPreview(preview);
     }
 
@@ -144,5 +167,19 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
 
     private double updateAmount(double min, double current, double step) {
         return Math.max(min, current + step);
+    }
+
+    private FloplessState save(FloplessState state) {
+        try {
+            persistence.save(state);
+        } catch (Exception e) {
+            System.out.println("[REDUCED STATE] " + e);
+        }
+
+        return state;
+    }
+
+    private FloplessState load(Action.User.LoadState load) {
+        return FloplessState.initial().copy(load.state());
     }
 }

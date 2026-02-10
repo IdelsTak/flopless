@@ -1,22 +1,22 @@
 package com.github.idelstak.flopless.poker.table;
 
-public sealed interface StackDepth {
+public sealed interface Blinds {
 
     String label();
 
-    record Bb100() implements StackDepth {
+    record OneSbTwoBB() implements Blinds {
 
         @Override
         public String label() {
-            return "100bb";
+            return "1bb-2bb";
         }
     }
 
-    record Bb200() implements StackDepth {
+    record TwoSbFourBB() implements Blinds {
 
         @Override
         public String label() {
-            return "200bb";
+            return "2bb-4bb";
         }
     }
 }

@@ -5,39 +5,109 @@ public sealed interface Facing {
     record Open() implements Facing {
     }
 
-    record VsUtg() implements Facing {
+    sealed interface Raised extends Facing {
+
+        Position villain();
+
+        record VsUtg() implements Raised {
+
+            @Override
+            public Position villain() {
+                return new Position.Utg();
+            }
+        }
+
+        record VsUtg1() implements Raised {
+
+            @Override
+            public Position villain() {
+                return new Position.Utg1();
+            }
+        }
+
+        record VsUtg2() implements Raised {
+
+            @Override
+            public Position villain() {
+                return new Position.Utg2();
+            }
+        }
+
+        record VsLj() implements Raised {
+
+            @Override
+            public Position villain() {
+                return new Position.Lj();
+            }
+        }
+
+        record VsHj() implements Raised {
+
+            @Override
+            public Position villain() {
+                return new Position.Hj();
+            }
+        }
+
+        record VsCo() implements Raised {
+
+            @Override
+            public Position villain() {
+                return new Position.Co();
+            }
+        }
+
+        record VsBtn() implements Raised {
+
+            @Override
+            public Position villain() {
+                return new Position.Btn();
+            }
+        }
+
+        record VsSb() implements Raised {
+
+            @Override
+            public Position villain() {
+                return new Position.Sb();
+            }
+        }
     }
 
-    record VsUtg1() implements Facing {
-    }
+    sealed interface ReRaised extends Facing {
 
-    record VsUtg2() implements Facing {
-    }
+        String label();
 
-    record VsLj() implements Facing {
-    }
+        record Vs3Bet() implements ReRaised {
 
-    record VsHj() implements Facing {
-    }
+            @Override
+            public String label() {
+                return "3bet";
+            }
+        }
 
-    record VsCo() implements Facing {
-    }
+        record Vs4Bet() implements ReRaised {
 
-    record VsBtn() implements Facing {
-    }
+            @Override
+            public String label() {
+                return "4bet";
+            }
+        }
 
-    record VsSb() implements Facing {
-    }
+        record Vs5Bet() implements ReRaised {
 
-    record Vs3Bet() implements Facing {
-    }
+            @Override
+            public String label() {
+                return "5bet";
+            }
+        }
 
-    record Vs4Bet() implements Facing {
-    }
+        record VsAllIn() implements ReRaised {
 
-    record Vs5Bet() implements Facing {
-    }
-
-    record VsAllIn() implements Facing {
+            @Override
+            public String label() {
+                return "allin";
+            }
+        }
     }
 }

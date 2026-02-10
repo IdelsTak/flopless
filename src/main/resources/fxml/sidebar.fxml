@@ -17,12 +17,27 @@
             <Label styleClass="group-label" text="TABLE TYPE" />
             <HBox styleClass="options-row">
                <children>
-                  <RadioButton selected="true" styleClass="option-btn" text="6-MAX" HBox.hgrow="ALWAYS">
+                  <RadioButton fx:id="sixMaxRadio" selected="true" styleClass="option-btn" text="6-MAX" HBox.hgrow="ALWAYS">
                      <toggleGroup>
                         <ToggleGroup fx:id="tableTypeGroup" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton styleClass="option-btn" text="9-MAX" toggleGroup="$tableTypeGroup" HBox.hgrow="ALWAYS" />
+                  <RadioButton fx:id="nineMaxRadio" styleClass="option-btn" text="9-MAX" toggleGroup="$tableTypeGroup" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox layoutX="46.0" layoutY="28.0" styleClass="config-group">
+         <children>
+            <Label styleClass="group-label" text="EFFECTIVE STACKS" />
+            <HBox styleClass="options-row">
+               <children>
+                  <RadioButton fx:id="bb100Radio" selected="true" styleClass="option-btn" text="100 BB" HBox.hgrow="ALWAYS">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="stacksGroup" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="bb200Radio" styleClass="option-btn" text="200 BB" toggleGroup="$stacksGroup" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
          </children>
@@ -32,12 +47,12 @@
             <Label styleClass="group-label" text="BLINDS" />
             <HBox styleClass="options-row">
                <children>
-                  <RadioButton selected="true" styleClass="option-btn" text="1 / 2" HBox.hgrow="ALWAYS">
+                  <RadioButton fx:id="oneTwoBlindsRadio" selected="true" styleClass="option-btn" text="1 SB / 2 BB" HBox.hgrow="ALWAYS">
                      <toggleGroup>
                         <ToggleGroup fx:id="blindsGroup" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton styleClass="option-btn" text="2 / 4" toggleGroup="$blindsGroup" HBox.hgrow="ALWAYS" />
+                  <RadioButton fx:id="twoFourBlindsRadio" styleClass="option-btn" text="2 SB / 4 BB" toggleGroup="$blindsGroup" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
          </children>
@@ -57,19 +72,19 @@
                 <RowConstraints vgrow="ALWAYS" />
               </rowConstraints>
                <children>
-                  <RadioButton selected="true" styleClass="option-btn" text="UTG">
+                  <RadioButton fx:id="utgRadio" selected="true" styleClass="option-btn" text="UTG">
                      <toggleGroup>
                         <ToggleGroup fx:id="heroPositionGroup" />
                      </toggleGroup>
                   </RadioButton>
-                  <RadioButton styleClass="option-btn" text="UTG1" toggleGroup="$heroPositionGroup" GridPane.columnIndex="1" />
-                  <RadioButton styleClass="option-btn" text="UTG2" toggleGroup="$heroPositionGroup" GridPane.columnIndex="2" />
-                  <RadioButton styleClass="option-btn" text="LJ" toggleGroup="$heroPositionGroup" GridPane.rowIndex="1" />
-                  <RadioButton styleClass="option-btn" text="HJ" toggleGroup="$heroPositionGroup" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <RadioButton styleClass="option-btn" text="CO" toggleGroup="$heroPositionGroup" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                  <RadioButton styleClass="option-btn" text="BTN" toggleGroup="$heroPositionGroup" GridPane.rowIndex="2" />
-                  <RadioButton styleClass="option-btn" text="SB" toggleGroup="$heroPositionGroup" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <RadioButton styleClass="option-btn" text="BB" toggleGroup="$heroPositionGroup" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                  <RadioButton fx:id="utg1Radio" styleClass="option-btn" text="UTG1" toggleGroup="$heroPositionGroup" GridPane.columnIndex="1" />
+                  <RadioButton fx:id="utg2Radio" styleClass="option-btn" text="UTG2" toggleGroup="$heroPositionGroup" GridPane.columnIndex="2" />
+                  <RadioButton fx:id="ljRadio" styleClass="option-btn" text="LJ" toggleGroup="$heroPositionGroup" GridPane.rowIndex="1" />
+                  <RadioButton fx:id="hjRadio" styleClass="option-btn" text="HJ" toggleGroup="$heroPositionGroup" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <RadioButton fx:id="coRadio" styleClass="option-btn" text="CO" toggleGroup="$heroPositionGroup" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                  <RadioButton fx:id="btnRadio" styleClass="option-btn" text="BTN" toggleGroup="$heroPositionGroup" GridPane.rowIndex="2" />
+                  <RadioButton fx:id="sbRadio" styleClass="option-btn" text="SB" toggleGroup="$heroPositionGroup" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <RadioButton fx:id="bbRadio" styleClass="option-btn" text="BB" toggleGroup="$heroPositionGroup" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                </children>
             </GridPane>
          </children>
@@ -79,7 +94,7 @@
             <Label styleClass="group-label" text="FACING SCENARIO" />
             <VBox styleClass="scenario-sub-container">
                <children>
-                  <RadioButton selected="true" styleClass="option-btn" text="OPEN / RFI">
+                  <RadioButton fx:id="openRadio" selected="true" styleClass="option-btn" text="OPEN / RFI">
                      <toggleGroup>
                         <ToggleGroup fx:id="scenarioGroup" />
                      </toggleGroup>
@@ -97,21 +112,21 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
                      </rowConstraints>
                      <children>
-                        <RadioButton styleClass="option-btn" text="VS UTG" toggleGroup="$scenarioGroup" />
-                        <RadioButton styleClass="option-btn" text="VS UTG1" toggleGroup="$scenarioGroup" GridPane.columnIndex="1" />
-                        <RadioButton styleClass="option-btn" text="VS UTG2" toggleGroup="$scenarioGroup" GridPane.columnIndex="2" />
-                        <RadioButton styleClass="option-btn" text="VS LJ" toggleGroup="$scenarioGroup" GridPane.rowIndex="1" />
-                        <RadioButton styleClass="option-btn" text="VS HJ" toggleGroup="$scenarioGroup" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <RadioButton styleClass="option-btn" text="VS CO" toggleGroup="$scenarioGroup" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                        <RadioButton styleClass="option-btn" text="VS BTN" toggleGroup="$scenarioGroup" GridPane.rowIndex="2" />
-                        <RadioButton styleClass="option-btn" text="VS SB" toggleGroup="$scenarioGroup" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <RadioButton styleClass="option-btn" text="VS 3B" toggleGroup="$scenarioGroup" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                        <RadioButton styleClass="option-btn" text="VS 4B" toggleGroup="$scenarioGroup" GridPane.rowIndex="3" />
-                        <RadioButton styleClass="option-btn" text="VS 5B" toggleGroup="$scenarioGroup" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <RadioButton styleClass="option-btn" text="VS ALLIN" toggleGroup="$scenarioGroup" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <RadioButton fx:id="vsUtgRadio" styleClass="option-btn" text="VS UTG" toggleGroup="$scenarioGroup" />
+                        <RadioButton fx:id="vsUtg1Radio" styleClass="option-btn" text="VS UTG1" toggleGroup="$scenarioGroup" GridPane.columnIndex="1" />
+                        <RadioButton fx:id="vsUtg2Radio" styleClass="option-btn" text="VS UTG2" toggleGroup="$scenarioGroup" GridPane.columnIndex="2" />
+                        <RadioButton fx:id="vsLjRadio" styleClass="option-btn" text="VS LJ" toggleGroup="$scenarioGroup" GridPane.rowIndex="1" />
+                        <RadioButton fx:id="vsHjRadio" styleClass="option-btn" text="VS HJ" toggleGroup="$scenarioGroup" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <RadioButton fx:id="vsCoRadio" styleClass="option-btn" text="VS CO" toggleGroup="$scenarioGroup" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <RadioButton fx:id="vsBtnRadio" styleClass="option-btn" text="VS BTN" toggleGroup="$scenarioGroup" GridPane.rowIndex="2" />
+                        <RadioButton fx:id="vsSbRadio" styleClass="option-btn" text="VS SB" toggleGroup="$scenarioGroup" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <RadioButton fx:id="vs3bRadio" styleClass="option-btn" text="VS 3B" toggleGroup="$scenarioGroup" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <RadioButton fx:id="vs4bRadio" styleClass="option-btn" text="VS 4B" toggleGroup="$scenarioGroup" GridPane.rowIndex="3" />
+                        <RadioButton fx:id="vs5bRadio" styleClass="option-btn" text="VS 5B" toggleGroup="$scenarioGroup" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <RadioButton fx:id="vsAllinRadio" styleClass="option-btn" text="VS ALLIN" toggleGroup="$scenarioGroup" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                      </children>
                   </GridPane>
-                  <RadioButton styleClass="option-btn" text="WITH LIMPER(S)" />
+                  <RadioButton fx:id="withLimpersRadio" styleClass="option-btn" text="WITH LIMPER(S)" />
                </children>
             </VBox>
          </children>

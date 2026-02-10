@@ -24,6 +24,10 @@
     -fx-background-color: #450a0a;
     -fx-text-fill: #fecaca
 }
+.tool-btn.save:hover {
+    -fx-background-color: rgba(16, 185, 129, 0.1);
+    -fx-text-fill: -fx-accent-primary
+}
 .divider {
     -fx-padding: 0 4 0 4;
     -fx-opacity: 0.5
@@ -41,6 +45,9 @@
 }
 .icon-redo {
     -fx-icon-code: 'jam-redo'
+}
+.icon-save {
+    -fx-icon-code: 'jam-save'
 }
 .icon-trash {
     -fx-icon-code: 'jam-trash'

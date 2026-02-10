@@ -146,7 +146,7 @@ public final class ActionSidebarView implements Initializable {
     }
 
     private void render(FloplessState state) {
-        var action = state.selectedAction().action();
+        var action = state.selectedAction().gameAction();
         var isRaise = action instanceof GameAction.Money.Raise;
         raiseAmountEdit.setDisable(!isRaise);
         limpersEdit.setDisable(!isRaise);
@@ -162,7 +162,7 @@ public final class ActionSidebarView implements Initializable {
                                     : String.format("%.1f", perLimperAmount.doubleValue()));
 
         var toSelect = actionGroup.getToggles()
-          .stream().filter(t -> ((Labeled) t).getText().equalsIgnoreCase(action.label()))
+          .stream().filter(t -> ((Labeled) t).getText().equalsIgnoreCase(action.displayLabel()))
           .findFirst()
           .orElseThrow();
         

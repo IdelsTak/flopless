@@ -46,7 +46,8 @@ public final class GridView implements Initializable {
             var rows = grid.cells().get(column);
             for (int row = 0; row < rows.size(); row++) {
                 var cell = rows.get(row);
-                var gridCell = new GridCell(stage, loop, cell.cards().notation(), new Coordinate(column, row));
+                var hand = cell.cards().notation();
+                var gridCell = new GridCell(stage, loop, new Coordinate(hand, column, row));
                 handGrid.add(gridCell, column, row);
             }
         }
@@ -126,11 +127,10 @@ public final class GridView implements Initializable {
     private Coordinate coordinateFrom(double x, double y) {
         double cellWidth = handGrid.getWidth() / 13;
         double cellHeight = handGrid.getHeight() / 13;
-
         int column = Math.max(0, Math.min(12, (int) (x / cellWidth)));
         int row = Math.max(0, Math.min(12, (int) (y / cellHeight)));
-
-        return new Coordinate(column, row);
+        var hand = grid.cell(column, row).cards().notation();
+        return new Coordinate(hand, column, row);
     }
 
     private void initSubscription() {

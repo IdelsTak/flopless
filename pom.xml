@@ -41,6 +41,11 @@
    <artifactId>ikonli-jamicons-pack</artifactId>
    <version>${org.kordamp.ikonli.version}</version>
   </dependency>
+  <dependency>
+   <groupId>org.kordamp.ikonli</groupId>
+   <artifactId>ikonli-carbonicons-pack</artifactId>
+   <version>${org.kordamp.ikonli.version}</version>
+  </dependency>
   <!-- Reactive -->
   <dependency>
    <groupId>io.reactivex.rxjava3</groupId>

@@ -13,16 +13,14 @@ public final class GridCell extends StackPane {
 
     private final Stage stage;
     private final FloplessLoop loop;
-    private final String notation;
     private final Coordinate coordinate;
     private DisposableObserver<History<FloplessState>> observe;
     private boolean isSelected;
     private Label handLabel;
 
-    GridCell(Stage stage, FloplessLoop loop, String notation, Coordinate coordinate) {
+    GridCell(Stage stage, FloplessLoop loop, Coordinate coordinate) {
         this.stage = stage;
         this.loop = loop;
-        this.notation = notation;
         this.coordinate = coordinate;
 
         setupCell();
@@ -34,7 +32,7 @@ public final class GridCell extends StackPane {
     public String toString() {
         var sb = new StringBuilder();
         sb.append('{');
-        sb.append(notation);
+        sb.append(coordinate.hand());
         sb.append(" [").append(coordinate.column());
         sb.append(", ").append(coordinate.row()).append(']');
         sb.append('}');
@@ -46,7 +44,7 @@ public final class GridCell extends StackPane {
     }
 
     private void setupLabel() {
-        handLabel = new Label(notation);
+        handLabel = new Label(coordinate.hand());
         handLabel.getStyleClass().add("hand-label");
         getChildren().add(handLabel);
     }

@@ -14,15 +14,20 @@
          <center>
             <fx:include source="grid.fxml" />
          </center>
-         <left>
-            <fx:include source="sidebar.fxml" />
-         </left>
          <right>
             <fx:include source="actionsidebar.fxml" />
          </right>
          <top>
             <fx:include source="toolbar.fxml" />
          </top>
+         <left>
+            <HBox BorderPane.alignment="CENTER">
+               <children>
+                  <fx:include source="librarysidebar.fxml" />
+                  <fx:include source="sidebar.fxml" />
+               </children>
+            </HBox>
+         </left>
       </BorderPane>
    </children>
 </StackPane>

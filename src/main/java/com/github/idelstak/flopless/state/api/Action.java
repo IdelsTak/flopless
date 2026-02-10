@@ -3,6 +3,7 @@ package com.github.idelstak.flopless.state.api;
 import com.github.idelstak.flopless.grid.*;
 import com.github.idelstak.flopless.poker.player.*;
 import com.github.idelstak.flopless.poker.table.*;
+import com.github.idelstak.flopless.state.*;
 
 public sealed interface Action {
 
@@ -21,6 +22,9 @@ public sealed interface Action {
         record Redo() implements User {
         }
 
+        record Save() implements User {
+        }
+
         record TableTypePick(TableType tableType) implements User {
 
         }
@@ -31,6 +35,9 @@ public sealed interface Action {
 
         record FacingPick(Facing facing) implements User {
 
+        }
+
+        record ToggleLimpersSqueeze() implements User {
         }
 
         record RangeClear() implements User {
@@ -72,6 +79,10 @@ public sealed interface Action {
         }
 
         record DecreaseLimperAmount(double step) implements Action {
+
+        }
+
+        record LoadState(FloplessState state) implements Action {
 
         }
     }

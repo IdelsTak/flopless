@@ -7,6 +7,7 @@ public final class Grid {
 
     private final List<List<Cell>> cells;
     private final List<Rank> ranks;
+    private final Map<String, Coordinate> coordinates;
 
     public Grid() {
         ranks = List.of(
@@ -30,6 +31,14 @@ public final class Grid {
             grid.add(List.copyOf(rowCells));
         }
         cells = List.copyOf(grid);
+        var notationLookupMap = new HashMap<String, Coordinate>();
+        for (var row = 0; row < cells.size(); row++) {
+            for (var col = 0; col < cells.get(row).size(); col++) {
+                var hand = cells.get(row).get(col).cards().notation();
+                notationLookupMap.put(hand, new Coordinate(hand, col, row));
+            }
+        }
+        coordinates = Map.copyOf(notationLookupMap);
     }
 
     public String render() {
@@ -52,8 +61,12 @@ public final class Grid {
         return List.copyOf(cells);
     }
 
-    Cell cell(int column, int row) {
+    public Cell cell(int column, int row) {
         return cells.get(column).get(row);
+    }
+
+    public Optional<Coordinate> coordinate(String hand) {
+        return Optional.ofNullable(coordinates.get(hand));
     }
 
     private HoleCards build(Rank row, Rank col, List<Suit> suits) {

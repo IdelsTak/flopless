@@ -22,6 +22,8 @@ public final class ToolbarView implements Initializable {
     private Button redoButton;
     @FXML
     private Button clearGridButton;
+    @FXML
+    private Button saveButton;
 
     public ToolbarView(Stage stage, FloplessLoop loop) {
         this.stage = stage;
@@ -49,16 +51,17 @@ public final class ToolbarView implements Initializable {
               redoButton::fire
             );
             scene.getAccelerators().put(
-              new KeyCodeCombination(KeyCode.Z, KeyCombination.SHORTCUT_DOWN),
-              redoButton::fire
+              new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN),
+              saveButton::fire
             );
         });
     }
 
     private void setupActions() {
-        clearGridButton.setOnAction(_ -> loop.accept(new Action.User.RangeClear()));
         undoButton.setOnAction(_ -> loop.accept(new Action.User.Undo()));
         redoButton.setOnAction(_ -> loop.accept(new Action.User.Redo()));
+        saveButton.setOnAction(_ -> loop.accept(new Action.User.Save()));
+        clearGridButton.setOnAction(_ -> loop.accept(new Action.User.RangeClear()));
     }
 
     private void setupSubscription() {

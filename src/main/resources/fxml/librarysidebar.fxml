@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.flopless.view.LibraryView">
+   <stylesheets>
+      <URL value="@../styles/fonts.css" />
+      <URL value="@../styles/root.css" />
+      <URL value="@../styles/sidebar.css" />
+   </stylesheets>
+   <styleClass>
+      <String fx:value="sidebar" />
+      <String fx:value="library" />
+   </styleClass>
+   <children>
+      <Label styleClass="sidebar-header" text="Library" />
+      <Button fx:id="newRangeButton" mnemonicParsing="false" styleClass="new-btn" text="New Range">
+         <graphic>
+            <FontIcon />
+         </graphic>
+      </Button>
+      <ScrollPane styleClass="library-scroll" VBox.vgrow="ALWAYS">
+        <content>
+            <VBox fx:id="rangesListBox" prefHeight="200.0" prefWidth="100.0" styleClass="grid-list">
+               <children>
+                  <HBox>
+                     <children>
+                        <Label text="UTG Open" />
+                     </children>
+                     <styleClass>
+                        <String fx:value="grid-item" />
+                        <String fx:value="active" />
+                     </styleClass>
+                  </HBox>
+               </children>
+            </VBox>
+        </content>
+      </ScrollPane>
+   </children>
+</VBox>

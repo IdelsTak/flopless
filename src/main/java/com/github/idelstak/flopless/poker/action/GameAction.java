@@ -1,10 +1,13 @@
 package com.github.idelstak.flopless.poker.action;
 
 import java.math.*;
+import java.util.*;
 
 public sealed interface GameAction {
 
-    String label();
+    String simpleLabel();
+
+    String displayLabel();
 
     sealed interface Money extends GameAction {
 
@@ -13,7 +16,12 @@ public sealed interface GameAction {
         record Raise(BigDecimal amount) implements Money {
 
             @Override
-            public String label() {
+            public String simpleLabel() {
+                return displayLabel().toLowerCase(Locale.ROOT);
+            }
+
+            @Override
+            public String displayLabel() {
                 return "Raise";
             }
         }
@@ -24,7 +32,12 @@ public sealed interface GameAction {
         record Check() implements UknownMoney {
 
             @Override
-            public String label() {
+            public String simpleLabel() {
+                return displayLabel().toLowerCase(Locale.ROOT);
+            }
+
+            @Override
+            public String displayLabel() {
                 return "Check";
             }
         }
@@ -32,7 +45,12 @@ public sealed interface GameAction {
         record Call() implements UknownMoney {
 
             @Override
-            public String label() {
+            public String simpleLabel() {
+                return displayLabel().toLowerCase(Locale.ROOT);
+            }
+
+            @Override
+            public String displayLabel() {
                 return "Call";
             }
         }
@@ -40,7 +58,12 @@ public sealed interface GameAction {
         record AllIn() implements UknownMoney {
 
             @Override
-            public String label() {
+            public String simpleLabel() {
+                return displayLabel().replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
+            }
+
+            @Override
+            public String displayLabel() {
                 return "All In";
             }
         }
@@ -48,7 +71,12 @@ public sealed interface GameAction {
         record Fold() implements UknownMoney {
 
             @Override
-            public String label() {
+            public String simpleLabel() {
+                return displayLabel().toLowerCase(Locale.ROOT);
+            }
+
+            @Override
+            public String displayLabel() {
                 return "Fold";
             }
         }

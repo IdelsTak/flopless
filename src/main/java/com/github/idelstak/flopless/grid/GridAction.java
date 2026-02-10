@@ -6,14 +6,33 @@ import javafx.scene.paint.*;
 
 public sealed interface GridAction {
 
-    GameAction action();
+    GameAction gameAction();
 
     Color color();
+
+    public static GridAction fromSimpleLabel(String value) {
+        if (value.contains("bb")) {
+            var amountText = value.replaceAll("bb", "");
+            return new Raise(new BigDecimal(amountText));
+        }
+        return switch (value) {
+            case "check" ->
+                new Check();
+            case "call" ->
+                new Call();
+            case "allin" ->
+                new AllIn();
+            case "fold" ->
+                new Fold();
+            default ->
+                throw new IllegalArgumentException("Unknown action: " + value);
+        };
+    }
 
     record Raise(BigDecimal amount) implements GridAction {
 
         @Override
-        public GameAction action() {
+        public GameAction gameAction() {
             return new GameAction.Money.Raise(amount);
         }
 
@@ -26,7 +45,7 @@ public sealed interface GridAction {
     record Check() implements GridAction {
 
         @Override
-        public GameAction action() {
+        public GameAction gameAction() {
             return new GameAction.UknownMoney.Check();
         }
 
@@ -39,7 +58,7 @@ public sealed interface GridAction {
     record Call() implements GridAction {
 
         @Override
-        public GameAction action() {
+        public GameAction gameAction() {
             return new GameAction.UknownMoney.Call();
         }
 
@@ -52,7 +71,7 @@ public sealed interface GridAction {
     record AllIn() implements GridAction {
 
         @Override
-        public GameAction action() {
+        public GameAction gameAction() {
             return new GameAction.UknownMoney.AllIn();
         }
 
@@ -65,7 +84,7 @@ public sealed interface GridAction {
     record Fold() implements GridAction {
 
         @Override
-        public GameAction action() {
+        public GameAction gameAction() {
             return new GameAction.UknownMoney.Fold();
         }
 
