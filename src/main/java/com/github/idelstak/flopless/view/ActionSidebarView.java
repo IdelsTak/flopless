@@ -2,6 +2,7 @@ package com.github.idelstak.flopless.view;
 
 import com.github.idelstak.flopless.grid.*;
 import com.github.idelstak.flopless.poker.action.*;
+import com.github.idelstak.flopless.poker.player.*;
 import com.github.idelstak.flopless.state.*;
 import com.github.idelstak.flopless.state.api.*;
 import io.reactivex.rxjava3.observers.*;
@@ -21,6 +22,7 @@ public final class ActionSidebarView implements Initializable {
     private DisposableObserver<History<FloplessState>> observe;
     private BigDecimal raiseAmount;
     private BigDecimal perLimperAmount;
+    private Facing currentFacing;
     @FXML
     private RadioButton foldRadio;
     @FXML
@@ -114,6 +116,7 @@ public final class ActionSidebarView implements Initializable {
 
         raiseAmount = BigDecimal.ZERO;
         perLimperAmount = BigDecimal.ZERO;
+        currentFacing = new Facing.Open();
     }
 
     @Override
@@ -172,15 +175,21 @@ public final class ActionSidebarView implements Initializable {
         decrementLimperAmountButton.setOnAction(_ ->
           loop.accept(new Action.User.DecreaseLimperAmount(-0.5)));
 
-        reraisedIpField.setOnAction(_ ->
-          loop.accept(new Action.User.ReraisedIpMultiplier(readDouble(reraisedIpField, 3.0))));
+        reraisedIpField.setOnAction(_ -> {
+            var fallback = displayedReraisedMultiplier(BigDecimal.valueOf(3.0), currentFacing).doubleValue();
+            var displayed = readDouble(reraisedIpField, fallback);
+            loop.accept(new Action.User.ReraisedIpMultiplier(baseReraisedMultiplier(displayed, currentFacing)));
+        });
         incrementReraisedIpButton.setOnAction(_ ->
           loop.accept(new Action.User.IncreaseReraisedIpMultiplier(0.5)));
         decrementReraisedIpButton.setOnAction(_ ->
           loop.accept(new Action.User.DecreaseReraisedIpMultiplier(-0.5)));
 
-        reraisedOopField.setOnAction(_ ->
-          loop.accept(new Action.User.ReraisedOopMultiplier(readDouble(reraisedOopField, 4.0))));
+        reraisedOopField.setOnAction(_ -> {
+            var fallback = displayedReraisedMultiplier(BigDecimal.valueOf(4.0), currentFacing).doubleValue();
+            var displayed = readDouble(reraisedOopField, fallback);
+            loop.accept(new Action.User.ReraisedOopMultiplier(baseReraisedMultiplier(displayed, currentFacing)));
+        });
         incrementReraisedOopButton.setOnAction(_ ->
           loop.accept(new Action.User.IncreaseReraisedOopMultiplier(0.5)));
         decrementReraisedOopButton.setOnAction(_ ->
@@ -216,6 +225,7 @@ public final class ActionSidebarView implements Initializable {
     }
 
     private void render(FloplessState state) {
+        currentFacing = state.facing();
         var action = state.selectedAction().gameAction();
         var isRaise = action instanceof GameAction.Money.Raise;
         raiseAmountEdit.setDisable(!isRaise);
@@ -228,8 +238,8 @@ public final class ActionSidebarView implements Initializable {
 
         perLimperAmount = state.perLimperAmount();
         limperAmountField.setText(formatDecimal(perLimperAmount));
-        reraisedIpField.setText(formatDecimal(state.reraisedIpMultiplier()));
-        reraisedOopField.setText(formatDecimal(state.reraisedOopMultiplier()));
+        reraisedIpField.setText(formatDecimal(displayedReraisedMultiplier(state.reraisedIpMultiplier(), state.facing())));
+        reraisedOopField.setText(formatDecimal(displayedReraisedMultiplier(state.reraisedOopMultiplier(), state.facing())));
 
         aaOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("AA", state.raiseAmount())));
         kkOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("KK", state.raiseAmount())));
@@ -276,6 +286,26 @@ public final class ActionSidebarView implements Initializable {
         return value.doubleValue() % 1 == 0
                  ? String.format("%.0f", value.doubleValue())
                  : String.format("%.1f", value.doubleValue());
+    }
+
+    private BigDecimal displayedReraisedMultiplier(BigDecimal base, Facing facing) {
+        return base.add(reraisedFacingStep(facing));
+    }
+
+    private double baseReraisedMultiplier(double displayed, Facing facing) {
+        return Math.max(1.0, displayed - reraisedFacingStep(facing).doubleValue());
+    }
+
+    private BigDecimal reraisedFacingStep(Facing facing) {
+        if (!(facing instanceof Facing.ReRaised reRaised)) {
+            return BigDecimal.ZERO;
+        }
+        return switch (reRaised) {
+            case Facing.ReRaised.Vs3Bet _ -> BigDecimal.ZERO;
+            case Facing.ReRaised.Vs4Bet _ -> BigDecimal.ONE;
+            case Facing.ReRaised.Vs5Bet _ -> BigDecimal.valueOf(2);
+            case Facing.ReRaised.VsAllIn _ -> BigDecimal.ZERO;
+        };
     }
 
     private void dispose() {
