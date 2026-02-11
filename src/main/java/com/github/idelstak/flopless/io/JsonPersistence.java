@@ -38,8 +38,14 @@ public final class JsonPersistence implements Persistence {
                     var fileName = file.getFileName().toString();
                     var name = fileName.substring(0, fileName.length() - 5); // strip ".json"
                     var state = strategy.parse(name);
-                    var range = mapper.readValue(file.toFile(), SelectedRange.class);
-                    states.add(state.selectRange(range));
+                    var node = mapper.readTree(file.toFile());
+                    if (node.has("range")) {
+                        var chart = mapper.treeToValue(node, PersistedChart.class);
+                        states.add(state.selectRange(chart.range()).withSizing(chart.sizing()));
+                    } else {
+                        var range = mapper.treeToValue(node, SelectedRange.class);
+                        states.add(state.selectRange(range));
+                    }
                 } catch (IOException e) {
                     throw new IllegalStateException("Failed to load SelectedRange from " + file, e);
                 }
@@ -54,7 +60,7 @@ public final class JsonPersistence implements Persistence {
     public void save(FloplessState state) {
         Path file = directory.resolve(strategy.name(state) + ".json");
         try {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(file.toFile(), state.selectedRange());
+            mapper.writerWithDefaultPrettyPrinter().writeValue(file.toFile(), PersistedChart.fromState(state));
         } catch (IOException e) {
             throw new IllegalStateException("Failed to save SelectedRange to " + file, e);
         }

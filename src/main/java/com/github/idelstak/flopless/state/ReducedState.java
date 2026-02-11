@@ -52,6 +52,26 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
                 increaseLimper(state, a);
             case Action.User.DecreaseLimperAmount a ->
                 decreaseLimper(state, a);
+            case Action.User.LimperCount a ->
+                limperCount(state, a);
+            case Action.User.IncreaseLimperCount a ->
+                increaseLimperCount(state, a);
+            case Action.User.DecreaseLimperCount a ->
+                decreaseLimperCount(state, a);
+            case Action.User.ThreeBetIpMultiplier a ->
+                threeBetIpMultiplier(state, a);
+            case Action.User.IncreaseThreeBetIpMultiplier a ->
+                increaseThreeBetIpMultiplier(state, a);
+            case Action.User.DecreaseThreeBetIpMultiplier a ->
+                decreaseThreeBetIpMultiplier(state, a);
+            case Action.User.ThreeBetOopMultiplier a ->
+                threeBetOopMultiplier(state, a);
+            case Action.User.IncreaseThreeBetOopMultiplier a ->
+                increaseThreeBetOopMultiplier(state, a);
+            case Action.User.DecreaseThreeBetOopMultiplier a ->
+                decreaseThreeBetOopMultiplier(state, a);
+            case Action.User.PremiumRaiseOverride a ->
+                premiumRaiseOverride(state, a);
             case Action.User.Save _ ->
                 save(state);
             case Action.User.DeleteState a ->
@@ -134,7 +154,9 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
         }
         for (var c : state.previewRange().coordinates()) {
             var selected = state.selectedRange().coordinates().contains(c);
-            var actionToApply = selected ? state.selectedRange().actionAt(c) : state.selectedAction();
+            var actionToApply = selected
+                                  ? state.selectedRange().actionAt(c)
+                                  : resolveSelectedActionForCoordinate(state, c);
             committed = selected ? committed.remove(c) : committed.add(c, actionToApply);
         }
         return state
@@ -146,6 +168,15 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
 
     private FloplessState selectAction(FloplessState state, Action.User.SelectGridAction select) {
         return state.selectAction(select.action());
+    }
+
+    private GridAction resolveSelectedActionForCoordinate(FloplessState state, Coordinate coordinate) {
+        if (state.selectedAction() instanceof GridAction.Raise _) {
+            var amount = state.sizingConfig()
+              .resolvedRaiseBb(coordinate.hand(), state.position(), state.facing(), state.squeezeLimpers());
+            return new GridAction.Raise(amount);
+        }
+        return state.selectedAction();
     }
 
     private FloplessState raiseAmount(FloplessState state, Action.User.RaiseAmount raise) {
@@ -181,6 +212,54 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
         var min = state.minPerLimperAmount().doubleValue();
         var newAmount = updateAmount(min, state.perLimperAmount().doubleValue(), decrease.step());
         return state.perLimper(BigDecimal.valueOf(newAmount));
+    }
+
+    private FloplessState limperCount(FloplessState state, Action.User.LimperCount count) {
+        return state.limperCount(count.amount());
+    }
+
+    private FloplessState increaseLimperCount(FloplessState state, Action.User.IncreaseLimperCount increase) {
+        return state.limperCount(state.limperCount() + increase.step());
+    }
+
+    private FloplessState decreaseLimperCount(FloplessState state, Action.User.DecreaseLimperCount decrease) {
+        return state.limperCount(state.limperCount() - decrease.step());
+    }
+
+    private FloplessState threeBetIpMultiplier(FloplessState state, Action.User.ThreeBetIpMultiplier amount) {
+        return state.threeBetIpMultiplier(BigDecimal.valueOf(amount.amount()));
+    }
+
+    private FloplessState increaseThreeBetIpMultiplier(FloplessState state, Action.User.IncreaseThreeBetIpMultiplier increase) {
+        var min = BigDecimal.ONE.doubleValue();
+        var next = updateAmount(min, state.threeBetIpMultiplier().doubleValue(), increase.step());
+        return state.threeBetIpMultiplier(BigDecimal.valueOf(next));
+    }
+
+    private FloplessState decreaseThreeBetIpMultiplier(FloplessState state, Action.User.DecreaseThreeBetIpMultiplier decrease) {
+        var min = BigDecimal.ONE.doubleValue();
+        var next = updateAmount(min, state.threeBetIpMultiplier().doubleValue(), decrease.step());
+        return state.threeBetIpMultiplier(BigDecimal.valueOf(next));
+    }
+
+    private FloplessState threeBetOopMultiplier(FloplessState state, Action.User.ThreeBetOopMultiplier amount) {
+        return state.threeBetOopMultiplier(BigDecimal.valueOf(amount.amount()));
+    }
+
+    private FloplessState increaseThreeBetOopMultiplier(FloplessState state, Action.User.IncreaseThreeBetOopMultiplier increase) {
+        var min = BigDecimal.ONE.doubleValue();
+        var next = updateAmount(min, state.threeBetOopMultiplier().doubleValue(), increase.step());
+        return state.threeBetOopMultiplier(BigDecimal.valueOf(next));
+    }
+
+    private FloplessState decreaseThreeBetOopMultiplier(FloplessState state, Action.User.DecreaseThreeBetOopMultiplier decrease) {
+        var min = BigDecimal.ONE.doubleValue();
+        var next = updateAmount(min, state.threeBetOopMultiplier().doubleValue(), decrease.step());
+        return state.threeBetOopMultiplier(BigDecimal.valueOf(next));
+    }
+
+    private FloplessState premiumRaiseOverride(FloplessState state, Action.User.PremiumRaiseOverride override) {
+        return state.premiumOverride(override.hand(), BigDecimal.valueOf(override.amount()));
     }
 
     private double updateAmount(double min, double current, double step) {

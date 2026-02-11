@@ -46,9 +46,41 @@ public final class ActionSidebarView implements Initializable {
     @FXML
     private Button incrementLimperAmountButton;
     @FXML
+    private Button decrementLimperCountButton;
+    @FXML
+    private Button incrementLimperCountButton;
+    @FXML
+    private TextField limperCountField;
+    @FXML
+    private TextField threeBetIpField;
+    @FXML
+    private Button decrementThreeBetIpButton;
+    @FXML
+    private Button incrementThreeBetIpButton;
+    @FXML
+    private TextField threeBetOopField;
+    @FXML
+    private Button decrementThreeBetOopButton;
+    @FXML
+    private Button incrementThreeBetOopButton;
+    @FXML
+    private TextField aaOverrideField;
+    @FXML
+    private TextField kkOverrideField;
+    @FXML
+    private TextField qqOverrideField;
+    @FXML
+    private TextField aksOverrideField;
+    @FXML
+    private TextField akoOverrideField;
+    @FXML
     private VBox raiseAmountEdit;
     @FXML
     private VBox limpersEdit;
+    @FXML
+    private VBox threeBetEdit;
+    @FXML
+    private VBox premiumEdit;
 
     public ActionSidebarView(Stage stage, FloplessLoop loop) {
         this.stage = stage;
@@ -107,21 +139,39 @@ public final class ActionSidebarView implements Initializable {
         decrementActionAmountButton.setOnAction(_ ->
           loop.accept(new Action.User.DecreaseRaiseAmount(-0.5)));
         limperAmountField.setOnAction(_ -> {
-            var text = limperAmountField.getText();
-            if (text == null || text.isBlank()) {
-                return;
-            }
-            BigDecimal amount = perLimperAmount;
-            try {
-                amount = new BigDecimal(text);
-            } catch (NumberFormatException _) {
-            }
-            loop.accept(new Action.User.LimperAmount(amount.doubleValue()));
+            loop.accept(new Action.User.LimperAmount(readDouble(limperAmountField, perLimperAmount.doubleValue())));
         });
         incrementLimperAmountButton.setOnAction(_ ->
           loop.accept(new Action.User.IncreaseLimperAmount(0.5)));
         decrementLimperAmountButton.setOnAction(_ ->
           loop.accept(new Action.User.DecreaseLimperAmount(-0.5)));
+
+        limperCountField.setOnAction(_ ->
+          loop.accept(new Action.User.LimperCount(readInt(limperCountField, 0))));
+        incrementLimperCountButton.setOnAction(_ ->
+          loop.accept(new Action.User.IncreaseLimperCount(1)));
+        decrementLimperCountButton.setOnAction(_ ->
+          loop.accept(new Action.User.DecreaseLimperCount(1)));
+
+        threeBetIpField.setOnAction(_ ->
+          loop.accept(new Action.User.ThreeBetIpMultiplier(readDouble(threeBetIpField, 3.0))));
+        incrementThreeBetIpButton.setOnAction(_ ->
+          loop.accept(new Action.User.IncreaseThreeBetIpMultiplier(0.5)));
+        decrementThreeBetIpButton.setOnAction(_ ->
+          loop.accept(new Action.User.DecreaseThreeBetIpMultiplier(-0.5)));
+
+        threeBetOopField.setOnAction(_ ->
+          loop.accept(new Action.User.ThreeBetOopMultiplier(readDouble(threeBetOopField, 4.0))));
+        incrementThreeBetOopButton.setOnAction(_ ->
+          loop.accept(new Action.User.IncreaseThreeBetOopMultiplier(0.5)));
+        decrementThreeBetOopButton.setOnAction(_ ->
+          loop.accept(new Action.User.DecreaseThreeBetOopMultiplier(-0.5)));
+
+        aaOverrideField.setOnAction(_ -> applyPremiumOverride("AA", aaOverrideField));
+        kkOverrideField.setOnAction(_ -> applyPremiumOverride("KK", kkOverrideField));
+        qqOverrideField.setOnAction(_ -> applyPremiumOverride("QQ", qqOverrideField));
+        aksOverrideField.setOnAction(_ -> applyPremiumOverride("AKs", aksOverrideField));
+        akoOverrideField.setOnAction(_ -> applyPremiumOverride("AKo", akoOverrideField));
     }
 
     private void setupSubscription() {
@@ -150,16 +200,23 @@ public final class ActionSidebarView implements Initializable {
         var isRaise = action instanceof GameAction.Money.Raise;
         raiseAmountEdit.setDisable(!isRaise);
         limpersEdit.setDisable(!(isRaise && state.squeezeLimpers()));
+        threeBetEdit.setDisable(!(isRaise && state.facing() instanceof com.github.idelstak.flopless.poker.player.Facing.Raised));
+        premiumEdit.setDisable(!isRaise);
 
         raiseAmount = state.raiseAmount();
-        actionAmountField.setText(raiseAmount.doubleValue() % 1 == 0
-                                    ? String.format("%.0f", raiseAmount.doubleValue())
-                                    : String.format("%.1f", raiseAmount.doubleValue()));
+        actionAmountField.setText(formatDecimal(raiseAmount));
 
         perLimperAmount = state.perLimperAmount();
-        limperAmountField.setText(perLimperAmount.doubleValue() % 1 == 0
-                                    ? String.format("%.0f", perLimperAmount.doubleValue())
-                                    : String.format("%.1f", perLimperAmount.doubleValue()));
+        limperAmountField.setText(formatDecimal(perLimperAmount));
+        limperCountField.setText(String.valueOf(state.limperCount()));
+        threeBetIpField.setText(formatDecimal(state.threeBetIpMultiplier()));
+        threeBetOopField.setText(formatDecimal(state.threeBetOopMultiplier()));
+
+        aaOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("AA", state.raiseAmount())));
+        kkOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("KK", state.raiseAmount())));
+        qqOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("QQ", state.raiseAmount())));
+        aksOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("AKs", state.raiseAmount())));
+        akoOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("AKo", state.raiseAmount())));
 
         var toSelect = actionGroup.getToggles()
           .stream().filter(t -> ((Labeled) t).getText().equalsIgnoreCase(action.displayLabel()))
@@ -167,6 +224,40 @@ public final class ActionSidebarView implements Initializable {
           .orElseThrow();
 
         actionGroup.selectToggle(toSelect);
+    }
+
+    private void applyPremiumOverride(String hand, TextField source) {
+        loop.accept(new Action.User.PremiumRaiseOverride(hand, readDouble(source, raiseAmount.doubleValue())));
+    }
+
+    private double readDouble(TextField field, double fallback) {
+        var text = field.getText();
+        if (text == null || text.isBlank()) {
+            return fallback;
+        }
+        try {
+            return Double.parseDouble(text);
+        } catch (NumberFormatException _) {
+            return fallback;
+        }
+    }
+
+    private int readInt(TextField field, int fallback) {
+        var text = field.getText();
+        if (text == null || text.isBlank()) {
+            return fallback;
+        }
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException _) {
+            return fallback;
+        }
+    }
+
+    private String formatDecimal(BigDecimal value) {
+        return value.doubleValue() % 1 == 0
+                 ? String.format("%.0f", value.doubleValue())
+                 : String.format("%.1f", value.doubleValue());
     }
 
     private void dispose() {

@@ -3,8 +3,8 @@
     -fx-border-color: -fx-grid-border;
     -fx-border-width: 0.0625em;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 4);
-    -fx-pref-width: 720px;
-    -fx-pref-height: 720px;
+    -fx-pref-width: 700;
+    -fx-pref-height: 700;
     -fx-padding: 0 2 0 1
 }
 .poker-grid {
@@ -41,6 +41,12 @@
     -fx-font-family: 'JetBrains Mono';
     -fx-font-size: 0.9em;
     -fx-text-fill: -fx-text-muted
+}
+.raise-amount-label {
+    -fx-font-family: 'JetBrains Mono';
+    -fx-font-size: 0.85em;
+    -fx-text-fill: -fx-text-active;
+    -fx-opacity: 0.9
 }
 .cell.active .hand-label, .cell.preview-add .hand-label, .cell.preview-remove .hand-label {
     -fx-text-fill: -fx-text-active

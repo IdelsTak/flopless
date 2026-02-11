@@ -97,6 +97,46 @@ public sealed interface Action {
 
         }
 
+        record LimperCount(int amount) implements Action {
+
+        }
+
+        record IncreaseLimperCount(int step) implements Action {
+
+        }
+
+        record DecreaseLimperCount(int step) implements Action {
+
+        }
+
+        record ThreeBetIpMultiplier(double amount) implements Action {
+
+        }
+
+        record IncreaseThreeBetIpMultiplier(double step) implements Action {
+
+        }
+
+        record DecreaseThreeBetIpMultiplier(double step) implements Action {
+
+        }
+
+        record ThreeBetOopMultiplier(double amount) implements Action {
+
+        }
+
+        record IncreaseThreeBetOopMultiplier(double step) implements Action {
+
+        }
+
+        record DecreaseThreeBetOopMultiplier(double step) implements Action {
+
+        }
+
+        record PremiumRaiseOverride(String hand, double amount) implements Action {
+
+        }
+
         record LoadState(FloplessState state) implements Action {
 
         }

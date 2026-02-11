@@ -18,61 +18,198 @@ public record FloplessState(
   Optional<Coordinate> startCoordinate,
   SelectedRange previewRange,
   GridAction selectedAction,
-  BigDecimal raiseAmount,
-  BigDecimal minRaiseAmount,
-  BigDecimal perLimperAmount,
-  BigDecimal minPerLimperAmount) implements State {
+  SizingConfig sizingConfig) implements State {
 
     public FloplessState selectRange(SelectedRange range) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, range, selectMode, startCoordinate, previewRange, selectedAction, raiseAmount, minRaiseAmount, perLimperAmount, minPerLimperAmount);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, range, selectMode, startCoordinate, previewRange, selectedAction, sizingConfig);
     }
 
     public FloplessState forTable(TableType tableType) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, raiseAmount, minRaiseAmount, perLimperAmount, minPerLimperAmount);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizingConfig);
     }
 
     public FloplessState forPosition(Position position) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, raiseAmount, minRaiseAmount, perLimperAmount, minPerLimperAmount);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizingConfig);
     }
 
     public FloplessState face(Facing facing) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, raiseAmount, minRaiseAmount, perLimperAmount, minPerLimperAmount);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizingConfig);
     }
 
     public FloplessState toggleLimpersSqueeze(boolean squeeze) {
-        return new FloplessState(tableType, position, facing, squeeze, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, raiseAmount, minRaiseAmount, perLimperAmount, minPerLimperAmount);
+        return new FloplessState(tableType, position, facing, squeeze, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizingConfig);
+    }
+
+    public FloplessState withSizing(SizingConfig sizing) {
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizing);
     }
 
     FloplessState selectMode(SelectMode mode) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, mode, startCoordinate, previewRange, selectedAction, raiseAmount, minRaiseAmount, perLimperAmount, minPerLimperAmount);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, mode, startCoordinate, previewRange, selectedAction, sizingConfig);
     }
 
     FloplessState beginDrag(Optional<Coordinate> maybeCoordinate) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, maybeCoordinate, previewRange, selectedAction, raiseAmount, minRaiseAmount, perLimperAmount, minPerLimperAmount);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, maybeCoordinate, previewRange, selectedAction, sizingConfig);
     }
 
     FloplessState showPreview(SelectedRange range) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, range, selectedAction, raiseAmount, minRaiseAmount, perLimperAmount, minPerLimperAmount);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, range, selectedAction, sizingConfig);
     }
 
     FloplessState selectAction(GridAction action) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, action, raiseAmount, minRaiseAmount, perLimperAmount, minPerLimperAmount);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, action, sizingConfig);
     }
 
     FloplessState raise(BigDecimal amount) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, amount, minRaiseAmount, perLimperAmount, minPerLimperAmount);
+        return new FloplessState(
+          tableType,
+          position,
+          facing,
+          squeezeLimpers,
+          selectedRange,
+          selectMode,
+          startCoordinate,
+          previewRange,
+          selectedAction,
+          sizingConfig.withOpenSize(amount.doubleValue())
+        );
     }
 
     FloplessState minRaiseAmount(BigDecimal amount) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, raiseAmount, amount, perLimperAmount, minPerLimperAmount);
+        return new FloplessState(
+          tableType,
+          position,
+          facing,
+          squeezeLimpers,
+          selectedRange,
+          selectMode,
+          startCoordinate,
+          previewRange,
+          selectedAction,
+          sizingConfig.withMinOpenSize(amount.doubleValue())
+        );
     }
 
     FloplessState perLimper(BigDecimal amount) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, raiseAmount, minRaiseAmount, amount, minPerLimperAmount);
+        return new FloplessState(
+          tableType,
+          position,
+          facing,
+          squeezeLimpers,
+          selectedRange,
+          selectMode,
+          startCoordinate,
+          previewRange,
+          selectedAction,
+          sizingConfig.withPerLimper(amount.doubleValue())
+        );
     }
 
     FloplessState minPerLimperAmount(BigDecimal amount) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, raiseAmount, minRaiseAmount, perLimperAmount, amount);
+        return new FloplessState(
+          tableType,
+          position,
+          facing,
+          squeezeLimpers,
+          selectedRange,
+          selectMode,
+          startCoordinate,
+          previewRange,
+          selectedAction,
+          sizingConfig.withMinPerLimper(amount.doubleValue())
+        );
+    }
+
+    FloplessState limperCount(int count) {
+        return new FloplessState(
+          tableType,
+          position,
+          facing,
+          squeezeLimpers,
+          selectedRange,
+          selectMode,
+          startCoordinate,
+          previewRange,
+          selectedAction,
+          sizingConfig.withLimperCount(count)
+        );
+    }
+
+    FloplessState threeBetIpMultiplier(BigDecimal multiplier) {
+        return new FloplessState(
+          tableType,
+          position,
+          facing,
+          squeezeLimpers,
+          selectedRange,
+          selectMode,
+          startCoordinate,
+          previewRange,
+          selectedAction,
+          sizingConfig.withThreeBetIpMultiplier(multiplier.doubleValue())
+        );
+    }
+
+    FloplessState threeBetOopMultiplier(BigDecimal multiplier) {
+        return new FloplessState(
+          tableType,
+          position,
+          facing,
+          squeezeLimpers,
+          selectedRange,
+          selectMode,
+          startCoordinate,
+          previewRange,
+          selectedAction,
+          sizingConfig.withThreeBetOopMultiplier(multiplier.doubleValue())
+        );
+    }
+
+    FloplessState premiumOverride(String hand, BigDecimal amountBb) {
+        return new FloplessState(
+          tableType,
+          position,
+          facing,
+          squeezeLimpers,
+          selectedRange,
+          selectMode,
+          startCoordinate,
+          previewRange,
+          selectedAction,
+          sizingConfig.withPremiumOverride(hand, amountBb.doubleValue())
+        );
+    }
+
+    public BigDecimal raiseAmount() {
+        return sizingConfig.openSizeBb();
+    }
+
+    public BigDecimal minRaiseAmount() {
+        return sizingConfig.minOpenSizeBb();
+    }
+
+    public BigDecimal perLimperAmount() {
+        return sizingConfig.perLimperBb();
+    }
+
+    public BigDecimal minPerLimperAmount() {
+        return sizingConfig.minPerLimperBb();
+    }
+
+    public int limperCount() {
+        return sizingConfig.limperCount();
+    }
+
+    public BigDecimal threeBetIpMultiplier() {
+        return sizingConfig.threeBetIpMultiplier();
+    }
+
+    public BigDecimal threeBetOopMultiplier() {
+        return sizingConfig.threeBetOopMultiplier();
+    }
+
+    public Map<String, BigDecimal> premiumRaiseOverridesBb() {
+        return sizingConfig.premiumRaiseOverridesBb();
     }
 
     FloplessState copy(FloplessState state) {
@@ -86,16 +223,11 @@ public record FloplessState(
           state.startCoordinate(),
           state.previewRange(),
           state.selectedAction(),
-          state.raiseAmount(),
-          state.minRaiseAmount(),
-          state.perLimperAmount(),
-          state.minPerLimperAmount()
+          state.sizingConfig()
         );
     }
 
     public static FloplessState initial() {
-        var minRaise = BigDecimal.valueOf(2.5);
-        var minPerLimper = BigDecimal.valueOf(1);
         return new FloplessState(
           new TableType.SixMax(new StackDepth.Bb100(), new Blinds.OneSbTwoBB()),
           new Position.Utg(),
@@ -106,10 +238,7 @@ public record FloplessState(
           Optional.empty(),
           SelectedRange.none(),
           new GridAction.Fold(),
-          minRaise,
-          minRaise,
-          minPerLimper,
-          minPerLimper
+          SizingConfig.defaults()
         );
     }
 }
