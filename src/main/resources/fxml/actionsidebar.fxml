@@ -126,12 +126,12 @@
             </HBox>
          </children>
       </VBox>
-      <VBox fx:id="threeBetEdit" styleClass="input-group">
+      <VBox fx:id="reraisedEdit" styleClass="input-group">
          <children>
-            <Label styleClass="input-label" text="3-BET MULTIPLIER IP" />
+            <Label styleClass="input-label" text="RERAISED MULTIPLIER IP" />
             <HBox styleClass="custom-spinner">
                <children>
-                  <Button fx:id="decrementThreeBetIpButton" mnemonicParsing="false" text="-">
+                  <Button fx:id="decrementReraisedIpButton" mnemonicParsing="false" text="-">
                      <styleClass>
                         <String fx:value="spinner-btn" />
                         <String fx:value="left" />
@@ -139,7 +139,7 @@
                   </Button>
                   <StackPane HBox.hgrow="ALWAYS">
                      <children>
-                        <TextField fx:id="threeBetIpField" styleClass="spinner-input" text="3" />
+                        <TextField fx:id="reraisedIpField" styleClass="spinner-input" text="3" />
                         <Label styleClass="spinner-suffix" text="x" StackPane.alignment="CENTER_RIGHT">
                            <StackPane.margin>
                               <Insets right="10.0" />
@@ -147,7 +147,7 @@
                         </Label>
                      </children>
                   </StackPane>
-                  <Button fx:id="incrementThreeBetIpButton" mnemonicParsing="false" text="+">
+                  <Button fx:id="incrementReraisedIpButton" mnemonicParsing="false" text="+">
                      <styleClass>
                         <String fx:value="spinner-btn" />
                         <String fx:value="right" />
@@ -155,10 +155,10 @@
                   </Button>
                </children>
             </HBox>
-            <Label styleClass="input-label" text="3-BET MULTIPLIER OOP" />
+            <Label styleClass="input-label" text="RERAISED MULTIPLIER OOP" />
             <HBox styleClass="custom-spinner">
                <children>
-                  <Button fx:id="decrementThreeBetOopButton" mnemonicParsing="false" text="-">
+                  <Button fx:id="decrementReraisedOopButton" mnemonicParsing="false" text="-">
                      <styleClass>
                         <String fx:value="spinner-btn" />
                         <String fx:value="left" />
@@ -166,7 +166,7 @@
                   </Button>
                   <StackPane HBox.hgrow="ALWAYS">
                      <children>
-                        <TextField fx:id="threeBetOopField" styleClass="spinner-input" text="4" />
+                        <TextField fx:id="reraisedOopField" styleClass="spinner-input" text="4" />
                         <Label styleClass="spinner-suffix" text="x" StackPane.alignment="CENTER_RIGHT">
                            <StackPane.margin>
                               <Insets right="10.0" />
@@ -174,7 +174,7 @@
                         </Label>
                      </children>
                   </StackPane>
-                  <Button fx:id="incrementThreeBetOopButton" mnemonicParsing="false" text="+">
+                  <Button fx:id="incrementReraisedOopButton" mnemonicParsing="false" text="+">
                      <styleClass>
                         <String fx:value="spinner-btn" />
                         <String fx:value="right" />

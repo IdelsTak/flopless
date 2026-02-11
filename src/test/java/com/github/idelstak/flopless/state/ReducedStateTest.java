@@ -290,15 +290,15 @@ final class ReducedStateTest {
     }
 
     @Test
-    void commitRangeUsesThreeBetMultiplierByPosition() {
+    void commitRangeUsesReraisedMultiplierByPositionAndDepth() {
         var reduced = new ReducedState(new FakePersistence());
         var kqo = new Grid().coordinate("KQo").orElseThrow();
         var ipBefore = FloplessState.initial()
           .forPosition(new Position.Btn())
-          .face(new Facing.Raised.VsUtg())
+          .face(new Facing.ReRaised.Vs3Bet())
           .raise(BigDecimal.valueOf(3))
-          .threeBetIpMultiplier(BigDecimal.valueOf(3))
-          .threeBetOopMultiplier(BigDecimal.valueOf(4))
+          .reraisedIpMultiplier(BigDecimal.valueOf(3))
+          .reraisedOopMultiplier(BigDecimal.valueOf(4))
           .selectAction(new GridAction.Raise(BigDecimal.valueOf(3)))
           .beginDrag(Optional.of(kqo))
           .showPreview(SelectedRange.none().add(kqo, new GridAction.Raise(BigDecimal.valueOf(3))));
@@ -308,15 +308,59 @@ final class ReducedStateTest {
 
         var oopBefore = FloplessState.initial()
           .forPosition(new Position.Utg())
-          .face(new Facing.Raised.VsHj())
+          .face(new Facing.ReRaised.Vs3Bet())
           .raise(BigDecimal.valueOf(3))
-          .threeBetIpMultiplier(BigDecimal.valueOf(3))
-          .threeBetOopMultiplier(BigDecimal.valueOf(4))
+          .reraisedIpMultiplier(BigDecimal.valueOf(3))
+          .reraisedOopMultiplier(BigDecimal.valueOf(4))
           .selectAction(new GridAction.Raise(BigDecimal.valueOf(3)))
           .beginDrag(Optional.of(kqo))
           .showPreview(SelectedRange.none().add(kqo, new GridAction.Raise(BigDecimal.valueOf(3))));
         var oopAfter = reduced.apply(oopBefore, new Action.User.CommitRange());
         var oopRaise = (GridAction.Raise) oopAfter.selectedRange().actionAt(kqo);
         assertThat(oopRaise.amount().doubleValue(), is(12.0));
+
+        var fourBetBefore = FloplessState.initial()
+          .forPosition(new Position.Btn())
+          .face(new Facing.ReRaised.Vs4Bet())
+          .raise(BigDecimal.valueOf(3))
+          .reraisedIpMultiplier(BigDecimal.valueOf(3))
+          .reraisedOopMultiplier(BigDecimal.valueOf(4))
+          .selectAction(new GridAction.Raise(BigDecimal.valueOf(3)))
+          .beginDrag(Optional.of(kqo))
+          .showPreview(SelectedRange.none().add(kqo, new GridAction.Raise(BigDecimal.valueOf(3))));
+        var fourBetAfter = reduced.apply(fourBetBefore, new Action.User.CommitRange());
+        var fourBetRaise = (GridAction.Raise) fourBetAfter.selectedRange().actionAt(kqo);
+        assertThat(fourBetRaise.amount().doubleValue(), is(12.0));
+
+        var fiveBetBefore = FloplessState.initial()
+          .forPosition(new Position.Utg())
+          .face(new Facing.ReRaised.Vs5Bet())
+          .raise(BigDecimal.valueOf(3))
+          .reraisedIpMultiplier(BigDecimal.valueOf(3))
+          .reraisedOopMultiplier(BigDecimal.valueOf(4))
+          .selectAction(new GridAction.Raise(BigDecimal.valueOf(3)))
+          .beginDrag(Optional.of(kqo))
+          .showPreview(SelectedRange.none().add(kqo, new GridAction.Raise(BigDecimal.valueOf(3))));
+        var fiveBetAfter = reduced.apply(fiveBetBefore, new Action.User.CommitRange());
+        var fiveBetRaise = (GridAction.Raise) fiveBetAfter.selectedRange().actionAt(kqo);
+        assertThat(fiveBetRaise.amount().doubleValue(), is(18.0));
+    }
+
+    @Test
+    void commitRangeUsesOpenSizeWhenFacingSingleRaise() {
+        var reduced = new ReducedState(new FakePersistence());
+        var kqo = new Grid().coordinate("KQo").orElseThrow();
+        var before = FloplessState.initial()
+          .forPosition(new Position.Btn())
+          .face(new Facing.Raised.VsUtg())
+          .raise(BigDecimal.valueOf(3))
+          .reraisedIpMultiplier(BigDecimal.valueOf(3))
+          .reraisedOopMultiplier(BigDecimal.valueOf(4))
+          .selectAction(new GridAction.Raise(BigDecimal.valueOf(3)))
+          .beginDrag(Optional.of(kqo))
+          .showPreview(SelectedRange.none().add(kqo, new GridAction.Raise(BigDecimal.valueOf(3))));
+        var after = reduced.apply(before, new Action.User.CommitRange());
+        var raise = (GridAction.Raise) after.selectedRange().actionAt(kqo);
+        assertThat(raise.amount().doubleValue(), is(3.0));
     }
 }

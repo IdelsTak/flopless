@@ -97,27 +97,27 @@ public sealed interface Action {
 
         }
 
-        record ThreeBetIpMultiplier(double amount) implements Action {
+        record ReraisedIpMultiplier(double amount) implements Action {
 
         }
 
-        record IncreaseThreeBetIpMultiplier(double step) implements Action {
+        record IncreaseReraisedIpMultiplier(double step) implements Action {
 
         }
 
-        record DecreaseThreeBetIpMultiplier(double step) implements Action {
+        record DecreaseReraisedIpMultiplier(double step) implements Action {
 
         }
 
-        record ThreeBetOopMultiplier(double amount) implements Action {
+        record ReraisedOopMultiplier(double amount) implements Action {
 
         }
 
-        record IncreaseThreeBetOopMultiplier(double step) implements Action {
+        record IncreaseReraisedOopMultiplier(double step) implements Action {
 
         }
 
-        record DecreaseThreeBetOopMultiplier(double step) implements Action {
+        record DecreaseReraisedOopMultiplier(double step) implements Action {
 
         }
 

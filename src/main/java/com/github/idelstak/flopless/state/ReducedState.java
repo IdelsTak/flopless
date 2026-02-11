@@ -52,18 +52,18 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
                 increaseLimper(state, a);
             case Action.User.DecreaseLimperAmount a ->
                 decreaseLimper(state, a);
-            case Action.User.ThreeBetIpMultiplier a ->
-                threeBetIpMultiplier(state, a);
-            case Action.User.IncreaseThreeBetIpMultiplier a ->
-                increaseThreeBetIpMultiplier(state, a);
-            case Action.User.DecreaseThreeBetIpMultiplier a ->
-                decreaseThreeBetIpMultiplier(state, a);
-            case Action.User.ThreeBetOopMultiplier a ->
-                threeBetOopMultiplier(state, a);
-            case Action.User.IncreaseThreeBetOopMultiplier a ->
-                increaseThreeBetOopMultiplier(state, a);
-            case Action.User.DecreaseThreeBetOopMultiplier a ->
-                decreaseThreeBetOopMultiplier(state, a);
+            case Action.User.ReraisedIpMultiplier a ->
+                reraisedIpMultiplier(state, a);
+            case Action.User.IncreaseReraisedIpMultiplier a ->
+                increaseReraisedIpMultiplier(state, a);
+            case Action.User.DecreaseReraisedIpMultiplier a ->
+                decreaseReraisedIpMultiplier(state, a);
+            case Action.User.ReraisedOopMultiplier a ->
+                reraisedOopMultiplier(state, a);
+            case Action.User.IncreaseReraisedOopMultiplier a ->
+                increaseReraisedOopMultiplier(state, a);
+            case Action.User.DecreaseReraisedOopMultiplier a ->
+                decreaseReraisedOopMultiplier(state, a);
             case Action.User.PremiumRaiseOverride a ->
                 premiumRaiseOverride(state, a);
             case Action.User.Save _ ->
@@ -208,36 +208,36 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
         return state.perLimper(BigDecimal.valueOf(newAmount));
     }
 
-    private FloplessState threeBetIpMultiplier(FloplessState state, Action.User.ThreeBetIpMultiplier amount) {
-        return state.threeBetIpMultiplier(BigDecimal.valueOf(amount.amount()));
+    private FloplessState reraisedIpMultiplier(FloplessState state, Action.User.ReraisedIpMultiplier amount) {
+        return state.reraisedIpMultiplier(BigDecimal.valueOf(amount.amount()));
     }
 
-    private FloplessState increaseThreeBetIpMultiplier(FloplessState state, Action.User.IncreaseThreeBetIpMultiplier increase) {
+    private FloplessState increaseReraisedIpMultiplier(FloplessState state, Action.User.IncreaseReraisedIpMultiplier increase) {
         var min = BigDecimal.ONE.doubleValue();
-        var next = updateAmount(min, state.threeBetIpMultiplier().doubleValue(), increase.step());
-        return state.threeBetIpMultiplier(BigDecimal.valueOf(next));
+        var next = updateAmount(min, state.reraisedIpMultiplier().doubleValue(), increase.step());
+        return state.reraisedIpMultiplier(BigDecimal.valueOf(next));
     }
 
-    private FloplessState decreaseThreeBetIpMultiplier(FloplessState state, Action.User.DecreaseThreeBetIpMultiplier decrease) {
+    private FloplessState decreaseReraisedIpMultiplier(FloplessState state, Action.User.DecreaseReraisedIpMultiplier decrease) {
         var min = BigDecimal.ONE.doubleValue();
-        var next = updateAmount(min, state.threeBetIpMultiplier().doubleValue(), decrease.step());
-        return state.threeBetIpMultiplier(BigDecimal.valueOf(next));
+        var next = updateAmount(min, state.reraisedIpMultiplier().doubleValue(), decrease.step());
+        return state.reraisedIpMultiplier(BigDecimal.valueOf(next));
     }
 
-    private FloplessState threeBetOopMultiplier(FloplessState state, Action.User.ThreeBetOopMultiplier amount) {
-        return state.threeBetOopMultiplier(BigDecimal.valueOf(amount.amount()));
+    private FloplessState reraisedOopMultiplier(FloplessState state, Action.User.ReraisedOopMultiplier amount) {
+        return state.reraisedOopMultiplier(BigDecimal.valueOf(amount.amount()));
     }
 
-    private FloplessState increaseThreeBetOopMultiplier(FloplessState state, Action.User.IncreaseThreeBetOopMultiplier increase) {
+    private FloplessState increaseReraisedOopMultiplier(FloplessState state, Action.User.IncreaseReraisedOopMultiplier increase) {
         var min = BigDecimal.ONE.doubleValue();
-        var next = updateAmount(min, state.threeBetOopMultiplier().doubleValue(), increase.step());
-        return state.threeBetOopMultiplier(BigDecimal.valueOf(next));
+        var next = updateAmount(min, state.reraisedOopMultiplier().doubleValue(), increase.step());
+        return state.reraisedOopMultiplier(BigDecimal.valueOf(next));
     }
 
-    private FloplessState decreaseThreeBetOopMultiplier(FloplessState state, Action.User.DecreaseThreeBetOopMultiplier decrease) {
+    private FloplessState decreaseReraisedOopMultiplier(FloplessState state, Action.User.DecreaseReraisedOopMultiplier decrease) {
         var min = BigDecimal.ONE.doubleValue();
-        var next = updateAmount(min, state.threeBetOopMultiplier().doubleValue(), decrease.step());
-        return state.threeBetOopMultiplier(BigDecimal.valueOf(next));
+        var next = updateAmount(min, state.reraisedOopMultiplier().doubleValue(), decrease.step());
+        return state.reraisedOopMultiplier(BigDecimal.valueOf(next));
     }
 
     private FloplessState premiumRaiseOverride(FloplessState state, Action.User.PremiumRaiseOverride override) {

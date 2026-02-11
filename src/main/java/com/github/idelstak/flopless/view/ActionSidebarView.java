@@ -46,17 +46,17 @@ public final class ActionSidebarView implements Initializable {
     @FXML
     private Button incrementLimperAmountButton;
     @FXML
-    private TextField threeBetIpField;
+    private TextField reraisedIpField;
     @FXML
-    private Button decrementThreeBetIpButton;
+    private Button decrementReraisedIpButton;
     @FXML
-    private Button incrementThreeBetIpButton;
+    private Button incrementReraisedIpButton;
     @FXML
-    private TextField threeBetOopField;
+    private TextField reraisedOopField;
     @FXML
-    private Button decrementThreeBetOopButton;
+    private Button decrementReraisedOopButton;
     @FXML
-    private Button incrementThreeBetOopButton;
+    private Button incrementReraisedOopButton;
     @FXML
     private Button decrementAaOverrideButton;
     @FXML
@@ -104,7 +104,7 @@ public final class ActionSidebarView implements Initializable {
     @FXML
     private VBox limpersEdit;
     @FXML
-    private VBox threeBetEdit;
+    private VBox reraisedEdit;
     @FXML
     private VBox premiumEdit;
 
@@ -172,19 +172,19 @@ public final class ActionSidebarView implements Initializable {
         decrementLimperAmountButton.setOnAction(_ ->
           loop.accept(new Action.User.DecreaseLimperAmount(-0.5)));
 
-        threeBetIpField.setOnAction(_ ->
-          loop.accept(new Action.User.ThreeBetIpMultiplier(readDouble(threeBetIpField, 3.0))));
-        incrementThreeBetIpButton.setOnAction(_ ->
-          loop.accept(new Action.User.IncreaseThreeBetIpMultiplier(0.5)));
-        decrementThreeBetIpButton.setOnAction(_ ->
-          loop.accept(new Action.User.DecreaseThreeBetIpMultiplier(-0.5)));
+        reraisedIpField.setOnAction(_ ->
+          loop.accept(new Action.User.ReraisedIpMultiplier(readDouble(reraisedIpField, 3.0))));
+        incrementReraisedIpButton.setOnAction(_ ->
+          loop.accept(new Action.User.IncreaseReraisedIpMultiplier(0.5)));
+        decrementReraisedIpButton.setOnAction(_ ->
+          loop.accept(new Action.User.DecreaseReraisedIpMultiplier(-0.5)));
 
-        threeBetOopField.setOnAction(_ ->
-          loop.accept(new Action.User.ThreeBetOopMultiplier(readDouble(threeBetOopField, 4.0))));
-        incrementThreeBetOopButton.setOnAction(_ ->
-          loop.accept(new Action.User.IncreaseThreeBetOopMultiplier(0.5)));
-        decrementThreeBetOopButton.setOnAction(_ ->
-          loop.accept(new Action.User.DecreaseThreeBetOopMultiplier(-0.5)));
+        reraisedOopField.setOnAction(_ ->
+          loop.accept(new Action.User.ReraisedOopMultiplier(readDouble(reraisedOopField, 4.0))));
+        incrementReraisedOopButton.setOnAction(_ ->
+          loop.accept(new Action.User.IncreaseReraisedOopMultiplier(0.5)));
+        decrementReraisedOopButton.setOnAction(_ ->
+          loop.accept(new Action.User.DecreaseReraisedOopMultiplier(-0.5)));
         configurePremiumField("AA", aaOverrideField, decrementAaOverrideButton, incrementAaOverrideButton);
         configurePremiumField("KK", kkOverrideField, decrementKkOverrideButton, incrementKkOverrideButton);
         configurePremiumField("QQ", qqOverrideField, decrementQqOverrideButton, incrementQqOverrideButton);
@@ -220,7 +220,7 @@ public final class ActionSidebarView implements Initializable {
         var isRaise = action instanceof GameAction.Money.Raise;
         raiseAmountEdit.setDisable(!isRaise);
         limpersEdit.setDisable(!(isRaise && state.squeezeLimpers()));
-        threeBetEdit.setDisable(!(isRaise && state.facing() instanceof com.github.idelstak.flopless.poker.player.Facing.Raised));
+        reraisedEdit.setDisable(!(isRaise && state.facing() instanceof com.github.idelstak.flopless.poker.player.Facing.ReRaised));
         premiumEdit.setDisable(!isRaise);
 
         raiseAmount = state.raiseAmount();
@@ -228,8 +228,8 @@ public final class ActionSidebarView implements Initializable {
 
         perLimperAmount = state.perLimperAmount();
         limperAmountField.setText(formatDecimal(perLimperAmount));
-        threeBetIpField.setText(formatDecimal(state.threeBetIpMultiplier()));
-        threeBetOopField.setText(formatDecimal(state.threeBetOopMultiplier()));
+        reraisedIpField.setText(formatDecimal(state.reraisedIpMultiplier()));
+        reraisedOopField.setText(formatDecimal(state.reraisedOopMultiplier()));
 
         aaOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("AA", state.raiseAmount())));
         kkOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("KK", state.raiseAmount())));

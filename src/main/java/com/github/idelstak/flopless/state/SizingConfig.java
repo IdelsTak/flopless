@@ -1,20 +1,18 @@
 package com.github.idelstak.flopless.state;
 
-import com.fasterxml.jackson.annotation.*;
 import com.github.idelstak.flopless.poker.player.*;
 import java.math.*;
 import java.util.*;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public record SizingConfig(
   BigDecimal openSizeBb,
   BigDecimal minOpenSizeBb,
   BigDecimal perLimperBb,
   BigDecimal minPerLimperBb,
-  BigDecimal threeBetIpMultiplier,
-  BigDecimal minThreeBetIpMultiplier,
-  BigDecimal threeBetOopMultiplier,
-  BigDecimal minThreeBetOopMultiplier,
+  BigDecimal reraisedIpMultiplier,
+  BigDecimal minReraisedIpMultiplier,
+  BigDecimal reraisedOopMultiplier,
+  BigDecimal minReraisedOopMultiplier,
   Map<String, BigDecimal> premiumRaiseOverridesBb) {
 
     public SizingConfig {
@@ -28,10 +26,10 @@ public record SizingConfig(
           minOpenSizeBb,
           perLimperBb,
           minPerLimperBb,
-          threeBetIpMultiplier,
-          minThreeBetIpMultiplier,
-          threeBetOopMultiplier,
-          minThreeBetOopMultiplier,
+          reraisedIpMultiplier,
+          minReraisedIpMultiplier,
+          reraisedOopMultiplier,
+          minReraisedOopMultiplier,
           premiumRaiseOverridesBb
         );
     }
@@ -44,10 +42,10 @@ public record SizingConfig(
           min,
           perLimperBb,
           minPerLimperBb,
-          threeBetIpMultiplier,
-          minThreeBetIpMultiplier,
-          threeBetOopMultiplier,
-          minThreeBetOopMultiplier,
+          reraisedIpMultiplier,
+          minReraisedIpMultiplier,
+          reraisedOopMultiplier,
+          minReraisedOopMultiplier,
           premiumRaiseOverridesBb
         );
     }
@@ -59,10 +57,10 @@ public record SizingConfig(
           minOpenSizeBb,
           value,
           minPerLimperBb,
-          threeBetIpMultiplier,
-          minThreeBetIpMultiplier,
-          threeBetOopMultiplier,
-          minThreeBetOopMultiplier,
+          reraisedIpMultiplier,
+          minReraisedIpMultiplier,
+          reraisedOopMultiplier,
+          minReraisedOopMultiplier,
           premiumRaiseOverridesBb
         );
     }
@@ -75,40 +73,40 @@ public record SizingConfig(
           minOpenSizeBb,
           perLimper,
           min,
-          threeBetIpMultiplier,
-          minThreeBetIpMultiplier,
-          threeBetOopMultiplier,
-          minThreeBetOopMultiplier,
+          reraisedIpMultiplier,
+          minReraisedIpMultiplier,
+          reraisedOopMultiplier,
+          minReraisedOopMultiplier,
           premiumRaiseOverridesBb
         );
     }
 
-    public SizingConfig withThreeBetIpMultiplier(double multiplier) {
-        var value = BigDecimal.valueOf(Math.max(minThreeBetIpMultiplier.doubleValue(), multiplier));
+    public SizingConfig withReraisedIpMultiplier(double multiplier) {
+        var value = BigDecimal.valueOf(Math.max(minReraisedIpMultiplier.doubleValue(), multiplier));
         return new SizingConfig(
           openSizeBb,
           minOpenSizeBb,
           perLimperBb,
           minPerLimperBb,
           value,
-          minThreeBetIpMultiplier,
-          threeBetOopMultiplier,
-          minThreeBetOopMultiplier,
+          minReraisedIpMultiplier,
+          reraisedOopMultiplier,
+          minReraisedOopMultiplier,
           premiumRaiseOverridesBb
         );
     }
 
-    public SizingConfig withThreeBetOopMultiplier(double multiplier) {
-        var value = BigDecimal.valueOf(Math.max(minThreeBetOopMultiplier.doubleValue(), multiplier));
+    public SizingConfig withReraisedOopMultiplier(double multiplier) {
+        var value = BigDecimal.valueOf(Math.max(minReraisedOopMultiplier.doubleValue(), multiplier));
         return new SizingConfig(
           openSizeBb,
           minOpenSizeBb,
           perLimperBb,
           minPerLimperBb,
-          threeBetIpMultiplier,
-          minThreeBetIpMultiplier,
+          reraisedIpMultiplier,
+          minReraisedIpMultiplier,
           value,
-          minThreeBetOopMultiplier,
+          minReraisedOopMultiplier,
           premiumRaiseOverridesBb
         );
     }
@@ -125,10 +123,10 @@ public record SizingConfig(
           minOpenSizeBb,
           perLimperBb,
           minPerLimperBb,
-          threeBetIpMultiplier,
-          minThreeBetIpMultiplier,
-          threeBetOopMultiplier,
-          minThreeBetOopMultiplier,
+          reraisedIpMultiplier,
+          minReraisedIpMultiplier,
+          reraisedOopMultiplier,
+          minReraisedOopMultiplier,
           map
         );
     }
@@ -139,13 +137,31 @@ public record SizingConfig(
             return premium;
         }
 
-        if (facing instanceof Facing.Raised raised) {
-            var isInPosition = hero.index() > raised.villain().index();
-            var multiplier = isInPosition ? threeBetIpMultiplier : threeBetOopMultiplier;
+        if (facing instanceof Facing.ReRaised reRaised) {
+            if (reRaised instanceof Facing.ReRaised.VsAllIn) {
+                return openSizeBb;
+            }
+            var multiplier = reraisedMultiplierFor(hero, reRaised);
             return openSizeBb.multiply(multiplier);
         }
 
         return openSizeBb;
+    }
+
+    private BigDecimal reraisedMultiplierFor(Position hero, Facing.ReRaised reRaised) {
+        var isInPosition = hero instanceof Position.Btn || hero instanceof Position.Co;
+        var base = isInPosition ? reraisedIpMultiplier : reraisedOopMultiplier;
+        var step = switch (reRaised) {
+            case Facing.ReRaised.Vs3Bet _ ->
+                BigDecimal.ZERO;
+            case Facing.ReRaised.Vs4Bet _ ->
+                BigDecimal.ONE;
+            case Facing.ReRaised.Vs5Bet _ ->
+                BigDecimal.valueOf(2);
+            case Facing.ReRaised.VsAllIn _ ->
+                throw new IllegalStateException("VsAllIn does not use reraised multiplier");
+        };
+        return base.add(step);
     }
 
     public static SizingConfig defaults() {

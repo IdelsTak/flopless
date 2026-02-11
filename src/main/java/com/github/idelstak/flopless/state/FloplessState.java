@@ -44,6 +44,34 @@ public record FloplessState(
         return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizing);
     }
 
+    public BigDecimal raiseAmount() {
+        return sizingConfig.openSizeBb();
+    }
+
+    public BigDecimal minRaiseAmount() {
+        return sizingConfig.minOpenSizeBb();
+    }
+
+    public BigDecimal perLimperAmount() {
+        return sizingConfig.perLimperBb();
+    }
+
+    public BigDecimal minPerLimperAmount() {
+        return sizingConfig.minPerLimperBb();
+    }
+
+    public BigDecimal reraisedIpMultiplier() {
+        return sizingConfig.reraisedIpMultiplier();
+    }
+
+    public BigDecimal reraisedOopMultiplier() {
+        return sizingConfig.reraisedOopMultiplier();
+    }
+
+    public Map<String, BigDecimal> premiumRaiseOverridesBb() {
+        return sizingConfig.premiumRaiseOverridesBb();
+    }
+
     FloplessState selectMode(SelectMode mode) {
         return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, mode, startCoordinate, previewRange, selectedAction, sizingConfig);
     }
@@ -120,7 +148,7 @@ public record FloplessState(
         );
     }
 
-    FloplessState threeBetIpMultiplier(BigDecimal multiplier) {
+    FloplessState reraisedIpMultiplier(BigDecimal multiplier) {
         return new FloplessState(
           tableType,
           position,
@@ -131,11 +159,11 @@ public record FloplessState(
           startCoordinate,
           previewRange,
           selectedAction,
-          sizingConfig.withThreeBetIpMultiplier(multiplier.doubleValue())
+          sizingConfig.withReraisedIpMultiplier(multiplier.doubleValue())
         );
     }
 
-    FloplessState threeBetOopMultiplier(BigDecimal multiplier) {
+    FloplessState reraisedOopMultiplier(BigDecimal multiplier) {
         return new FloplessState(
           tableType,
           position,
@@ -146,7 +174,7 @@ public record FloplessState(
           startCoordinate,
           previewRange,
           selectedAction,
-          sizingConfig.withThreeBetOopMultiplier(multiplier.doubleValue())
+          sizingConfig.withReraisedOopMultiplier(multiplier.doubleValue())
         );
     }
 
@@ -163,34 +191,6 @@ public record FloplessState(
           selectedAction,
           sizingConfig.withPremiumOverride(hand, amountBb.doubleValue())
         );
-    }
-
-    public BigDecimal raiseAmount() {
-        return sizingConfig.openSizeBb();
-    }
-
-    public BigDecimal minRaiseAmount() {
-        return sizingConfig.minOpenSizeBb();
-    }
-
-    public BigDecimal perLimperAmount() {
-        return sizingConfig.perLimperBb();
-    }
-
-    public BigDecimal minPerLimperAmount() {
-        return sizingConfig.minPerLimperBb();
-    }
-
-    public BigDecimal threeBetIpMultiplier() {
-        return sizingConfig.threeBetIpMultiplier();
-    }
-
-    public BigDecimal threeBetOopMultiplier() {
-        return sizingConfig.threeBetOopMultiplier();
-    }
-
-    public Map<String, BigDecimal> premiumRaiseOverridesBb() {
-        return sizingConfig.premiumRaiseOverridesBb();
     }
 
     FloplessState copy(FloplessState state) {
