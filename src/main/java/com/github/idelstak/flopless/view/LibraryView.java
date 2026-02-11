@@ -121,31 +121,7 @@ public final class LibraryView implements Initializable {
     }
 
     private void requestDelete(FloplessState state) {
-        var name = strategy.name(state);
-        if (!confirmDelete(name)) {
-            return;
-        }
-        loop.accept(new Action.Effect.DeleteStateRequested(state));
-    }
-
-    private boolean confirmDelete(String chartName) {
-        var cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-        var delete = new ButtonType("Delete", ButtonBar.ButtonData.OK_DONE);
-        var alert = new Alert(Alert.AlertType.CONFIRMATION, "This action cannot be undone.", cancel, delete);
-        alert.initOwner(stage);
-        alert.setTitle("Delete Chart");
-        alert.setHeaderText("Delete " + chartName + "?");
-
-        var pane = alert.getDialogPane();
-        pane.getStyleClass().add("delete-dialog");
-        pane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/fonts.css")).toExternalForm());
-        pane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/root.css")).toExternalForm());
-        pane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/sidebar.css")).toExternalForm());
-        pane.lookupButton(cancel).getStyleClass().add("delete-cancel-btn");
-        pane.lookupButton(delete).getStyleClass().add("delete-confirm-btn");
-
-        Platform.runLater(() -> pane.lookupButton(cancel).requestFocus());
-        return alert.showAndWait().orElse(cancel) == delete;
+        loop.accept(new Action.Effect.DeleteStateConfirmRequested(state));
     }
 
     private void renderLibrary(List<FloplessState> states) {

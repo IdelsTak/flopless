@@ -9,12 +9,14 @@ import io.reactivex.rxjava3.subjects.*;
 public final class FloplessLoop implements Source<History<FloplessState>>, Sink<Action> {
 
     private final Subject<Action> actions;
+    private final Subject<Action.Effect> effects;
     private final Observable<History<FloplessState>> states;
     private final Reduced<FloplessState, Action, FloplessState> reduced;
 
     public FloplessLoop(FloplessState initial, Reduced<FloplessState, Action, FloplessState> reduced) {
         this.reduced = reduced;
         this.actions = PublishSubject.<Action>create().toSerialized();
+        this.effects = PublishSubject.<Action.Effect>create().toSerialized();
         this.states = actions
           .scan(History.initial(initial), this::reduce)
           .replay(1)
@@ -24,6 +26,10 @@ public final class FloplessLoop implements Source<History<FloplessState>>, Sink<
     @Override
     public void subscribe(Observer<? super History<FloplessState>> observer) {
         states.subscribe(observer);
+    }
+
+    public void subscribeEffects(Observer<? super Action.Effect> observer) {
+        effects.subscribe(observer);
     }
 
     @Override
@@ -42,6 +48,10 @@ public final class FloplessLoop implements Source<History<FloplessState>>, Sink<
                 actions.onNext(new Action.User.SelectGridAction(selected.action()));
             case Action.Effect.DeleteStateRequested requested ->
                 actions.onNext(new Action.User.DeleteState(requested.state()));
+            case Action.Effect.DeleteStateConfirmRequested _ ->
+                effects.onNext(effect);
+            case Action.Effect.DeleteStateConfirmDismissed _ ->
+                effects.onNext(effect);
         }
     }
 

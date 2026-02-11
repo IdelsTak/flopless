@@ -16,6 +16,14 @@ public sealed interface Action {
         record DeleteStateRequested(FloplessState state) implements Effect {
 
         }
+
+        record DeleteStateConfirmRequested(FloplessState state) implements Effect {
+
+        }
+
+        record DeleteStateConfirmDismissed() implements Effect {
+
+        }
     }
 
     sealed interface User extends Action {
