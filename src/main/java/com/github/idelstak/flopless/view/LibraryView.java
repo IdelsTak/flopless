@@ -7,8 +7,8 @@ import io.reactivex.rxjava3.observers.*;
 import java.net.*;
 import java.util.*;
 import javafx.application.*;
+import javafx.collections.*;
 import javafx.fxml.*;
-import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
@@ -21,12 +21,11 @@ public final class LibraryView implements Initializable {
     private final Strategy strategy;
     private DisposableObserver<History<FloplessState>> observe;
     private String activeStateName;
+    private final ObservableList<FloplessState> ranges = FXCollections.observableArrayList();
     @FXML
-    private VBox rangesListBox;
+    private ListView<FloplessState> rangesListView;
     @FXML
     private Button newRangeButton;
-    @FXML
-    private ScrollPane scroll;
 
     public LibraryView(Stage stage, FloplessLoop loop, Persistence persistence) {
         this.persistence = persistence;
@@ -40,6 +39,7 @@ public final class LibraryView implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         var savedStates = persistence.loadAll();
+        setupListView();
         Platform.runLater(() -> renderLibrary(savedStates));
         setupActions();
         setupSubscription();
@@ -51,29 +51,61 @@ public final class LibraryView implements Initializable {
         }
     }
 
-    private void renderLibrary(List<FloplessState> states) {
-        Node toScrollToTmp = null;
-        rangesListBox.getChildren().clear();
-        for (var state : states) {
-            var item = new HBox();
-            item.getStyleClass().add("grid-item");
-            item.setMaxWidth(rangesListBox.getWidth() * 0.97);
-            var name = strategy.name(state);
-            if (name.equals(activeStateName)) {
-                item.getStyleClass().add("active");
-                toScrollToTmp = item;
+    private void setupListView() {
+        rangesListView.setItems(ranges);
+        rangesListView.setCellFactory(_ -> new ListCell<>() {
+            private final HBox item = new HBox();
+            private final Label label = new Label();
+
+            {
+                item.getStyleClass().add("grid-item");
+                item.maxWidthProperty().bind(rangesListView.widthProperty().multiply(0.93));
+                label.setWrapText(true);
+                label.setMinHeight(55);
+                item.getChildren().add(label);
+                item.setOnMouseClicked(e -> {
+                    var state = getItem();
+                    if (state != null) {
+                        e.consume();
+                        loop.accept(new Action.User.LoadState(state));
+                    }
+                });
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             }
 
-            var label = new Label(name);
-            label.setWrapText(true);
-            label.setMinHeight(55);
-            item.setOnMouseClicked(_ -> loop.accept(new Action.User.LoadState(state)));
-            item.getChildren().add(label);
-            rangesListBox.getChildren().add(item);
+            @Override
+            protected void updateItem(FloplessState state, boolean empty) {
+                super.updateItem(state, empty);
+                if (empty || state == null) {
+                    setGraphic(null);
+                    return;
+                }
+
+                var name = strategy.name(state);
+                label.setText(name);
+                item.getStyleClass().remove("active");
+                if (name.equals(activeStateName)) {
+                    item.getStyleClass().add("active");
+                }
+                setGraphic(item);
+            }
+        });
+    }
+
+    private void renderLibrary(List<FloplessState> states) {
+        int activeIndex = -1;
+        for (int i = 0; i < states.size(); i++) {
+            if (strategy.name(states.get(i)).equals(activeStateName)) {
+                activeIndex = i;
+                break;
+            }
         }
-        if (toScrollToTmp != null) {
-            var toScrollTo = toScrollToTmp;
-            Platform.runLater(() -> new ScrollTo().reveal(scroll, toScrollTo));
+
+        ranges.setAll(states);
+        rangesListView.refresh();
+        if (activeIndex >= 0) {
+            int indexToScroll = activeIndex;
+            Platform.runLater(() -> rangesListView.scrollTo(indexToScroll));
         }
     }
 

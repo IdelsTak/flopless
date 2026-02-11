@@ -17,28 +17,12 @@
       <String fx:value="library" />
    </styleClass>
    <children>
-      <Label styleClass="sidebar-header" text="Library" />
-      <Button fx:id="newRangeButton" mnemonicParsing="false" styleClass="new-btn" text="New Range">
+      <Label styleClass="sidebar-header" text="Preflop charts" />
+      <Button fx:id="newRangeButton" mnemonicParsing="false" styleClass="new-btn" text="New Chart">
          <graphic>
             <FontIcon />
          </graphic>
       </Button>
-      <ScrollPane fx:id="scroll" styleClass="library-scroll" VBox.vgrow="ALWAYS">
-        <content>
-            <VBox fx:id="rangesListBox" styleClass="grid-list">
-               <children>
-                  <HBox>
-                     <children>
-                        <Label text="UTG Open" />
-                     </children>
-                     <styleClass>
-                        <String fx:value="grid-item" />
-                        <String fx:value="active" />
-                     </styleClass>
-                  </HBox>
-               </children>
-            </VBox>
-        </content>
-      </ScrollPane>
+      <ListView fx:id="rangesListView" styleClass="library-list" VBox.vgrow="ALWAYS" />
    </children>
 </VBox>
