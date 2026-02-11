@@ -46,8 +46,8 @@
     -fx-background-color: transparent
 }
 .scroll-bar:vertical, .scroll-bar:horizontal {
-    -fx-pref-width: 8;
-    -fx-pref-height: 8
+    -fx-pref-width: 6;
+    -fx-pref-height: 6
 }
 .scroll-bar .track {
     -fx-background-color: -fx-bg-dark;

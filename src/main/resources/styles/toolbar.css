@@ -9,7 +9,7 @@
 }
 .tool-btn {
     -fx-background-color: transparent;
-    -fx-text-fill: -fx-text-muted;
+    -fx-text-fill: derive(-fx-text-active, -40%);
     -fx-font-size: 11px;
     -fx-font-weight: bold;
     -fx-padding: 8 12 8 12;
@@ -18,7 +18,7 @@
 }
 .tool-btn:hover {
     -fx-background-color: -fx-card-bg;
-    -fx-text-fill: white
+    -fx-text-fill: -fx-text-active
 }
 .tool-btn.danger:hover {
     -fx-background-color: #450a0a;
