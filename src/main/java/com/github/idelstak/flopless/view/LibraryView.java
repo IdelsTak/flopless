@@ -10,8 +10,10 @@ import javafx.application.*;
 import javafx.collections.*;
 import javafx.fxml.*;
 import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
+import org.kordamp.ikonli.javafx.*;
 
 public final class LibraryView implements Initializable {
 
@@ -53,16 +55,42 @@ public final class LibraryView implements Initializable {
 
     private void setupListView() {
         rangesListView.setItems(ranges);
+        rangesListView.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.DELETE || e.getCode() == KeyCode.BACK_SPACE) {
+                var selected = rangesListView.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    requestDelete(selected);
+                    e.consume();
+                }
+            }
+        });
         rangesListView.setCellFactory(_ -> new ListCell<>() {
             private final HBox item = new HBox();
             private final Label label = new Label();
+            private final Region spacer = new Region();
+            private final Button deleteButton = new Button();
 
             {
                 item.getStyleClass().add("grid-item");
                 item.maxWidthProperty().bind(rangesListView.widthProperty().multiply(0.93));
                 label.setWrapText(true);
                 label.setMinHeight(55);
-                item.getChildren().add(label);
+                HBox.setHgrow(spacer, Priority.ALWAYS);
+
+                var deleteIcon = new FontIcon("jam-trash");
+                deleteIcon.getStyleClass().add("delete-chart-icon");
+                deleteButton.setGraphic(deleteIcon);
+                deleteButton.getStyleClass().add("delete-chart-btn");
+                deleteButton.setFocusTraversable(false);
+                deleteButton.setOnAction(e -> {
+                    e.consume();
+                    var state = getItem();
+                    if (state != null) {
+                        requestDelete(state);
+                    }
+                });
+
+                item.getChildren().addAll(label, spacer, deleteButton);
                 item.setOnMouseClicked(e -> {
                     var state = getItem();
                     if (state != null) {
@@ -90,6 +118,10 @@ public final class LibraryView implements Initializable {
                 setGraphic(item);
             }
         });
+    }
+
+    private void requestDelete(FloplessState state) {
+        loop.accept(new Action.Effect.DeleteStateConfirmRequested(state));
     }
 
     private void renderLibrary(List<FloplessState> states) {

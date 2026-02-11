@@ -12,6 +12,18 @@ public sealed interface Action {
         record GridActionSelected(GridAction action) implements Effect {
 
         }
+
+        record DeleteStateRequested(FloplessState state) implements Effect {
+
+        }
+
+        record DeleteStateConfirmRequested(FloplessState state) implements Effect {
+
+        }
+
+        record DeleteStateConfirmDismissed() implements Effect {
+
+        }
     }
 
     sealed interface User extends Action {
@@ -23,6 +35,9 @@ public sealed interface Action {
         }
 
         record Save() implements User {
+        }
+
+        record DeleteState(FloplessState state) implements User {
         }
 
         record TableTypePick(TableType tableType) implements User {

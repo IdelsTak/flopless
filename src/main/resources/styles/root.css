@@ -18,9 +18,9 @@
     -fx-remove-preview: rgba(244, 63, 94, 0.4);
     -fx-text-fill: white;
     -fx-action-fold: #616161;
-    -fx-action-check: #b8860b;
-    -fx-action-call: #0073b3;
-    -fx-action-raise: #cc6600;
+    -fx-action-check: #3730a3;
+    -fx-action-call: #0e7490;
+    -fx-action-raise: #a16207;
     -fx-action-allin: #6a0dad;
     -fx-card-bg: #1e2227
 }
@@ -46,8 +46,8 @@
     -fx-background-color: transparent
 }
 .scroll-bar:vertical, .scroll-bar:horizontal {
-    -fx-pref-width: 8;
-    -fx-pref-height: 8
+    -fx-pref-width: 6;
+    -fx-pref-height: 6
 }
 .scroll-bar .track {
     -fx-background-color: -fx-bg-dark;

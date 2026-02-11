@@ -142,9 +142,9 @@ public final class Strategy {
 
     private Blinds blindsFromLabel(String label) {
         return switch (label) {
-            case "1bb-2bb" ->
+            case "1sb2bb" ->
                 new Blinds.OneSbTwoBB();
-            case "2bb-4bb" ->
+            case "2sb4bb" ->
                 new Blinds.TwoSbFourBB();
             default ->
                 throw new IllegalArgumentException("Unknown blinds: " + label);

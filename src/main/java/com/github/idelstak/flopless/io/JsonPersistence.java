@@ -29,7 +29,10 @@ public final class JsonPersistence implements Persistence {
     public List<FloplessState> loadAll() {
         try (var files = Files.list(directory)) {
             var states = new ArrayList<FloplessState>();
-            files.filter(f -> f.toString().endsWith(".json")).forEach(file -> {
+            files
+              .filter(f -> f.toString().endsWith(".json"))
+              .sorted(Comparator.comparing(path -> path.getFileName().toString()))
+              .forEach(file -> {
                 try {
                     // extract strategy name from file
                     var fileName = file.getFileName().toString();
@@ -40,7 +43,7 @@ public final class JsonPersistence implements Persistence {
                 } catch (IOException e) {
                     throw new IllegalStateException("Failed to load SelectedRange from " + file, e);
                 }
-            });
+              });
             return List.copyOf(states);
         } catch (IOException e) {
             throw new IllegalStateException("Failed to list files in directory " + directory, e);
@@ -54,6 +57,16 @@ public final class JsonPersistence implements Persistence {
             mapper.writerWithDefaultPrettyPrinter().writeValue(file.toFile(), state.selectedRange());
         } catch (IOException e) {
             throw new IllegalStateException("Failed to save SelectedRange to " + file, e);
+        }
+    }
+
+    @Override
+    public void delete(FloplessState state) {
+        Path file = directory.resolve(strategy.name(state) + ".json");
+        try {
+            Files.deleteIfExists(file);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to delete SelectedRange at " + file, e);
         }
     }
 }

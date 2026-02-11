@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <StackPane styleClass="main-pane" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.flopless.view.MainView">
@@ -10,7 +11,7 @@
       <URL value="@../styles/main.css" />
  </stylesheets>
    <children>
-      <BorderPane StackPane.alignment="CENTER">
+      <BorderPane fx:id="mainLayout" StackPane.alignment="CENTER">
          <center>
             <fx:include source="grid.fxml" />
          </center>
@@ -29,5 +30,21 @@
             </HBox>
          </left>
       </BorderPane>
+      <StackPane fx:id="deleteOverlay" managed="false" styleClass="delete-overlay" visible="false" StackPane.alignment="CENTER">
+         <children>
+            <VBox styleClass="delete-modal">
+               <children>
+                  <Label styleClass="delete-modal-title" text="Delete chart?" />
+                  <Label fx:id="deleteModalBody" styleClass="delete-modal-body" text="This action cannot be undone." wrapText="true" />
+                  <HBox styleClass="delete-modal-actions">
+                     <children>
+                        <Button fx:id="deleteCancelButton" mnemonicParsing="false" styleClass="delete-cancel-btn" text="Cancel" />
+                        <Button fx:id="deleteConfirmButton" mnemonicParsing="false" styleClass="delete-confirm-btn" text="Delete" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </StackPane>
    </children>
 </StackPane>

@@ -7,5 +7,7 @@ public interface Persistence {
 
     void save(FloplessState state);
 
+    void delete(FloplessState state);
+
     List<FloplessState> loadAll();
 }
