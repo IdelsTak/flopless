@@ -1,6 +1,6 @@
 .main-pane {
     -fx-alignment: top-center;
-    -fx-padding: 40px
+    -fx-padding: 12 12 18 12
 }
 
 .delete-overlay {

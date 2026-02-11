@@ -52,6 +52,20 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
                 increaseLimper(state, a);
             case Action.User.DecreaseLimperAmount a ->
                 decreaseLimper(state, a);
+            case Action.User.ReraisedIpMultiplier a ->
+                reraisedIpMultiplier(state, a);
+            case Action.User.IncreaseReraisedIpMultiplier a ->
+                increaseReraisedIpMultiplier(state, a);
+            case Action.User.DecreaseReraisedIpMultiplier a ->
+                decreaseReraisedIpMultiplier(state, a);
+            case Action.User.ReraisedOopMultiplier a ->
+                reraisedOopMultiplier(state, a);
+            case Action.User.IncreaseReraisedOopMultiplier a ->
+                increaseReraisedOopMultiplier(state, a);
+            case Action.User.DecreaseReraisedOopMultiplier a ->
+                decreaseReraisedOopMultiplier(state, a);
+            case Action.User.PremiumRaiseOverride a ->
+                premiumRaiseOverride(state, a);
             case Action.User.Save _ ->
                 save(state);
             case Action.User.DeleteState a ->
@@ -134,7 +148,9 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
         }
         for (var c : state.previewRange().coordinates()) {
             var selected = state.selectedRange().coordinates().contains(c);
-            var actionToApply = selected ? state.selectedRange().actionAt(c) : state.selectedAction();
+            var actionToApply = selected
+                                  ? state.selectedRange().actionAt(c)
+                                  : resolveSelectedActionForCoordinate(state, c);
             committed = selected ? committed.remove(c) : committed.add(c, actionToApply);
         }
         return state
@@ -146,6 +162,15 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
 
     private FloplessState selectAction(FloplessState state, Action.User.SelectGridAction select) {
         return state.selectAction(select.action());
+    }
+
+    private GridAction resolveSelectedActionForCoordinate(FloplessState state, Coordinate coordinate) {
+        if (state.selectedAction() instanceof GridAction.Raise _) {
+            var amount = state.sizingConfig()
+              .resolvedRaiseBb(coordinate.hand(), state.position(), state.facing(), state.squeezeLimpers());
+            return new GridAction.Raise(amount);
+        }
+        return state.selectedAction();
     }
 
     private FloplessState raiseAmount(FloplessState state, Action.User.RaiseAmount raise) {
@@ -181,6 +206,42 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
         var min = state.minPerLimperAmount().doubleValue();
         var newAmount = updateAmount(min, state.perLimperAmount().doubleValue(), decrease.step());
         return state.perLimper(BigDecimal.valueOf(newAmount));
+    }
+
+    private FloplessState reraisedIpMultiplier(FloplessState state, Action.User.ReraisedIpMultiplier amount) {
+        return state.reraisedIpMultiplier(BigDecimal.valueOf(amount.amount()));
+    }
+
+    private FloplessState increaseReraisedIpMultiplier(FloplessState state, Action.User.IncreaseReraisedIpMultiplier increase) {
+        var min = BigDecimal.ONE.doubleValue();
+        var next = updateAmount(min, state.reraisedIpMultiplier().doubleValue(), increase.step());
+        return state.reraisedIpMultiplier(BigDecimal.valueOf(next));
+    }
+
+    private FloplessState decreaseReraisedIpMultiplier(FloplessState state, Action.User.DecreaseReraisedIpMultiplier decrease) {
+        var min = BigDecimal.ONE.doubleValue();
+        var next = updateAmount(min, state.reraisedIpMultiplier().doubleValue(), decrease.step());
+        return state.reraisedIpMultiplier(BigDecimal.valueOf(next));
+    }
+
+    private FloplessState reraisedOopMultiplier(FloplessState state, Action.User.ReraisedOopMultiplier amount) {
+        return state.reraisedOopMultiplier(BigDecimal.valueOf(amount.amount()));
+    }
+
+    private FloplessState increaseReraisedOopMultiplier(FloplessState state, Action.User.IncreaseReraisedOopMultiplier increase) {
+        var min = BigDecimal.ONE.doubleValue();
+        var next = updateAmount(min, state.reraisedOopMultiplier().doubleValue(), increase.step());
+        return state.reraisedOopMultiplier(BigDecimal.valueOf(next));
+    }
+
+    private FloplessState decreaseReraisedOopMultiplier(FloplessState state, Action.User.DecreaseReraisedOopMultiplier decrease) {
+        var min = BigDecimal.ONE.doubleValue();
+        var next = updateAmount(min, state.reraisedOopMultiplier().doubleValue(), decrease.step());
+        return state.reraisedOopMultiplier(BigDecimal.valueOf(next));
+    }
+
+    private FloplessState premiumRaiseOverride(FloplessState state, Action.User.PremiumRaiseOverride override) {
+        return state.premiumOverride(override.hand(), BigDecimal.valueOf(override.amount()));
     }
 
     private double updateAmount(double min, double current, double step) {

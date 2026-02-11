@@ -2,6 +2,7 @@ package com.github.idelstak.flopless.view;
 
 import com.github.idelstak.flopless.grid.*;
 import com.github.idelstak.flopless.poker.action.*;
+import com.github.idelstak.flopless.poker.player.*;
 import com.github.idelstak.flopless.state.*;
 import com.github.idelstak.flopless.state.api.*;
 import io.reactivex.rxjava3.observers.*;
@@ -21,6 +22,7 @@ public final class ActionSidebarView implements Initializable {
     private DisposableObserver<History<FloplessState>> observe;
     private BigDecimal raiseAmount;
     private BigDecimal perLimperAmount;
+    private Facing currentFacing;
     @FXML
     private RadioButton foldRadio;
     @FXML
@@ -46,9 +48,67 @@ public final class ActionSidebarView implements Initializable {
     @FXML
     private Button incrementLimperAmountButton;
     @FXML
+    private TextField reraisedIpField;
+    @FXML
+    private Button decrementReraisedIpButton;
+    @FXML
+    private Button incrementReraisedIpButton;
+    @FXML
+    private TextField reraisedOopField;
+    @FXML
+    private Button decrementReraisedOopButton;
+    @FXML
+    private Button incrementReraisedOopButton;
+    @FXML
+    private Button decrementAaOverrideButton;
+    @FXML
+    private Button incrementAaOverrideButton;
+    @FXML
+    private TextField aaOverrideField;
+    @FXML
+    private Button decrementKkOverrideButton;
+    @FXML
+    private Button incrementKkOverrideButton;
+    @FXML
+    private TextField kkOverrideField;
+    @FXML
+    private Button decrementQqOverrideButton;
+    @FXML
+    private Button incrementQqOverrideButton;
+    @FXML
+    private TextField qqOverrideField;
+    @FXML
+    private Button decrementJjOverrideButton;
+    @FXML
+    private Button incrementJjOverrideButton;
+    @FXML
+    private TextField jjOverrideField;
+    @FXML
+    private Button decrementAksOverrideButton;
+    @FXML
+    private Button incrementAksOverrideButton;
+    @FXML
+    private TextField aksOverrideField;
+    @FXML
+    private Button decrementAkoOverrideButton;
+    @FXML
+    private Button incrementAkoOverrideButton;
+    @FXML
+    private TextField akoOverrideField;
+    @FXML
+    private Button decrementAqsOverrideButton;
+    @FXML
+    private Button incrementAqsOverrideButton;
+    @FXML
+    private TextField aqsOverrideField;
+    @FXML
     private VBox raiseAmountEdit;
     @FXML
     private VBox limpersEdit;
+    @FXML
+    private VBox reraisedEdit;
+    @FXML
+    private VBox premiumEdit;
 
     public ActionSidebarView(Stage stage, FloplessLoop loop) {
         this.stage = stage;
@@ -56,6 +116,7 @@ public final class ActionSidebarView implements Initializable {
 
         raiseAmount = BigDecimal.ZERO;
         perLimperAmount = BigDecimal.ZERO;
+        currentFacing = new Facing.Open();
     }
 
     @Override
@@ -107,21 +168,39 @@ public final class ActionSidebarView implements Initializable {
         decrementActionAmountButton.setOnAction(_ ->
           loop.accept(new Action.User.DecreaseRaiseAmount(-0.5)));
         limperAmountField.setOnAction(_ -> {
-            var text = limperAmountField.getText();
-            if (text == null || text.isBlank()) {
-                return;
-            }
-            BigDecimal amount = perLimperAmount;
-            try {
-                amount = new BigDecimal(text);
-            } catch (NumberFormatException _) {
-            }
-            loop.accept(new Action.User.LimperAmount(amount.doubleValue()));
+            loop.accept(new Action.User.LimperAmount(readDouble(limperAmountField, perLimperAmount.doubleValue())));
         });
         incrementLimperAmountButton.setOnAction(_ ->
           loop.accept(new Action.User.IncreaseLimperAmount(0.5)));
         decrementLimperAmountButton.setOnAction(_ ->
           loop.accept(new Action.User.DecreaseLimperAmount(-0.5)));
+
+        reraisedIpField.setOnAction(_ -> {
+            var fallback = displayedReraisedMultiplier(BigDecimal.valueOf(3.0), currentFacing).doubleValue();
+            var displayed = readDouble(reraisedIpField, fallback);
+            loop.accept(new Action.User.ReraisedIpMultiplier(baseReraisedMultiplier(displayed, currentFacing)));
+        });
+        incrementReraisedIpButton.setOnAction(_ ->
+          loop.accept(new Action.User.IncreaseReraisedIpMultiplier(0.5)));
+        decrementReraisedIpButton.setOnAction(_ ->
+          loop.accept(new Action.User.DecreaseReraisedIpMultiplier(-0.5)));
+
+        reraisedOopField.setOnAction(_ -> {
+            var fallback = displayedReraisedMultiplier(BigDecimal.valueOf(4.0), currentFacing).doubleValue();
+            var displayed = readDouble(reraisedOopField, fallback);
+            loop.accept(new Action.User.ReraisedOopMultiplier(baseReraisedMultiplier(displayed, currentFacing)));
+        });
+        incrementReraisedOopButton.setOnAction(_ ->
+          loop.accept(new Action.User.IncreaseReraisedOopMultiplier(0.5)));
+        decrementReraisedOopButton.setOnAction(_ ->
+          loop.accept(new Action.User.DecreaseReraisedOopMultiplier(-0.5)));
+        configurePremiumField("AA", aaOverrideField, decrementAaOverrideButton, incrementAaOverrideButton);
+        configurePremiumField("KK", kkOverrideField, decrementKkOverrideButton, incrementKkOverrideButton);
+        configurePremiumField("QQ", qqOverrideField, decrementQqOverrideButton, incrementQqOverrideButton);
+        configurePremiumField("JJ", jjOverrideField, decrementJjOverrideButton, incrementJjOverrideButton);
+        configurePremiumField("AKs", aksOverrideField, decrementAksOverrideButton, incrementAksOverrideButton);
+        configurePremiumField("AKo", akoOverrideField, decrementAkoOverrideButton, incrementAkoOverrideButton);
+        configurePremiumField("AQs", aqsOverrideField, decrementAqsOverrideButton, incrementAqsOverrideButton);
     }
 
     private void setupSubscription() {
@@ -146,20 +225,29 @@ public final class ActionSidebarView implements Initializable {
     }
 
     private void render(FloplessState state) {
+        currentFacing = state.facing();
         var action = state.selectedAction().gameAction();
         var isRaise = action instanceof GameAction.Money.Raise;
         raiseAmountEdit.setDisable(!isRaise);
         limpersEdit.setDisable(!(isRaise && state.squeezeLimpers()));
+        reraisedEdit.setDisable(!(isRaise && state.facing() instanceof com.github.idelstak.flopless.poker.player.Facing.ReRaised));
+        premiumEdit.setDisable(!isRaise);
 
         raiseAmount = state.raiseAmount();
-        actionAmountField.setText(raiseAmount.doubleValue() % 1 == 0
-                                    ? String.format("%.0f", raiseAmount.doubleValue())
-                                    : String.format("%.1f", raiseAmount.doubleValue()));
+        actionAmountField.setText(formatDecimal(raiseAmount));
 
         perLimperAmount = state.perLimperAmount();
-        limperAmountField.setText(perLimperAmount.doubleValue() % 1 == 0
-                                    ? String.format("%.0f", perLimperAmount.doubleValue())
-                                    : String.format("%.1f", perLimperAmount.doubleValue()));
+        limperAmountField.setText(formatDecimal(perLimperAmount));
+        reraisedIpField.setText(formatDecimal(displayedReraisedMultiplier(state.reraisedIpMultiplier(), state.facing())));
+        reraisedOopField.setText(formatDecimal(displayedReraisedMultiplier(state.reraisedOopMultiplier(), state.facing())));
+
+        aaOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("AA", state.raiseAmount())));
+        kkOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("KK", state.raiseAmount())));
+        qqOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("QQ", state.raiseAmount())));
+        jjOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("JJ", state.raiseAmount())));
+        aksOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("AKs", state.raiseAmount())));
+        akoOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("AKo", state.raiseAmount())));
+        aqsOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("AQs", state.raiseAmount())));
 
         var toSelect = actionGroup.getToggles()
           .stream().filter(t -> ((Labeled) t).getText().equalsIgnoreCase(action.displayLabel()))
@@ -167,6 +255,57 @@ public final class ActionSidebarView implements Initializable {
           .orElseThrow();
 
         actionGroup.selectToggle(toSelect);
+    }
+
+    private void configurePremiumField(String hand, TextField field, Button decrement, Button increment) {
+        field.setOnAction(_ -> loop.accept(new Action.User.PremiumRaiseOverride(hand, readDouble(field, raiseAmount.doubleValue()))));
+        increment.setOnAction(_ -> nudgePremium(hand, field, 0.5));
+        decrement.setOnAction(_ -> nudgePremium(hand, field, -0.5));
+    }
+
+    private void nudgePremium(String hand, TextField field, double delta) {
+        var current = readDouble(field, raiseAmount.doubleValue());
+        var next = Math.max(1.0, Math.min(30.0, current + delta));
+        field.setText(formatDecimal(BigDecimal.valueOf(next)));
+        loop.accept(new Action.User.PremiumRaiseOverride(hand, next));
+    }
+
+    private double readDouble(TextField field, double fallback) {
+        var text = field.getText();
+        if (text == null || text.isBlank()) {
+            return fallback;
+        }
+        try {
+            return Double.parseDouble(text);
+        } catch (NumberFormatException _) {
+            return fallback;
+        }
+    }
+
+    private String formatDecimal(BigDecimal value) {
+        return value.doubleValue() % 1 == 0
+                 ? String.format("%.0f", value.doubleValue())
+                 : String.format("%.1f", value.doubleValue());
+    }
+
+    private BigDecimal displayedReraisedMultiplier(BigDecimal base, Facing facing) {
+        return base.add(reraisedFacingStep(facing));
+    }
+
+    private double baseReraisedMultiplier(double displayed, Facing facing) {
+        return Math.max(1.0, displayed - reraisedFacingStep(facing).doubleValue());
+    }
+
+    private BigDecimal reraisedFacingStep(Facing facing) {
+        if (!(facing instanceof Facing.ReRaised reRaised)) {
+            return BigDecimal.ZERO;
+        }
+        return switch (reRaised) {
+            case Facing.ReRaised.Vs3Bet _ -> BigDecimal.ZERO;
+            case Facing.ReRaised.Vs4Bet _ -> BigDecimal.ONE;
+            case Facing.ReRaised.Vs5Bet _ -> BigDecimal.valueOf(2);
+            case Facing.ReRaised.VsAllIn _ -> BigDecimal.ZERO;
+        };
     }
 
     private void dispose() {

@@ -97,6 +97,34 @@ public sealed interface Action {
 
         }
 
+        record ReraisedIpMultiplier(double amount) implements Action {
+
+        }
+
+        record IncreaseReraisedIpMultiplier(double step) implements Action {
+
+        }
+
+        record DecreaseReraisedIpMultiplier(double step) implements Action {
+
+        }
+
+        record ReraisedOopMultiplier(double amount) implements Action {
+
+        }
+
+        record IncreaseReraisedOopMultiplier(double step) implements Action {
+
+        }
+
+        record DecreaseReraisedOopMultiplier(double step) implements Action {
+
+        }
+
+        record PremiumRaiseOverride(String hand, double amount) implements Action {
+
+        }
+
         record LoadState(FloplessState state) implements Action {
 
         }

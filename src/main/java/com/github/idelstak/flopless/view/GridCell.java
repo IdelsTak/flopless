@@ -17,6 +17,7 @@ public final class GridCell extends StackPane {
     private DisposableObserver<History<FloplessState>> observe;
     private boolean isSelected;
     private Label handLabel;
+    private Label amountLabel;
 
     GridCell(Stage stage, FloplessLoop loop, Coordinate coordinate) {
         this.stage = stage;
@@ -46,7 +47,13 @@ public final class GridCell extends StackPane {
     private void setupLabel() {
         handLabel = new Label(coordinate.hand());
         handLabel.getStyleClass().add("hand-label");
-        getChildren().add(handLabel);
+        amountLabel = new Label();
+        amountLabel.getStyleClass().add("raise-amount-label");
+        // amountLabel.setManaged(false);
+        amountLabel.setVisible(false);
+        var content = new VBox(2, handLabel, amountLabel);
+        content.setFillWidth(false);
+        getChildren().add(content);
     }
 
     private void setupSubscription() {
@@ -78,6 +85,17 @@ public final class GridCell extends StackPane {
             var gridAction = state.selectedRange().actionAt(coordinate);
             setBackground(Background.fill(gridAction.color()));
             handLabel.setTextFill(Color.WHITE);
+            if (gridAction instanceof GridAction.Raise raise) {
+                amountLabel.setText(formatAmount(raise.amount()) + "BB");
+                // amountLabel.setManaged(true);
+                amountLabel.setVisible(true);
+            } else {
+               //  amountLabel.setManaged(false);
+                amountLabel.setVisible(false);
+            }
+        } else {
+            // amountLabel.setManaged(false);
+            amountLabel.setVisible(false);
         }
         var isPreviewed = state.startCoordinate().isPresent()
           && state.previewRange().coordinates().contains(coordinate);
@@ -88,6 +106,12 @@ public final class GridCell extends StackPane {
             setBackground(Background.fill(Color.rgb(76, 175, 80, 0.5)));
             handLabel.setTextFill(Color.WHITE);
         }
+    }
+
+    private String formatAmount(java.math.BigDecimal value) {
+        return value.doubleValue() % 1 == 0
+                 ? String.format("%.0f", value.doubleValue())
+                 : String.format("%.1f", value.doubleValue());
     }
 
     private void dispose() {
