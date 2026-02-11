@@ -17,8 +17,6 @@ public record SizingConfig(
   BigDecimal minThreeBetOopMultiplier,
   Map<String, BigDecimal> premiumRaiseOverridesBb) {
 
-    public static final Set<String> PREMIUM_HANDS = Set.of("AA", "KK", "QQ", "AKs", "AKo");
-
     public SizingConfig {
         premiumRaiseOverridesBb = Map.copyOf(premiumRaiseOverridesBb);
     }
@@ -116,7 +114,7 @@ public record SizingConfig(
     }
 
     public SizingConfig withPremiumOverride(String hand, double amountBb) {
-        if (!PREMIUM_HANDS.contains(hand)) {
+        if (!new PremiumHands().contains(hand)) {
             return this;
         }
         var value = BigDecimal.valueOf(Math.max(minOpenSizeBb.doubleValue(), amountBb));

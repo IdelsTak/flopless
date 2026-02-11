@@ -58,15 +58,47 @@ public final class ActionSidebarView implements Initializable {
     @FXML
     private Button incrementThreeBetOopButton;
     @FXML
+    private Button decrementAaOverrideButton;
+    @FXML
+    private Button incrementAaOverrideButton;
+    @FXML
     private TextField aaOverrideField;
+    @FXML
+    private Button decrementKkOverrideButton;
+    @FXML
+    private Button incrementKkOverrideButton;
     @FXML
     private TextField kkOverrideField;
     @FXML
+    private Button decrementQqOverrideButton;
+    @FXML
+    private Button incrementQqOverrideButton;
+    @FXML
     private TextField qqOverrideField;
+    @FXML
+    private Button decrementJjOverrideButton;
+    @FXML
+    private Button incrementJjOverrideButton;
+    @FXML
+    private TextField jjOverrideField;
+    @FXML
+    private Button decrementAksOverrideButton;
+    @FXML
+    private Button incrementAksOverrideButton;
     @FXML
     private TextField aksOverrideField;
     @FXML
+    private Button decrementAkoOverrideButton;
+    @FXML
+    private Button incrementAkoOverrideButton;
+    @FXML
     private TextField akoOverrideField;
+    @FXML
+    private Button decrementAqsOverrideButton;
+    @FXML
+    private Button incrementAqsOverrideButton;
+    @FXML
+    private TextField aqsOverrideField;
     @FXML
     private VBox raiseAmountEdit;
     @FXML
@@ -153,12 +185,13 @@ public final class ActionSidebarView implements Initializable {
           loop.accept(new Action.User.IncreaseThreeBetOopMultiplier(0.5)));
         decrementThreeBetOopButton.setOnAction(_ ->
           loop.accept(new Action.User.DecreaseThreeBetOopMultiplier(-0.5)));
-
-        aaOverrideField.setOnAction(_ -> applyPremiumOverride("AA", aaOverrideField));
-        kkOverrideField.setOnAction(_ -> applyPremiumOverride("KK", kkOverrideField));
-        qqOverrideField.setOnAction(_ -> applyPremiumOverride("QQ", qqOverrideField));
-        aksOverrideField.setOnAction(_ -> applyPremiumOverride("AKs", aksOverrideField));
-        akoOverrideField.setOnAction(_ -> applyPremiumOverride("AKo", akoOverrideField));
+        configurePremiumField("AA", aaOverrideField, decrementAaOverrideButton, incrementAaOverrideButton);
+        configurePremiumField("KK", kkOverrideField, decrementKkOverrideButton, incrementKkOverrideButton);
+        configurePremiumField("QQ", qqOverrideField, decrementQqOverrideButton, incrementQqOverrideButton);
+        configurePremiumField("JJ", jjOverrideField, decrementJjOverrideButton, incrementJjOverrideButton);
+        configurePremiumField("AKs", aksOverrideField, decrementAksOverrideButton, incrementAksOverrideButton);
+        configurePremiumField("AKo", akoOverrideField, decrementAkoOverrideButton, incrementAkoOverrideButton);
+        configurePremiumField("AQs", aqsOverrideField, decrementAqsOverrideButton, incrementAqsOverrideButton);
     }
 
     private void setupSubscription() {
@@ -201,8 +234,10 @@ public final class ActionSidebarView implements Initializable {
         aaOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("AA", state.raiseAmount())));
         kkOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("KK", state.raiseAmount())));
         qqOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("QQ", state.raiseAmount())));
+        jjOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("JJ", state.raiseAmount())));
         aksOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("AKs", state.raiseAmount())));
         akoOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("AKo", state.raiseAmount())));
+        aqsOverrideField.setText(formatDecimal(state.premiumRaiseOverridesBb().getOrDefault("AQs", state.raiseAmount())));
 
         var toSelect = actionGroup.getToggles()
           .stream().filter(t -> ((Labeled) t).getText().equalsIgnoreCase(action.displayLabel()))
@@ -212,8 +247,17 @@ public final class ActionSidebarView implements Initializable {
         actionGroup.selectToggle(toSelect);
     }
 
-    private void applyPremiumOverride(String hand, TextField source) {
-        loop.accept(new Action.User.PremiumRaiseOverride(hand, readDouble(source, raiseAmount.doubleValue())));
+    private void configurePremiumField(String hand, TextField field, Button decrement, Button increment) {
+        field.setOnAction(_ -> loop.accept(new Action.User.PremiumRaiseOverride(hand, readDouble(field, raiseAmount.doubleValue()))));
+        increment.setOnAction(_ -> nudgePremium(hand, field, 0.5));
+        decrement.setOnAction(_ -> nudgePremium(hand, field, -0.5));
+    }
+
+    private void nudgePremium(String hand, TextField field, double delta) {
+        var current = readDouble(field, raiseAmount.doubleValue());
+        var next = Math.max(1.0, Math.min(30.0, current + delta));
+        field.setText(formatDecimal(BigDecimal.valueOf(next)));
+        loop.accept(new Action.User.PremiumRaiseOverride(hand, next));
     }
 
     private double readDouble(TextField field, double fallback) {

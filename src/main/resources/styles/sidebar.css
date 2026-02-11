@@ -4,16 +4,16 @@
     -fx-spacing: 18px
 }
 .sidebar.scenario {
-    -fx-padding: 15 36 18 32
+    -fx-padding: 15 16 18 16
 }
 .sidebar.actions {
-    -fx-pref-width: 270px;
+    /*-fx-pref-width: 300;*/
     -fx-background-radius: 0 0 12 0;
     -fx-border-radius: 0 0 12 0;
-    -fx-padding: 15 32 18 36
+    -fx-padding: 15 16 18 18
 }
 .sidebar.library {
-    -fx-pref-width: 250px;
+    -fx-pref-width: 230;
     -fx-background-radius: 0 0 0 12px;
     -fx-border-radius: 0 0 0 12px;
     -fx-background-color: #0d0f12;

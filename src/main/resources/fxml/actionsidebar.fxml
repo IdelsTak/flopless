@@ -187,51 +187,235 @@
       <VBox fx:id="premiumEdit" styleClass="input-group">
          <children>
             <Label styleClass="input-label" text="PREMIUM OVERRIDES (BB)" />
-            <GridPane hgap="6.0" vgap="6.0">
+            <HBox spacing="6.0">
                <children>
-                  <Label styleClass="input-label" text="AA" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                  <TextField fx:id="aaOverrideField" text="3" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                     <styleClass>
-                        <String fx:value="spinner-input" />
-                        <String fx:value="premium-hands" />
-                     </styleClass></TextField>
-                  <Label styleClass="input-label" text="KK" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                  <TextField fx:id="kkOverrideField" text="3" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                     <styleClass>
-                        <String fx:value="spinner-input" />
-                        <String fx:value="premium-hands" />
-                     </styleClass></TextField>
-                  <Label styleClass="input-label" text="QQ" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                  <TextField fx:id="qqOverrideField" text="3" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                     <styleClass>
-                        <String fx:value="spinner-input" />
-                        <String fx:value="premium-hands" />
-                     </styleClass></TextField>
-                  <Label styleClass="input-label" text="AKs" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                  <TextField fx:id="aksOverrideField" text="3" GridPane.columnIndex="3" GridPane.rowIndex="0">
-                     <styleClass>
-                        <String fx:value="spinner-input" />
-                        <String fx:value="premium-hands" />
-                     </styleClass></TextField>
-                  <Label styleClass="input-label" text="AKo" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                  <TextField fx:id="akoOverrideField" text="3" GridPane.columnIndex="3" GridPane.rowIndex="1">
-                     <styleClass>
-                        <String fx:value="spinner-input" />
-                        <String fx:value="premium-hands" />
-                     </styleClass></TextField>
+                  <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="input-label" text="AA" />
+                        <HBox styleClass="custom-spinner">
+                           <children>
+                              <Button fx:id="decrementAaOverrideButton" mnemonicParsing="false" text="-">
+                                 <styleClass>
+                                    <String fx:value="spinner-btn" />
+                                    <String fx:value="left" />
+                                 </styleClass>
+                              </Button>
+                              <StackPane HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <TextField fx:id="aaOverrideField">
+                                       <styleClass>
+                                          <String fx:value="spinner-input" />
+                                          <String fx:value="premium-hands" />
+                                       </styleClass>
+                                    </TextField>
+                                 </children>
+                              </StackPane>
+                              <Button fx:id="incrementAaOverrideButton" mnemonicParsing="false" text="+">
+                                 <styleClass>
+                                    <String fx:value="spinner-btn" />
+                                    <String fx:value="right" />
+                                 </styleClass>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="input-label" text="AKo" />
+                        <HBox styleClass="custom-spinner">
+                           <children>
+                              <Button fx:id="decrementAkoOverrideButton" mnemonicParsing="false" text="-">
+                                 <styleClass>
+                                    <String fx:value="spinner-btn" />
+                                    <String fx:value="left" />
+                                 </styleClass>
+                              </Button>
+                              <StackPane HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <TextField fx:id="akoOverrideField">
+                                       <styleClass>
+                                          <String fx:value="spinner-input" />
+                                          <String fx:value="premium-hands" />
+                                       </styleClass>
+                                    </TextField>
+                                 </children>
+                              </StackPane>
+                              <Button fx:id="incrementAkoOverrideButton" mnemonicParsing="false" text="+">
+                                 <styleClass>
+                                    <String fx:value="spinner-btn" />
+                                    <String fx:value="right" />
+                                 </styleClass>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
                </children>
-               <columnConstraints>
-                  <ColumnConstraints />
-                  <ColumnConstraints hgrow="ALWAYS" />
-                  <ColumnConstraints />
-                  <ColumnConstraints hgrow="ALWAYS" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints />
-                  <RowConstraints />
-                  <RowConstraints />
-               </rowConstraints>
-            </GridPane>
+            </HBox>
+            <HBox spacing="6.0">
+               <children>
+                  <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="input-label" text="AKs" />
+                        <HBox styleClass="custom-spinner">
+                           <children>
+                              <Button fx:id="decrementAksOverrideButton" mnemonicParsing="false" text="-">
+                                 <styleClass>
+                                    <String fx:value="spinner-btn" />
+                                    <String fx:value="left" />
+                                 </styleClass>
+                              </Button>
+                              <StackPane HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <TextField fx:id="aksOverrideField">
+                                       <styleClass>
+                                          <String fx:value="spinner-input" />
+                                          <String fx:value="premium-hands" />
+                                       </styleClass>
+                                    </TextField>
+                                 </children>
+                              </StackPane>
+                              <Button fx:id="incrementAksOverrideButton" mnemonicParsing="false" text="+">
+                                 <styleClass>
+                                    <String fx:value="spinner-btn" />
+                                    <String fx:value="right" />
+                                 </styleClass>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="input-label" text="KK" />
+                        <HBox styleClass="custom-spinner">
+                           <children>
+                              <Button fx:id="decrementKkOverrideButton" mnemonicParsing="false" text="-">
+                                 <styleClass>
+                                    <String fx:value="spinner-btn" />
+                                    <String fx:value="left" />
+                                 </styleClass>
+                              </Button>
+                              <StackPane HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <TextField fx:id="kkOverrideField">
+                                       <styleClass>
+                                          <String fx:value="spinner-input" />
+                                          <String fx:value="premium-hands" />
+                                       </styleClass>
+                                    </TextField>
+                                 </children>
+                              </StackPane>
+                              <Button fx:id="incrementKkOverrideButton" mnemonicParsing="false" text="+">
+                                 <styleClass>
+                                    <String fx:value="spinner-btn" />
+                                    <String fx:value="right" />
+                                 </styleClass>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox spacing="6.0">
+               <children>
+                  <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="input-label" text="AQs" />
+                        <HBox styleClass="custom-spinner">
+                           <children>
+                              <Button fx:id="decrementAqsOverrideButton" mnemonicParsing="false" text="-">
+                                 <styleClass>
+                                    <String fx:value="spinner-btn" />
+                                    <String fx:value="left" />
+                                 </styleClass>
+                              </Button>
+                              <StackPane HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <TextField fx:id="aqsOverrideField">
+                                       <styleClass>
+                                          <String fx:value="spinner-input" />
+                                          <String fx:value="premium-hands" />
+                                       </styleClass>
+                                    </TextField>
+                                 </children>
+                              </StackPane>
+                              <Button fx:id="incrementAqsOverrideButton" mnemonicParsing="false" text="+">
+                                 <styleClass>
+                                    <String fx:value="spinner-btn" />
+                                    <String fx:value="right" />
+                                 </styleClass>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label styleClass="input-label" text="QQ" />
+                        <HBox styleClass="custom-spinner">
+                           <children>
+                              <Button fx:id="decrementQqOverrideButton" mnemonicParsing="false" text="-">
+                                 <styleClass>
+                                    <String fx:value="spinner-btn" />
+                                    <String fx:value="left" />
+                                 </styleClass>
+                              </Button>
+                              <StackPane HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <TextField fx:id="qqOverrideField">
+                                       <styleClass>
+                                          <String fx:value="spinner-input" />
+                                          <String fx:value="premium-hands" />
+                                       </styleClass>
+                                    </TextField>
+                                 </children>
+                              </StackPane>
+                              <Button fx:id="incrementQqOverrideButton" mnemonicParsing="false" text="+">
+                                 <styleClass>
+                                    <String fx:value="spinner-btn" />
+                                    <String fx:value="right" />
+                                 </styleClass>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <VBox spacing="3.0">
+               <children>
+                  <Label styleClass="input-label" text="JJ" />
+                  <HBox styleClass="custom-spinner">
+                     <children>
+                        <Button fx:id="decrementJjOverrideButton" mnemonicParsing="false" text="-">
+                           <styleClass>
+                              <String fx:value="spinner-btn" />
+                              <String fx:value="left" />
+                           </styleClass>
+                        </Button>
+                        <StackPane HBox.hgrow="ALWAYS">
+                           <children>
+                              <TextField fx:id="jjOverrideField">
+                                 <styleClass>
+                                    <String fx:value="spinner-input" />
+                                    <String fx:value="premium-hands" />
+                                 </styleClass>
+                              </TextField>
+                           </children>
+                        </StackPane>
+                        <Button fx:id="incrementJjOverrideButton" mnemonicParsing="false" text="+">
+                           <styleClass>
+                              <String fx:value="spinner-btn" />
+                              <String fx:value="right" />
+                           </styleClass>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
          </children>
       </VBox>
    </children>
