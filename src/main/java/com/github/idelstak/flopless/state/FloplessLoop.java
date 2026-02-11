@@ -40,6 +40,8 @@ public final class FloplessLoop implements Source<History<FloplessState>>, Sink<
         switch (effect) {
             case Action.Effect.GridActionSelected selected ->
                 actions.onNext(new Action.User.SelectGridAction(selected.action()));
+            case Action.Effect.DeleteStateRequested requested ->
+                actions.onNext(new Action.User.DeleteState(requested.state()));
         }
     }
 

@@ -12,9 +12,11 @@ import java.util.*;
 public final class ReducedState implements Reduced<FloplessState, Action, FloplessState> {
 
     private final Persistence persistence;
+    private final Strategy strategy;
 
     public ReducedState(Persistence persistence) {
         this.persistence = persistence;
+        this.strategy = new Strategy();
     }
 
     @Override
@@ -52,6 +54,8 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
                 decreaseLimper(state, a);
             case Action.User.Save _ ->
                 save(state);
+            case Action.User.DeleteState a ->
+                delete(state, a);
             case Action.User.LoadState a ->
                 load(a);
 
@@ -191,6 +195,38 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
         }
 
         return state;
+    }
+
+    private FloplessState delete(FloplessState current, Action.User.DeleteState delete) {
+        var beforeDelete = persistence.loadAll();
+        var deletedName = strategy.name(delete.state());
+        var activeName = strategy.name(current);
+        var deletedIndex = -1;
+        for (int i = 0; i < beforeDelete.size(); i++) {
+            if (strategy.name(beforeDelete.get(i)).equals(deletedName)) {
+                deletedIndex = i;
+                break;
+            }
+        }
+
+        try {
+            persistence.delete(delete.state());
+        } catch (Exception e) {
+            System.out.println("[REDUCED STATE] " + e);
+            return current;
+        }
+
+        if (!deletedName.equals(activeName)) {
+            return current;
+        }
+
+        var afterDelete = persistence.loadAll();
+        if (afterDelete.isEmpty()) {
+            return FloplessState.initial();
+        }
+
+        var fallbackIndex = deletedIndex >= 0 ? Math.min(deletedIndex, afterDelete.size() - 1) : 0;
+        return FloplessState.initial().copy(afterDelete.get(fallbackIndex));
     }
 
     private FloplessState load(Action.User.LoadState load) {

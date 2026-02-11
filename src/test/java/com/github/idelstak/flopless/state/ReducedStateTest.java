@@ -206,4 +206,57 @@ final class ReducedStateTest {
         var after = reduced.apply(before, new Action.User.DecreaseLimperAmount(-1));
         assertThat(after.perLimperAmount().doubleValue(), is(1.5));
     }
+
+    @Test
+    void deleteStateRemovesSavedChartAndKeepsCurrentWhenDeletingAnotherChart() {
+        var utg = FloplessState.initial().forPosition(new Position.Utg());
+        var co = FloplessState.initial().forPosition(new Position.Co());
+        var btn = FloplessState.initial().forPosition(new Position.Btn());
+        var persistence = new FakePersistence(List.of(utg, co, btn));
+        var reduced = new ReducedState(persistence);
+        var after = reduced.apply(utg, new Action.User.DeleteState(btn));
+        var remaining = persistence.loadAll();
+        var strategy = new com.github.idelstak.flopless.io.Strategy();
+
+        assertThat(strategy.name(after), is(strategy.name(utg)));
+        assertThat(remaining.size(), is(2));
+        assertThat(remaining.stream().map(strategy::name).toList(), not(hasItem(strategy.name(btn))));
+    }
+
+    @Test
+    void deleteStateFallsForwardWhenDeletingActiveChart() {
+        var utg = FloplessState.initial().forPosition(new Position.Utg());
+        var co = FloplessState.initial().forPosition(new Position.Co());
+        var btn = FloplessState.initial().forPosition(new Position.Btn());
+        var persistence = new FakePersistence(List.of(utg, co, btn));
+        var reduced = new ReducedState(persistence);
+        var after = reduced.apply(co, new Action.User.DeleteState(co));
+        var strategy = new com.github.idelstak.flopless.io.Strategy();
+
+        assertThat(strategy.name(after), is(strategy.name(btn)));
+    }
+
+    @Test
+    void deleteStateFallsBackWhenDeletingLastActiveChart() {
+        var utg = FloplessState.initial().forPosition(new Position.Utg());
+        var co = FloplessState.initial().forPosition(new Position.Co());
+        var btn = FloplessState.initial().forPosition(new Position.Btn());
+        var persistence = new FakePersistence(List.of(utg, co, btn));
+        var reduced = new ReducedState(persistence);
+        var after = reduced.apply(btn, new Action.User.DeleteState(btn));
+        var strategy = new com.github.idelstak.flopless.io.Strategy();
+
+        assertThat(strategy.name(after), is(strategy.name(co)));
+    }
+
+    @Test
+    void deleteStateLoadsInitialWhenLastSavedChartIsDeleted() {
+        var utg = FloplessState.initial().forPosition(new Position.Utg());
+        var persistence = new FakePersistence(List.of(utg));
+        var reduced = new ReducedState(persistence);
+        var after = reduced.apply(utg, new Action.User.DeleteState(utg));
+        var strategy = new com.github.idelstak.flopless.io.Strategy();
+
+        assertThat(strategy.name(after), is(strategy.name(FloplessState.initial())));
+    }
 }

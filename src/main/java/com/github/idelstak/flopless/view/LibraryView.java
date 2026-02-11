@@ -10,8 +10,10 @@ import javafx.application.*;
 import javafx.collections.*;
 import javafx.fxml.*;
 import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
+import org.kordamp.ikonli.javafx.*;
 
 public final class LibraryView implements Initializable {
 
@@ -53,16 +55,42 @@ public final class LibraryView implements Initializable {
 
     private void setupListView() {
         rangesListView.setItems(ranges);
+        rangesListView.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.DELETE || e.getCode() == KeyCode.BACK_SPACE) {
+                var selected = rangesListView.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    requestDelete(selected);
+                    e.consume();
+                }
+            }
+        });
         rangesListView.setCellFactory(_ -> new ListCell<>() {
             private final HBox item = new HBox();
             private final Label label = new Label();
+            private final Region spacer = new Region();
+            private final Button deleteButton = new Button();
 
             {
                 item.getStyleClass().add("grid-item");
                 item.maxWidthProperty().bind(rangesListView.widthProperty().multiply(0.93));
                 label.setWrapText(true);
                 label.setMinHeight(55);
-                item.getChildren().add(label);
+                HBox.setHgrow(spacer, Priority.ALWAYS);
+
+                var deleteIcon = new FontIcon("jam-trash");
+                deleteIcon.getStyleClass().add("delete-chart-icon");
+                deleteButton.setGraphic(deleteIcon);
+                deleteButton.getStyleClass().add("delete-chart-btn");
+                deleteButton.setFocusTraversable(false);
+                deleteButton.setOnAction(e -> {
+                    e.consume();
+                    var state = getItem();
+                    if (state != null) {
+                        requestDelete(state);
+                    }
+                });
+
+                item.getChildren().addAll(label, spacer, deleteButton);
                 item.setOnMouseClicked(e -> {
                     var state = getItem();
                     if (state != null) {
@@ -90,6 +118,34 @@ public final class LibraryView implements Initializable {
                 setGraphic(item);
             }
         });
+    }
+
+    private void requestDelete(FloplessState state) {
+        var name = strategy.name(state);
+        if (!confirmDelete(name)) {
+            return;
+        }
+        loop.accept(new Action.Effect.DeleteStateRequested(state));
+    }
+
+    private boolean confirmDelete(String chartName) {
+        var cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        var delete = new ButtonType("Delete", ButtonBar.ButtonData.OK_DONE);
+        var alert = new Alert(Alert.AlertType.CONFIRMATION, "This action cannot be undone.", cancel, delete);
+        alert.initOwner(stage);
+        alert.setTitle("Delete Chart");
+        alert.setHeaderText("Delete " + chartName + "?");
+
+        var pane = alert.getDialogPane();
+        pane.getStyleClass().add("delete-dialog");
+        pane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/fonts.css")).toExternalForm());
+        pane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/root.css")).toExternalForm());
+        pane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/sidebar.css")).toExternalForm());
+        pane.lookupButton(cancel).getStyleClass().add("delete-cancel-btn");
+        pane.lookupButton(delete).getStyleClass().add("delete-confirm-btn");
+
+        Platform.runLater(() -> pane.lookupButton(cancel).requestFocus());
+        return alert.showAndWait().orElse(cancel) == delete;
     }
 
     private void renderLibrary(List<FloplessState> states) {
