@@ -52,12 +52,6 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
                 increaseLimper(state, a);
             case Action.User.DecreaseLimperAmount a ->
                 decreaseLimper(state, a);
-            case Action.User.LimperCount a ->
-                limperCount(state, a);
-            case Action.User.IncreaseLimperCount a ->
-                increaseLimperCount(state, a);
-            case Action.User.DecreaseLimperCount a ->
-                decreaseLimperCount(state, a);
             case Action.User.ThreeBetIpMultiplier a ->
                 threeBetIpMultiplier(state, a);
             case Action.User.IncreaseThreeBetIpMultiplier a ->
@@ -212,18 +206,6 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
         var min = state.minPerLimperAmount().doubleValue();
         var newAmount = updateAmount(min, state.perLimperAmount().doubleValue(), decrease.step());
         return state.perLimper(BigDecimal.valueOf(newAmount));
-    }
-
-    private FloplessState limperCount(FloplessState state, Action.User.LimperCount count) {
-        return state.limperCount(count.amount());
-    }
-
-    private FloplessState increaseLimperCount(FloplessState state, Action.User.IncreaseLimperCount increase) {
-        return state.limperCount(state.limperCount() + increase.step());
-    }
-
-    private FloplessState decreaseLimperCount(FloplessState state, Action.User.DecreaseLimperCount decrease) {
-        return state.limperCount(state.limperCount() - decrease.step());
     }
 
     private FloplessState threeBetIpMultiplier(FloplessState state, Action.User.ThreeBetIpMultiplier amount) {

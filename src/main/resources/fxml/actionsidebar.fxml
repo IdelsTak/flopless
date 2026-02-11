@@ -124,28 +124,6 @@
                   </Button>
                </children>
             </HBox>
-            <Label styleClass="input-label" text="LIMPER COUNT" />
-            <HBox styleClass="custom-spinner">
-               <children>
-                  <Button fx:id="decrementLimperCountButton" mnemonicParsing="false" text="-">
-                     <styleClass>
-                        <String fx:value="spinner-btn" />
-                        <String fx:value="left" />
-                     </styleClass>
-                  </Button>
-                  <StackPane HBox.hgrow="ALWAYS">
-                     <children>
-                        <TextField fx:id="limperCountField" styleClass="spinner-input" text="1" />
-                     </children>
-                  </StackPane>
-                  <Button fx:id="incrementLimperCountButton" mnemonicParsing="false" text="+">
-                     <styleClass>
-                        <String fx:value="spinner-btn" />
-                        <String fx:value="right" />
-                     </styleClass>
-                  </Button>
-               </children>
-            </HBox>
          </children>
       </VBox>
       <VBox fx:id="threeBetEdit" styleClass="input-group">

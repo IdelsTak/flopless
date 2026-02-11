@@ -276,20 +276,17 @@ final class ReducedStateTest {
     }
 
     @Test
-    void commitRangeUsesOpenPlusPerLimperForNonPremiumHands() {
+    void commitRangeUsesOpenSizeForNonPremiumHands() {
         var reduced = new ReducedState(new FakePersistence());
         var kqo = new Grid().coordinate("KQo").orElseThrow();
         var before = FloplessState.initial()
           .raise(BigDecimal.valueOf(3))
-          .perLimper(BigDecimal.valueOf(2))
-          .limperCount(2)
-          .toggleLimpersSqueeze(true)
           .selectAction(new GridAction.Raise(BigDecimal.valueOf(3)))
           .beginDrag(Optional.of(kqo))
           .showPreview(SelectedRange.none().add(kqo, new GridAction.Raise(BigDecimal.valueOf(3))));
         var after = reduced.apply(before, new Action.User.CommitRange());
         var raise = (GridAction.Raise) after.selectedRange().actionAt(kqo);
-        assertThat(raise.amount().doubleValue(), is(7.0));
+        assertThat(raise.amount().doubleValue(), is(3.0));
     }
 
     @Test

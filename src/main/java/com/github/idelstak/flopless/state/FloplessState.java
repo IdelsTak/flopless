@@ -120,21 +120,6 @@ public record FloplessState(
         );
     }
 
-    FloplessState limperCount(int count) {
-        return new FloplessState(
-          tableType,
-          position,
-          facing,
-          squeezeLimpers,
-          selectedRange,
-          selectMode,
-          startCoordinate,
-          previewRange,
-          selectedAction,
-          sizingConfig.withLimperCount(count)
-        );
-    }
-
     FloplessState threeBetIpMultiplier(BigDecimal multiplier) {
         return new FloplessState(
           tableType,
@@ -194,10 +179,6 @@ public record FloplessState(
 
     public BigDecimal minPerLimperAmount() {
         return sizingConfig.minPerLimperBb();
-    }
-
-    public int limperCount() {
-        return sizingConfig.limperCount();
     }
 
     public BigDecimal threeBetIpMultiplier() {

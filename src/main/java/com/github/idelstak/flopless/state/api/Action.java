@@ -97,18 +97,6 @@ public sealed interface Action {
 
         }
 
-        record LimperCount(int amount) implements Action {
-
-        }
-
-        record IncreaseLimperCount(int step) implements Action {
-
-        }
-
-        record DecreaseLimperCount(int step) implements Action {
-
-        }
-
         record ThreeBetIpMultiplier(double amount) implements Action {
 
         }

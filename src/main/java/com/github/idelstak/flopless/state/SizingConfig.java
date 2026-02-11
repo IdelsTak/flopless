@@ -1,15 +1,16 @@
 package com.github.idelstak.flopless.state;
 
+import com.fasterxml.jackson.annotation.*;
 import com.github.idelstak.flopless.poker.player.*;
 import java.math.*;
 import java.util.*;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record SizingConfig(
   BigDecimal openSizeBb,
   BigDecimal minOpenSizeBb,
   BigDecimal perLimperBb,
   BigDecimal minPerLimperBb,
-  int limperCount,
   BigDecimal threeBetIpMultiplier,
   BigDecimal minThreeBetIpMultiplier,
   BigDecimal threeBetOopMultiplier,
@@ -29,7 +30,6 @@ public record SizingConfig(
           minOpenSizeBb,
           perLimperBb,
           minPerLimperBb,
-          limperCount,
           threeBetIpMultiplier,
           minThreeBetIpMultiplier,
           threeBetOopMultiplier,
@@ -46,7 +46,6 @@ public record SizingConfig(
           min,
           perLimperBb,
           minPerLimperBb,
-          limperCount,
           threeBetIpMultiplier,
           minThreeBetIpMultiplier,
           threeBetOopMultiplier,
@@ -62,7 +61,6 @@ public record SizingConfig(
           minOpenSizeBb,
           value,
           minPerLimperBb,
-          limperCount,
           threeBetIpMultiplier,
           minThreeBetIpMultiplier,
           threeBetOopMultiplier,
@@ -79,23 +77,6 @@ public record SizingConfig(
           minOpenSizeBb,
           perLimper,
           min,
-          limperCount,
-          threeBetIpMultiplier,
-          minThreeBetIpMultiplier,
-          threeBetOopMultiplier,
-          minThreeBetOopMultiplier,
-          premiumRaiseOverridesBb
-        );
-    }
-
-    public SizingConfig withLimperCount(int count) {
-        var value = Math.max(0, count);
-        return new SizingConfig(
-          openSizeBb,
-          minOpenSizeBb,
-          perLimperBb,
-          minPerLimperBb,
-          value,
           threeBetIpMultiplier,
           minThreeBetIpMultiplier,
           threeBetOopMultiplier,
@@ -111,7 +92,6 @@ public record SizingConfig(
           minOpenSizeBb,
           perLimperBb,
           minPerLimperBb,
-          limperCount,
           value,
           minThreeBetIpMultiplier,
           threeBetOopMultiplier,
@@ -127,7 +107,6 @@ public record SizingConfig(
           minOpenSizeBb,
           perLimperBb,
           minPerLimperBb,
-          limperCount,
           threeBetIpMultiplier,
           minThreeBetIpMultiplier,
           value,
@@ -148,7 +127,6 @@ public record SizingConfig(
           minOpenSizeBb,
           perLimperBb,
           minPerLimperBb,
-          limperCount,
           threeBetIpMultiplier,
           minThreeBetIpMultiplier,
           threeBetOopMultiplier,
@@ -169,11 +147,7 @@ public record SizingConfig(
             return openSizeBb.multiply(multiplier);
         }
 
-        var base = openSizeBb;
-        if (squeezeLimpers && limperCount > 0) {
-            base = base.add(perLimperBb.multiply(BigDecimal.valueOf(limperCount)));
-        }
-        return base;
+        return openSizeBb;
     }
 
     public static SizingConfig defaults() {
@@ -183,7 +157,6 @@ public record SizingConfig(
           one,
           BigDecimal.valueOf(2.0),
           one,
-          1,
           BigDecimal.valueOf(3.0),
           one,
           BigDecimal.valueOf(4.0),

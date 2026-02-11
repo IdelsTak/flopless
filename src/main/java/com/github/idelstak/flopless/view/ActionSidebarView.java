@@ -46,12 +46,6 @@ public final class ActionSidebarView implements Initializable {
     @FXML
     private Button incrementLimperAmountButton;
     @FXML
-    private Button decrementLimperCountButton;
-    @FXML
-    private Button incrementLimperCountButton;
-    @FXML
-    private TextField limperCountField;
-    @FXML
     private TextField threeBetIpField;
     @FXML
     private Button decrementThreeBetIpButton;
@@ -146,13 +140,6 @@ public final class ActionSidebarView implements Initializable {
         decrementLimperAmountButton.setOnAction(_ ->
           loop.accept(new Action.User.DecreaseLimperAmount(-0.5)));
 
-        limperCountField.setOnAction(_ ->
-          loop.accept(new Action.User.LimperCount(readInt(limperCountField, 0))));
-        incrementLimperCountButton.setOnAction(_ ->
-          loop.accept(new Action.User.IncreaseLimperCount(1)));
-        decrementLimperCountButton.setOnAction(_ ->
-          loop.accept(new Action.User.DecreaseLimperCount(1)));
-
         threeBetIpField.setOnAction(_ ->
           loop.accept(new Action.User.ThreeBetIpMultiplier(readDouble(threeBetIpField, 3.0))));
         incrementThreeBetIpButton.setOnAction(_ ->
@@ -208,7 +195,6 @@ public final class ActionSidebarView implements Initializable {
 
         perLimperAmount = state.perLimperAmount();
         limperAmountField.setText(formatDecimal(perLimperAmount));
-        limperCountField.setText(String.valueOf(state.limperCount()));
         threeBetIpField.setText(formatDecimal(state.threeBetIpMultiplier()));
         threeBetOopField.setText(formatDecimal(state.threeBetOopMultiplier()));
 
@@ -237,18 +223,6 @@ public final class ActionSidebarView implements Initializable {
         }
         try {
             return Double.parseDouble(text);
-        } catch (NumberFormatException _) {
-            return fallback;
-        }
-    }
-
-    private int readInt(TextField field, int fallback) {
-        var text = field.getText();
-        if (text == null || text.isBlank()) {
-            return fallback;
-        }
-        try {
-            return Integer.parseInt(text);
         } catch (NumberFormatException _) {
             return fallback;
         }
