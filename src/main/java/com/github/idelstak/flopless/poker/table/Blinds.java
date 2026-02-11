@@ -8,7 +8,7 @@ public sealed interface Blinds {
 
         @Override
         public String label() {
-            return "1bb-2bb";
+            return "1sb2bb";
         }
     }
 
@@ -16,7 +16,7 @@ public sealed interface Blinds {
 
         @Override
         public String label() {
-            return "2bb-4bb";
+            return "2sb4bb";
         }
     }
 }

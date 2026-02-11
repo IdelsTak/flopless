@@ -4,6 +4,7 @@ import com.github.idelstak.flopless.poker.player.*;
 import com.github.idelstak.flopless.poker.table.*;
 import com.github.idelstak.flopless.state.*;
 import java.util.stream.*;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
 import static org.junit.jupiter.api.Assertions.*;
