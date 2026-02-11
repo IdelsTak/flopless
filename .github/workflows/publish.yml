@@ -18,16 +18,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
 
-      - name: Checkout tag from versioning
+      - name: Checkout latest tag from master
         shell: bash
         run: |
           git fetch --tags --force
-          TAG=$(git tag --points-at ${{ github.event.workflow_run.head_sha }} | head -n1)
+          git fetch origin master --force
+          git checkout origin/master
+          TAG=$(git describe --tags --abbrev=0)
           if [ -z "$TAG" ]; then
-            echo "No tag found for commit ${{ github.event.workflow_run.head_sha }}"
+            echo "No tag found on master"
             exit 1
           fi
           git checkout "$TAG"
