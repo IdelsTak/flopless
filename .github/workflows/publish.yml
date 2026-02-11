@@ -1,19 +1,51 @@
 name: Publish Package
 
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_run:
+    workflows: ["Semantic Versioning"]
+    types:
+      - completed
+
 permissions:
   contents: read
   packages: write
 
 jobs:
   publish:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Checkout tag from versioning
+        shell: bash
+        run: |
+          git fetch --tags --force
+          TAG=$(git tag --points-at ${{ github.event.workflow_run.head_sha }} | head -n1)
+          if [ -z "$TAG" ]; then
+            echo "No tag found for commit ${{ github.event.workflow_run.head_sha }}"
+            exit 1
+          fi
+          git checkout "$TAG"
+          echo "Publishing tag $TAG"
+
+      - name: Install xmlstarlet
+        run: sudo apt-get update && sudo apt-get install -y xmlstarlet
+
+      - name: Verify pom.xml matches tag
+        shell: bash
+        run: |
+          TAG=$(git describe --tags --exact-match)
+          VERSION=$(xmlstarlet sel -t -v "/*[local-name()='project']/*[local-name()='version']" pom.xml)
+          TAG_VERSION=${TAG#v}
+          if [ "$VERSION" != "$TAG_VERSION" ]; then
+            echo "pom.xml version ($VERSION) does not match tag ($TAG_VERSION)"
+            exit 1
+          fi
 
       - name: Set up Java
         uses: actions/setup-java@v4
