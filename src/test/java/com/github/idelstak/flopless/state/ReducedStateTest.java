@@ -41,6 +41,42 @@ final class ReducedStateTest {
     }
 
     @Test
+    void bbPositionWithLimpersAllowsOpenFacing() {
+        var reduced = new ReducedState(new FakePersistence());
+        var before = FloplessState.initial()
+          .forPosition(new Position.Btn())
+          .toggleLimpersSqueeze(true)
+          .face(new Facing.Open());
+        var after = reduced.apply(before, new Action.User.PositionPick(new Position.Bb()));
+        assertThat(after.position(), is(new Position.Bb()));
+        assertThat(after.squeezeLimpers(), is(true));
+        assertThat(after.facing() instanceof Facing.Open, is(true));
+    }
+
+    @Test
+    void bbLimpersToggleOnPreservesSelectedFacing() {
+        var reduced = new ReducedState(new FakePersistence());
+        var before = FloplessState.initial()
+          .forPosition(new Position.Bb())
+          .face(new Facing.Raised.VsCo());
+        var after = reduced.apply(before, new Action.User.ToggleLimpersSqueeze());
+        assertThat(after.squeezeLimpers(), is(true));
+        assertThat(after.facing() instanceof Facing.Raised.VsCo, is(true));
+    }
+
+    @Test
+    void bbLimpersToggleOffDefaultsOpenFacingToVsUtg() {
+        var reduced = new ReducedState(new FakePersistence());
+        var before = FloplessState.initial()
+          .forPosition(new Position.Bb())
+          .toggleLimpersSqueeze(true)
+          .face(new Facing.Open());
+        var after = reduced.apply(before, new Action.User.ToggleLimpersSqueeze());
+        assertThat(after.squeezeLimpers(), is(false));
+        assertThat(after.facing() instanceof Facing.Raised.VsUtg, is(true));
+    }
+
+    @Test
     void rangeClearClearsSelectedRange() {
         var reduced = new ReducedState(new FakePersistence());
         var hand = new Grid().cell(9, 9).cards().notation();
