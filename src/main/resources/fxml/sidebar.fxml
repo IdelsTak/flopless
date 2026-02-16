@@ -99,6 +99,7 @@
                         <ToggleGroup fx:id="scenarioGroup" />
                      </toggleGroup>
                   </RadioButton>
+                  <RadioButton fx:id="noneFacingRadio" managed="false" styleClass="option-btn" text="FACING NONE" toggleGroup="$scenarioGroup" visible="false" />
                   <GridPane styleClass="options-grid">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" />

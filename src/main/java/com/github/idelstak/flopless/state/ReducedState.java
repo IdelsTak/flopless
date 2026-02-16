@@ -89,7 +89,9 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
             modified = modified.toggleLimpersSqueeze(false);
         }
         if (position instanceof Position.Bb) {
-            modified = modified.face(new Facing.Raised.VsUtg());
+            if (!modified.squeezeLimpers() && modified.facing() instanceof Facing.Open) {
+                modified = modified.face(new Facing.Raised.VsUtg());
+            }
         } else {
             modified = modified.face(new Facing.Open());
         }
@@ -101,7 +103,14 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
     }
 
     private FloplessState toggleLimpersSqueeze(FloplessState state) {
-        return state.toggleLimpersSqueeze(!state.squeezeLimpers());
+        var isSqueezing = !state.squeezeLimpers();
+        var modified = state.toggleLimpersSqueeze(isSqueezing);
+        if (state.position() instanceof Position.Bb
+          && !isSqueezing
+          && modified.facing() instanceof Facing.Open) {
+            return modified.face(new Facing.Raised.VsUtg());
+        }
+        return modified;
     }
 
     private FloplessState clearRange(FloplessState state) {
@@ -149,8 +158,8 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
         for (var c : state.previewRange().coordinates()) {
             var selected = state.selectedRange().coordinates().contains(c);
             var actionToApply = selected
-                                  ? state.selectedRange().actionAt(c)
-                                  : resolveSelectedActionForCoordinate(state, c);
+                              ? state.selectedRange().actionAt(c)
+                              : resolveSelectedActionForCoordinate(state, c);
             committed = selected ? committed.remove(c) : committed.add(c, actionToApply);
         }
         return state

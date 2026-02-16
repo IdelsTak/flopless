@@ -59,6 +59,8 @@ public final class SidebarView implements Initializable {
     @FXML
     private RadioButton openRadio;
     @FXML
+    private RadioButton noneFacingRadio;
+    @FXML
     private RadioButton vsUtgRadio;
     @FXML
     private RadioButton vsUtg1Radio;
@@ -179,6 +181,9 @@ public final class SidebarView implements Initializable {
     }
 
     private Facing facing() {
+        if (scenarioGroup.getSelectedToggle() == null) {
+            return new Facing.Open();
+        }
         var radio = (Labeled) scenarioGroup.getSelectedToggle();
         return switch (radio.getText().toLowerCase(Locale.ROOT).replaceAll("vs", "").replaceAll("\\s+", "")) {
             case "utg" ->
@@ -205,6 +210,8 @@ public final class SidebarView implements Initializable {
                 new Facing.ReRaised.Vs5Bet();
             case "allin" ->
                 new Facing.ReRaised.VsAllIn();
+            case "facingnone" ->
+                new Facing.Open();
             default ->
                 new Facing.Open();
         };
@@ -251,11 +258,19 @@ public final class SidebarView implements Initializable {
             toggle.setSelected(isSelectedPosition);
         }
         var facing = state.facing();
+        var hero = position;
+        var isBbPos = hero instanceof Position.Bb;
+        var allowBbNoneFacing = isBbPos && state.squeezeLimpers();
+        noneFacingRadio.setDisable(!allowBbNoneFacing);
+        noneFacingRadio.setManaged(allowBbNoneFacing);
+        noneFacingRadio.setVisible(allowBbNoneFacing);
+
         for (var toggle : scenarioGroup.getToggles()) {
+            var radio = (RadioButton) toggle;
             var text = ((Labeled) toggle).getText().toLowerCase(Locale.ROOT).replaceAll("vs", "").replaceAll("\\s+", "");
             var matches = switch (facing) {
                 case Facing.Open _ ->
-                    text.equals("open/rfi");
+                    allowBbNoneFacing ? radio == noneFacingRadio : radio == openRadio;
                 case Facing.Raised.VsUtg _ ->
                     text.equals("utg");
                 case Facing.Raised.VsUtg1 _ ->
@@ -281,13 +296,11 @@ public final class SidebarView implements Initializable {
                 case Facing.ReRaised.VsAllIn _ ->
                     text.equals("allin");
             };
-            Platform.runLater(() -> toggle.setSelected(matches));
+            radio.setSelected(matches);
         }
 
-        var hero = position;
-        var isBbPos = hero instanceof Position.Bb;
         openRadio.setDisable(isBbPos);
-        openRadio.setSelected(!isBbPos);
+        openRadio.setSelected(!isBbPos && facing instanceof Facing.Open);
         raised.forEach((villain, radio) ->
           radio.setDisable(villain.index() >= hero.index())
         );
