@@ -31,7 +31,7 @@
 
 .delete-modal-body {
     -fx-text-fill: derive(-fx-text-active, -30%);
-    -fx-font-size: 12px;
+    -fx-font-size: 14px;
     -fx-line-spacing: 2px
 }
 
