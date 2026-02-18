@@ -7,7 +7,6 @@
     -fx-padding: 15 16 18 16
 }
 .sidebar.actions {
-    /*-fx-pref-width: 300;*/
     -fx-background-radius: 0 0 12 0;
     -fx-border-radius: 0 0 12 0;
     -fx-padding: 15 16 18 18
@@ -18,7 +17,7 @@
     -fx-border-radius: 0 0 0 12px;
     -fx-background-color: #0d0f12;
     -fx-border-color: #2a2e35 #2a2e35 transparent transparent;
-    -fx-padding: 20
+    -fx-padding: 12 18 18 18
 }
 .config-group {
     -fx-spacing: 12px
@@ -167,7 +166,7 @@
     -fx-alignment: center
 }
 .spinner-input.premium-hands {
-    -fx-pref-width: 40;
+    -fx-pref-width: 40
 }
 .spinner-suffix {
     -fx-text-fill: -fx-text-muted;
@@ -252,7 +251,6 @@
 .grid-item.active .label {
     -fx-text-fill: -fx-accent-primary
 }
-
 .delete-chart-btn {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
@@ -260,32 +258,24 @@
     -fx-border-radius: 6;
     -fx-padding: 6;
     -fx-cursor: hand;
-    -fx-opacity: 0.0
+    -fx-opacity: 0
 }
-
 .delete-chart-icon {
     -fx-icon-size: 14;
     -fx-icon-color: derive(-fx-text-active, -45%)
 }
-
-.grid-item:hover .delete-chart-btn,
-.grid-item:focused .delete-chart-btn,
-.grid-item.active .delete-chart-btn {
-    -fx-opacity: 1.0
+.grid-item:hover .delete-chart-btn, .grid-item:focused .delete-chart-btn, .grid-item.active .delete-chart-btn {
+    -fx-opacity: 1
 }
-
 .delete-chart-btn:hover {
     -fx-background-color: -fx-remove-preview
 }
-
 .delete-chart-btn:hover .delete-chart-icon {
     -fx-icon-color: #fecaca
 }
-
 .delete-chart-btn:pressed {
     -fx-background-color: #450a0a
 }
-
 .delete-dialog {
     -fx-background-color: -fx-sidebar-bg;
     -fx-border-color: -fx-grid-border;
@@ -293,24 +283,20 @@
     -fx-background-radius: 10;
     -fx-border-radius: 10
 }
-
 .delete-dialog:header *.header-panel {
     -fx-background-color: transparent;
     -fx-padding: 16 16 0 16
 }
-
 .delete-dialog:header *.header-panel *.label {
     -fx-text-fill: -fx-text-active;
     -fx-font-size: 14px;
     -fx-font-family: 'Geist SemiBold'
 }
-
 .delete-dialog > *.content.label {
     -fx-text-fill: derive(-fx-text-active, -30%);
     -fx-font-size: 12px;
     -fx-padding: 8 16 16 16
 }
-
 .delete-dialog .button-bar .button {
     -fx-font-family: 'Geist SemiBold';
     -fx-background-radius: 6;
@@ -318,23 +304,67 @@
     -fx-padding: 8 14 8 14;
     -fx-cursor: hand
 }
-
 .delete-cancel-btn {
     -fx-background-color: -fx-card-bg;
     -fx-text-fill: -fx-text-active;
     -fx-border-color: -fx-grid-border
 }
-
 .delete-cancel-btn:hover {
     -fx-background-color: derive(-fx-card-bg, 6%)
 }
-
 .delete-confirm-btn {
     -fx-background-color: #7f1d1d;
     -fx-text-fill: #fee2e2;
     -fx-border-color: transparent
 }
-
 .delete-confirm-btn:hover {
     -fx-background-color: #991b1b
+}
+.search-container { }
+.search-input {
+    -fx-background-color: #16191d;
+    -fx-border-color: #2a2e35;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 34px 10px 34px;
+    -fx-font-size: 13px;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #4b5563;
+    -fx-background-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent
+}
+.search-input:focused {
+    -fx-background-color: #1a1d21;
+    -fx-border-color: #10b981;
+    -fx-effect: dropshadow(three-pass-box, rgba(16, 185, 129, 0.1), 10, 0, 0, 0)
+}
+.search-icon {
+    -fx-fill: transparent;
+    -fx-stroke: #71767d;
+    -fx-stroke-width: 2.5;
+    -fx-translate-x: 12
+}
+.search-input:focused .search-icon {
+    -fx-stroke: #10b981
+}
+.clear-search {
+    -fx-background-radius: 50%;
+    -fx-translate-x: -12;
+    -fx-padding: 4;
+    -fx-max-width: 18;
+    -fx-max-height: 18;
+    -fx-min-width: 18;
+    -fx-min-height: 18
+}
+.clear-search:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1)
+}
+.clear-icon {
+    -fx-fill: transparent;
+    -fx-stroke: #71767d;
+    -fx-stroke-width: 2.5
+}
+.clear-search:hover .clear-icon {
+    -fx-stroke: white
 }

@@ -18,30 +18,35 @@ public record FloplessState(
   Optional<Coordinate> startCoordinate,
   SelectedRange previewRange,
   GridAction selectedAction,
-  SizingConfig sizingConfig) implements State {
+  SizingConfig sizingConfig,
+  String librarySearchTerm) implements State {
 
     public FloplessState selectRange(SelectedRange range) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, range, selectMode, startCoordinate, previewRange, selectedAction, sizingConfig);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, range, selectMode, startCoordinate, previewRange, selectedAction, sizingConfig, librarySearchTerm);
     }
 
     public FloplessState forTable(TableType tableType) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizingConfig);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizingConfig, librarySearchTerm);
     }
 
     public FloplessState forPosition(Position position) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizingConfig);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizingConfig, librarySearchTerm);
     }
 
     public FloplessState face(Facing facing) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizingConfig);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizingConfig, librarySearchTerm);
     }
 
     public FloplessState toggleLimpersSqueeze(boolean squeeze) {
-        return new FloplessState(tableType, position, facing, squeeze, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizingConfig);
+        return new FloplessState(tableType, position, facing, squeeze, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizingConfig, librarySearchTerm);
     }
 
     public FloplessState withSizing(SizingConfig sizing) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizing);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizing, librarySearchTerm);
+    }
+
+    public FloplessState withLibrarySearchTerm(String term) {
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, selectedAction, sizingConfig, term == null ? "" : term);
     }
 
     public BigDecimal raiseAmount() {
@@ -73,19 +78,19 @@ public record FloplessState(
     }
 
     FloplessState selectMode(SelectMode mode) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, mode, startCoordinate, previewRange, selectedAction, sizingConfig);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, mode, startCoordinate, previewRange, selectedAction, sizingConfig, librarySearchTerm);
     }
 
     FloplessState beginDrag(Optional<Coordinate> maybeCoordinate) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, maybeCoordinate, previewRange, selectedAction, sizingConfig);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, maybeCoordinate, previewRange, selectedAction, sizingConfig, librarySearchTerm);
     }
 
     FloplessState showPreview(SelectedRange range) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, range, selectedAction, sizingConfig);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, range, selectedAction, sizingConfig, librarySearchTerm);
     }
 
     FloplessState selectAction(GridAction action) {
-        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, action, sizingConfig);
+        return new FloplessState(tableType, position, facing, squeezeLimpers, selectedRange, selectMode, startCoordinate, previewRange, action, sizingConfig, librarySearchTerm);
     }
 
     FloplessState raise(BigDecimal amount) {
@@ -99,7 +104,8 @@ public record FloplessState(
           startCoordinate,
           previewRange,
           selectedAction,
-          sizingConfig.withOpenSize(amount.doubleValue())
+          sizingConfig.withOpenSize(amount.doubleValue()),
+          librarySearchTerm
         );
     }
 
@@ -114,7 +120,8 @@ public record FloplessState(
           startCoordinate,
           previewRange,
           selectedAction,
-          sizingConfig.withMinOpenSize(amount.doubleValue())
+          sizingConfig.withMinOpenSize(amount.doubleValue()),
+          librarySearchTerm
         );
     }
 
@@ -129,7 +136,8 @@ public record FloplessState(
           startCoordinate,
           previewRange,
           selectedAction,
-          sizingConfig.withPerLimper(amount.doubleValue())
+          sizingConfig.withPerLimper(amount.doubleValue()),
+          librarySearchTerm
         );
     }
 
@@ -144,7 +152,8 @@ public record FloplessState(
           startCoordinate,
           previewRange,
           selectedAction,
-          sizingConfig.withMinPerLimper(amount.doubleValue())
+          sizingConfig.withMinPerLimper(amount.doubleValue()),
+          librarySearchTerm
         );
     }
 
@@ -159,7 +168,8 @@ public record FloplessState(
           startCoordinate,
           previewRange,
           selectedAction,
-          sizingConfig.withReraisedIpMultiplier(multiplier.doubleValue())
+          sizingConfig.withReraisedIpMultiplier(multiplier.doubleValue()),
+          librarySearchTerm
         );
     }
 
@@ -174,7 +184,8 @@ public record FloplessState(
           startCoordinate,
           previewRange,
           selectedAction,
-          sizingConfig.withReraisedOopMultiplier(multiplier.doubleValue())
+          sizingConfig.withReraisedOopMultiplier(multiplier.doubleValue()),
+          librarySearchTerm
         );
     }
 
@@ -189,7 +200,8 @@ public record FloplessState(
           startCoordinate,
           previewRange,
           selectedAction,
-          sizingConfig.withPremiumOverride(hand, amountBb.doubleValue())
+          sizingConfig.withPremiumOverride(hand, amountBb.doubleValue()),
+          librarySearchTerm
         );
     }
 
@@ -204,7 +216,8 @@ public record FloplessState(
           state.startCoordinate(),
           state.previewRange(),
           state.selectedAction(),
-          state.sizingConfig()
+          state.sizingConfig(),
+          state.librarySearchTerm()
         );
     }
 
@@ -219,7 +232,8 @@ public record FloplessState(
           Optional.empty(),
           SelectedRange.none(),
           new GridAction.Fold(),
-          SizingConfig.defaults()
+          SizingConfig.defaults(),
+          ""
         );
     }
 }

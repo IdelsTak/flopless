@@ -128,5 +128,13 @@ public sealed interface Action {
         record LoadState(FloplessState state) implements Action {
 
         }
+
+        record LibrarySearchTerm(String term) implements User {
+
+        }
+
+        record ClearLibrarySearch() implements User {
+
+        }
     }
 }

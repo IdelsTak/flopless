@@ -84,6 +84,9 @@ public final class FloplessLoop implements Source<History<FloplessState>>, Sink<
     private boolean transientAction(Action action) {
         return action instanceof Action.User.StartDrag
           || action instanceof Action.User.UpdatePreview
+          || action instanceof Action.User.LoadState
+          || action instanceof Action.User.LibrarySearchTerm
+          || action instanceof Action.User.ClearLibrarySearch
           || action instanceof Action.Effect;
     }
 }

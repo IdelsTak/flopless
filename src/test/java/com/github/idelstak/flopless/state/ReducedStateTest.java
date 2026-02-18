@@ -244,6 +244,32 @@ final class ReducedStateTest {
     }
 
     @Test
+    void librarySearchTermSetsSearchTerm() {
+        var reduced = new ReducedState(new FakePersistence());
+        var before = FloplessState.initial();
+        var after = reduced.apply(before, new Action.User.LibrarySearchTerm("btn"));
+        assertThat(after.librarySearchTerm(), is("btn"));
+    }
+
+    @Test
+    void clearLibrarySearchResetsSearchTerm() {
+        var reduced = new ReducedState(new FakePersistence());
+        var before = FloplessState.initial().withLibrarySearchTerm("co");
+        var after = reduced.apply(before, new Action.User.ClearLibrarySearch());
+        assertThat(after.librarySearchTerm(), is(""));
+    }
+
+    @Test
+    void loadStatePreservesLibrarySearchTerm() {
+        var reduced = new ReducedState(new FakePersistence());
+        var current = FloplessState.initial().withLibrarySearchTerm("utg");
+        var toLoad = FloplessState.initial().forPosition(new Position.Btn());
+        var after = reduced.apply(current, new Action.User.LoadState(toLoad));
+        assertThat(after.position(), is(new Position.Btn()));
+        assertThat(after.librarySearchTerm(), is("utg"));
+    }
+
+    @Test
     void deleteStateRemovesSavedChartAndKeepsCurrentWhenDeletingAnotherChart() {
         var utg = FloplessState.initial().forPosition(new Position.Utg());
         var co = FloplessState.initial().forPosition(new Position.Co());
