@@ -23,11 +23,16 @@ public final class LibraryView implements Initializable {
     private final Strategy strategy;
     private DisposableObserver<History<FloplessState>> observe;
     private String activeStateName;
+    private String searchTerm;
     private final ObservableList<FloplessState> ranges = FXCollections.observableArrayList();
     @FXML
     private ListView<FloplessState> rangesListView;
     @FXML
     private Button newRangeButton;
+    @FXML
+    private TextField chartsSearchField;
+    @FXML
+    private StackPane clearSearchPane;
 
     public LibraryView(Stage stage, FloplessLoop loop, Persistence persistence) {
         this.persistence = persistence;
@@ -36,13 +41,16 @@ public final class LibraryView implements Initializable {
         strategy = new Strategy();
 
         activeStateName = "";
+        searchTerm = "";
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         var savedStates = persistence.loadAll();
         setupListView();
-        Platform.runLater(() -> renderLibrary(savedStates));
+        Platform.runLater(() -> renderLibrary(savedStates, searchTerm));
+        clearSearchPane.setVisible(false);
+        clearSearchPane.setManaged(false);
         setupActions();
         setupSubscription();
 
@@ -124,16 +132,17 @@ public final class LibraryView implements Initializable {
         loop.accept(new Action.Effect.DeleteStateConfirmRequested(state));
     }
 
-    private void renderLibrary(List<FloplessState> states) {
+    private void renderLibrary(List<FloplessState> states, String searchTerm) {
+        var filtered = filterStates(states, searchTerm);
         int activeIndex = -1;
-        for (int i = 0; i < states.size(); i++) {
-            if (strategy.name(states.get(i)).equals(activeStateName)) {
+        for (int i = 0; i < filtered.size(); i++) {
+            if (strategy.name(filtered.get(i)).equals(activeStateName)) {
                 activeIndex = i;
                 break;
             }
         }
 
-        ranges.setAll(states);
+        ranges.setAll(filtered);
         rangesListView.refresh();
         if (activeIndex >= 0) {
             int indexToScroll = activeIndex;
@@ -144,6 +153,12 @@ public final class LibraryView implements Initializable {
     private void setupActions() {
         newRangeButton.setOnAction(_ ->
           loop.accept(new Action.User.LoadState(FloplessState.initial())));
+
+        chartsSearchField.textProperty().addListener((_, _, nextText) ->
+          loop.accept(new Action.User.LibrarySearchTerm(normalizeSearchTerm(nextText))));
+
+        clearSearchPane.setOnMouseClicked(_ ->
+          loop.accept(new Action.User.ClearLibrarySearch()));
     }
 
     private void setupSubscription() {
@@ -168,10 +183,33 @@ public final class LibraryView implements Initializable {
     }
 
     private void render(FloplessState state) {
-        var name = strategy.name(state);
-        activeStateName = name;
+        activeStateName = strategy.name(state);
+        searchTerm = normalizeSearchTerm(state.librarySearchTerm());
+
+        if (!searchTerm.equals(chartsSearchField.getText())) {
+            chartsSearchField.setText(searchTerm);
+        }
+
+        var hasSearch = !searchTerm.isBlank();
+        clearSearchPane.setVisible(hasSearch);
+        clearSearchPane.setManaged(hasSearch);
+
         var savedStates = persistence.loadAll();
-        renderLibrary(savedStates);
+        renderLibrary(savedStates, searchTerm);
+    }
+
+    private String normalizeSearchTerm(String text) {
+        return text == null ? "" : text;
+    }
+
+    private List<FloplessState> filterStates(List<FloplessState> states, String searchTerm) {
+        if (searchTerm.isBlank()) {
+            return states;
+        }
+        var query = searchTerm.trim().toLowerCase(Locale.ROOT);
+        return states.stream()
+          .filter(state -> strategy.name(state).toLowerCase(Locale.ROOT).contains(query))
+          .toList();
     }
 
     private void dispose() {

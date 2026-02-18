@@ -71,7 +71,11 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
             case Action.User.DeleteState a ->
                 delete(state, a);
             case Action.User.LoadState a ->
-                load(a);
+                load(state, a);
+            case Action.User.LibrarySearchTerm a ->
+                librarySearchTerm(state, a);
+            case Action.User.ClearLibrarySearch _ ->
+                clearLibrarySearch(state);
 
             default ->
                 state;
@@ -292,14 +296,26 @@ public final class ReducedState implements Reduced<FloplessState, Action, Flople
 
         var afterDelete = persistence.loadAll();
         if (afterDelete.isEmpty()) {
-            return FloplessState.initial();
+            return FloplessState.initial().withLibrarySearchTerm(current.librarySearchTerm());
         }
 
         var fallbackIndex = deletedIndex >= 0 ? Math.min(deletedIndex, afterDelete.size() - 1) : 0;
-        return FloplessState.initial().copy(afterDelete.get(fallbackIndex));
+        return FloplessState.initial()
+          .copy(afterDelete.get(fallbackIndex))
+          .withLibrarySearchTerm(current.librarySearchTerm());
     }
 
-    private FloplessState load(Action.User.LoadState load) {
-        return FloplessState.initial().copy(load.state());
+    private FloplessState load(FloplessState current, Action.User.LoadState load) {
+        return FloplessState.initial()
+          .copy(load.state())
+          .withLibrarySearchTerm(current.librarySearchTerm());
+    }
+
+    private FloplessState librarySearchTerm(FloplessState state, Action.User.LibrarySearchTerm search) {
+        return state.withLibrarySearchTerm(search.term());
+    }
+
+    private FloplessState clearLibrarySearch(FloplessState state) {
+        return state.withLibrarySearchTerm("");
     }
 }

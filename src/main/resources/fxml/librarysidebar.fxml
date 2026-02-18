@@ -2,8 +2,10 @@
 
 <?import java.lang.*?>
 <?import java.net.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 <?import org.kordamp.ikonli.javafx.*?>
 
 <VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.flopless.view.LibraryView">
@@ -23,6 +25,28 @@
             <FontIcon />
          </graphic>
       </Button>
+      <StackPane styleClass="search-container">
+         <children>
+            <TextField fx:id="chartsSearchField" promptText="Search charts..." styleClass="search-input" />
+            <HBox alignment="CENTER_LEFT" mouseTransparent="true" pickOnBounds="false">
+               <children>
+                  <SVGPath content="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z M21 21l-4.35-4.35" scaleX="0.6" scaleY="0.6" styleClass="search-icon" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" pickOnBounds="false">
+               <children>
+                  <StackPane fx:id="clearSearchPane" styleClass="clear-search">
+                     <children>
+                        <SVGPath content="M18 6L6 18M6 6l12 12" scaleX="0.7" scaleY="0.7" styleClass="clear-icon" />
+                     </children>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </StackPane>
+               </children>
+            </HBox>
+         </children>
+      </StackPane>
       <ListView fx:id="rangesListView" styleClass="library-list" VBox.vgrow="ALWAYS" />
    </children>
 </VBox>

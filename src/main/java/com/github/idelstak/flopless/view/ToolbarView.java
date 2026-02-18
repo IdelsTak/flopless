@@ -90,6 +90,7 @@ public final class ToolbarView implements Initializable {
         clearGridButton.setDisable(state.selectedRange().coordinates().isEmpty());
         undoButton.setDisable(!history.canUndo());
         redoButton.setDisable(!history.canRedo());
+        saveButton.setDisable(!history.canUndo() && !history.canRedo());
     }
 
     private void dispose() {
