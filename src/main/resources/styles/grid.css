@@ -1,18 +1,18 @@
 .root-pane {
     -fx-background-color: -fx-grid-border;
     -fx-border-color: -fx-grid-border;
-    -fx-border-width: 0.0625em;
+    -fx-border-width: 1;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 4);
-    -fx-pref-width: 700;
-    -fx-pref-height: 700;
-    -fx-padding: 0 2 0 1
+    -fx-pref-width: 705;
+    -fx-pref-height: 702;
+    -fx-padding: 2 2 2 1
 }
 .poker-grid {
     -fx-alignment: center;
     -fx-background-color: -fx-grid-border;
-    -fx-hgap: 1px;
-    -fx-vgap: 1px;
-    -fx-background-radius: 0.5em;
+    -fx-hgap: 2;
+    -fx-vgap: 2;
+    -fx-background-radius: 6;
     -fx-padding: 0
 }
 .cell {
